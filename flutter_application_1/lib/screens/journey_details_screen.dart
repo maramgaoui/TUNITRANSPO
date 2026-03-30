@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'journey_results_screen.dart';
+import '../models/journey_model.dart';
 
 class JourneyDetailsScreen extends StatefulWidget {
   final Journey journey;
@@ -262,6 +262,25 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                           },
                           icon: const Icon(Icons.check_circle),
                           label: const Text('Commencer le trajet'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: OutlinedButton.icon(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Ajouté aux favoris! ♥'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.favorite_border),
+                          label: const Text('Ajouter au favoris'),
                         ),
                       ),
                     ),

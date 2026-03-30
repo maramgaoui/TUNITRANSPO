@@ -1,11 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'dart:developer' as developer;
 import '../models/user_model.dart';
 
 class AuthController {
   final firebase_auth.FirebaseAuth _firebaseAuth =
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   // Get current user stream
   Stream<User?> get authStateChanges {
@@ -26,7 +29,7 @@ class AuthController {
           );
         }
       } catch (e) {
-        print('Error fetching user data: $e');
+        developer.log('Error fetching user data: $e', name: 'AuthController');
         return User(
           uid: user.uid,
           email: user.email ?? '',
@@ -54,6 +57,7 @@ class AuthController {
     required String password,
     required String firstName,
     required String lastName,
+    String? username,
   }) async {
     try {
       // Create Firebase Auth user
@@ -79,12 +83,24 @@ class AuthController {
       // Save user data to Firestore
       await _firestore.collection('users').doc(firebaseUser.uid).set(user.toMap());
 
+      // Save profile with username
+      if (username != null && username.isNotEmpty) {
+        final profileData = {
+          'uid': firebaseUser.uid,
+          'email': email,
+          'username': username,
+          'firstName': firstName,
+          'lastName': lastName,
+          'createdAt': DateTime.now(),
+        };
+        await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
+      }
+
       return user;
     } on firebase_auth.FirebaseAuthException catch (e) {
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
       throw _handleAuthException(e);
     } catch (e) {
-      print('Sign up error: $e');
+      developer.log('Sign up error: $e', name: 'AuthController');
       throw Exception('An error occurred during sign up. Please try again.');
     }
   }
@@ -119,11 +135,75 @@ class AuthController {
         );
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
       throw _handleAuthException(e);
     } catch (e) {
-      print('Sign in error: $e');
+      developer.log('Sign in error: $e', name: 'AuthController');
       throw Exception('An error occurred during sign in. Please try again.');
+    }
+  }
+
+  // Sign in with Google
+  Future<User?> signInWithGoogle() async {
+    try {
+      // Trigger Google Sign-In flow
+      final googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        throw Exception('Google sign-in cancelled');
+      }
+
+      // Get authentication details
+      final googleAuth = await googleUser.authentication;
+
+      // Create credential for Firebase
+      final credential = firebase_auth.GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Sign in with Firebase
+      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final firebaseUser = userCredential.user;
+
+      if (firebaseUser == null) {
+        throw Exception('Failed to create Firebase user');
+      }
+
+      // Check if user already exists in Firestore
+      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+
+      if (userDoc.exists) {
+        return User.fromMap(userDoc.data() ?? {});
+      } else {
+        // Create new user document
+        final user = User(
+          uid: firebaseUser.uid,
+          email: firebaseUser.email ?? '',
+          firstName: googleUser.displayName?.split(' ').first ?? '',
+          lastName: googleUser.displayName?.split(' ').skip(1).join(' ') ?? '',
+          createdAt: DateTime.now(),
+        );
+
+        // Save user data to Firestore
+        await _firestore.collection('users').doc(firebaseUser.uid).set(user.toMap());
+
+        // Create profile entry
+        final profileData = {
+          'uid': firebaseUser.uid,
+          'email': firebaseUser.email,
+          'firstName': googleUser.displayName?.split(' ').first ?? '',
+          'lastName': googleUser.displayName?.split(' ').skip(1).join(' ') ?? '',
+          'photoUrl': googleUser.photoUrl,
+          'createdAt': DateTime.now(),
+        };
+        await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
+
+        return user;
+      }
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      developer.log('Google sign in error: $e', name: 'AuthController');
+      throw Exception('An error occurred during Google sign in. Please try again.');
     }
   }
 
@@ -132,7 +212,7 @@ class AuthController {
     try {
       await _firebaseAuth.signOut();
     } catch (e) {
-      print('Sign out error: $e');
+      developer.log('Sign out error: $e', name: 'AuthController');
       throw Exception('Failed to sign out');
     }
   }
@@ -155,7 +235,7 @@ class AuthController {
 
       await _firestore.collection('users').doc(uid).update(updateData);
     } catch (e) {
-      print('Update profile error: $e');
+      developer.log('Update profile error: $e', name: 'AuthController');
       throw Exception('Failed to update profile');
     }
   }
@@ -169,46 +249,36 @@ class AuthController {
       // Delete Firebase Auth user
       await _firebaseAuth.currentUser?.delete();
     } on firebase_auth.FirebaseAuthException catch (e) {
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
-      throw Exception('Failed to delete account');
+      throw _handleAuthException(e);
     } catch (e) {
-      print('Delete account error: $e');
+      developer.log('Delete account error: $e', name: 'AuthController');
       throw Exception('Failed to delete account');
     }
   }
 
-  // Reset password
-  Future<void> resetPassword({required String email}) async {
+  // Send password reset email
+  Future<void> sendPasswordResetEmail(String email) async {
     try {
       await _firebaseAuth.sendPasswordResetEmail(email: email);
     } on firebase_auth.FirebaseAuthException catch (e) {
-      print('Firebase Auth Error: ${e.code} - ${e.message}');
       throw _handleAuthException(e);
     } catch (e) {
-      print('Reset password error: $e');
-      throw Exception('Failed to send password reset email');
+      developer.log('Send password reset email error: $e', name: 'AuthController');
+      throw Exception('Impossible d\'envoyer l\'email. Vérifiez que votre adresse email est correcte.');
     }
   }
 
   // Handle Firebase Auth exceptions
-  String _handleAuthException(firebase_auth.FirebaseAuthException e) {
-    switch (e.code) {
-      case 'weak-password':
-        return 'The password provided is too weak. Please use a stronger password.';
-      case 'email-already-in-use':
-        return 'This email is already registered. Please sign in or use a different email.';
-      case 'invalid-email':
-        return 'The email address is invalid. Please check and try again.';
-      case 'user-disabled':
-        return 'This user account has been disabled.';
-      case 'user-not-found':
-        return 'No account found with this email address.';
-      case 'wrong-password':
-        return 'The password is incorrect. Please try again.';
-      case 'too-many-requests':
-        return 'Too many login attempts. Please try again later.';
-      default:
-        return 'An authentication error occurred. Please try again.';
-    }
+  Exception _handleAuthException(firebase_auth.FirebaseAuthException e) {
+    return Exception(switch (e.code) {
+      'weak-password' => 'The password provided is too weak. Please use a stronger password.',
+      'email-already-in-use' => 'This email is already registered. Please sign in or use a different email.',
+      'invalid-email' => 'The email address is invalid. Please check and try again.',
+      'user-disabled' => 'This user account has been disabled.',
+      'user-not-found' => 'No account found with this email address.',
+      'wrong-password' => 'The password is incorrect. Please try again.',
+      'too-many-requests' => 'Too many login attempts. Please try again later.',
+      _ => 'An authentication error occurred. Please try again.',
+    });
   }
 }

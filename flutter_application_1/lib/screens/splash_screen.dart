@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import 'auth_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -33,22 +32,6 @@ class _SplashScreenState extends State<SplashScreen>
         );
 
     _animationController.forward();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const AuthScreen(),
-            transitionsBuilder:
-                (context, animation, secondaryAnimation, child) {
-              return FadeTransition(opacity: animation, child: child);
-            },
-            transitionDuration: const Duration(milliseconds: 800),
-          ),
-        );
-      }
-    });
   }
 
   @override
@@ -113,7 +96,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Transport Public Intelligent',
+                        'Votre assistant de transport intelligent',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

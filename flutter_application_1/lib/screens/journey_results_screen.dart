@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../models/journey_model.dart';
+import '../constants/mock_data.dart';
 import 'journey_details_screen.dart';
 
 class JourneyResultsScreen extends StatefulWidget {
@@ -17,56 +19,7 @@ class JourneyResultsScreen extends StatefulWidget {
 }
 
 class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
-  final List<Journey> journeys = [
-    Journey(
-      type: 'Bus',
-      icon: Icons.directions_bus,
-      departure: '14:30',
-      arrival: '16:45',
-      duration: '2h 15m',
-      price: '4.500',
-      transfers: 1,
-      isOptimal: true,
-      operator: 'SNTRI',
-      line: 'Ligne 7',
-    ),
-    Journey(
-      type: 'Métro',
-      icon: Icons.directions_subway,
-      departure: '14:50',
-      arrival: '17:20',
-      duration: '2h 30m',
-      price: '3.750',
-      transfers: 2,
-      isOptimal: false,
-      operator: 'SMTC',
-      line: 'M1 → M4',
-    ),
-    Journey(
-      type: 'Taxi',
-      icon: Icons.local_taxi,
-      departure: '14:35',
-      arrival: '15:50',
-      duration: '1h 15m',
-      price: '15.000',
-      transfers: 0,
-      isOptimal: false,
-      operator: 'Uber',
-      line: 'Direct',
-    ),
-    Journey(
-      type: 'Combiné',
-      icon: Icons.train,
-      departure: '15:00',
-      arrival: '16:30',
-      duration: '1h 30m',
-      price: '6.250',
-      transfers: 1,
-      isOptimal: false,
-      operator: 'SNTRI + SMTC',
-      line: 'Bus L5 → TGM',
-    ),
-  ];
+  final List<Journey> journeys = MockData.mockJourneys;
 
   @override
   Widget build(BuildContext context) {
@@ -408,30 +361,4 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
       ],
     );
   }
-}
-
-class Journey {
-  final String type;
-  final IconData icon;
-  final String departure;
-  final String arrival;
-  final String duration;
-  final String price;
-  final int transfers;
-  final bool isOptimal;
-  final String operator;
-  final String line;
-
-  Journey({
-    required this.type,
-    required this.icon,
-    required this.departure,
-    required this.arrival,
-    required this.duration,
-    required this.price,
-    required this.transfers,
-    required this.isOptimal,
-    required this.operator,
-    required this.line,
-  });
 }

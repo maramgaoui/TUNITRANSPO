@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/controllers/auth_controller.dart';
+import 'package:tuni_transport/controllers/auth_controller.dart';
 import '../theme/app_theme.dart';
-import 'journey_input_screen.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -13,7 +12,8 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  bool _obscurePassword = true;
+  bool _obscureLoginPassword = true;
+  bool _obscureSignupPassword = true;
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
   String? _errorMessage;
@@ -22,6 +22,7 @@ class _AuthScreenState extends State<AuthScreen>
   final _loginPasswordController = TextEditingController();
   final _signupNomController = TextEditingController();
   final _signupPrenomController = TextEditingController();
+  final _signupUsernameController = TextEditingController();
   final _signupEmailController = TextEditingController();
   final _signupPasswordController = TextEditingController();
   final _signupConfirmPasswordController = TextEditingController();
@@ -43,14 +44,119 @@ class _AuthScreenState extends State<AuthScreen>
     _loginPasswordController.dispose();
     _signupNomController.dispose();
     _signupPrenomController.dispose();
+    _signupUsernameController.dispose();
     _signupEmailController.dispose();
     _signupPasswordController.dispose();
     _signupConfirmPasswordController.dispose();
     super.dispose();
   }
 
+  Future<void> _handleForgotPassword() async {
+    final emailController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Réinitialiser le mot de passe'),
+        content: Form(
+          key: formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text(
+                'Entrez votre adresse email pour recevoir un lien de réinitialisation',
+                style: TextStyle(fontSize: 14),
+              ),
+              const SizedBox(height: 16),
+              TextFormField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'votre@email.com',
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Email is required';
+                  }
+                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                    return 'Please enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryTeal,
+            ),
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                Navigator.pop(context);
+                
+                // Show loading
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Envoi du lien de réinitialisation...'),
+                    backgroundColor: AppTheme.primaryTeal,
+                  ),
+                );
+
+                try {
+                  await _authController.sendPasswordResetEmail(
+                    emailController.text.trim(),
+                  );
+                  
+                  if (mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Vérifiez votre email pour le lien de réinitialisation'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  if (mounted) {
+                    final errorMsg = e.toString().replaceAll('Exception: ', '');
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Erreur: $errorMsg'),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
+                  }
+                }
+              }
+            },
+            child: const Text(
+              'Envoyer',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _handleLogin() async {
-    if (!_loginFormKey.currentState!.validate()) return;
+    if (!_loginFormKey.currentState!.validate()) {
+      setState(() => _errorMessage = 'Please fill in all fields');
+      return;
+    }
 
     setState(() {
       _isLoading = true;
@@ -63,28 +169,24 @@ class _AuthScreenState extends State<AuthScreen>
         password: _loginPasswordController.text,
       );
 
+      // Give a moment for AuthGuard stream to detect the change
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const JourneyInputScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              );
-            },
-            transitionDuration: const Duration(milliseconds: 600),
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Signed in successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 1),
           ),
-          (route) => false,
         );
       }
     } catch (e) {
+      final errorMsg = e.toString().replaceAll('Exception: ', '');
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = errorMsg;
+        _isLoading = false;
       });
 
       if (mounted) {
@@ -92,28 +194,27 @@ class _AuthScreenState extends State<AuthScreen>
           SnackBar(
             content: Text(_errorMessage ?? 'Sign in failed'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
           ),
         );
-      }
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
       }
     }
   }
 
   Future<void> _handleSignUp() async {
-    if (!_signupFormKey.currentState!.validate()) return;
+    if (!_signupFormKey.currentState!.validate()) {
+      setState(() => _errorMessage = 'Please fill in all fields');
+      return;
+    }
 
     // Check if passwords match
     if (_signupPasswordController.text != _signupConfirmPasswordController.text) {
-      setState(() {
-        _errorMessage = 'Passwords do not match';
-      });
+      setState(() => _errorMessage = 'Passwords do not match');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Les mots de passe ne correspondent pas'),
           backgroundColor: Colors.red,
+          duration: Duration(seconds: 3),
         ),
       );
       return;
@@ -130,37 +231,27 @@ class _AuthScreenState extends State<AuthScreen>
         password: _signupPasswordController.text,
         firstName: _signupPrenomController.text.trim(),
         lastName: _signupNomController.text.trim(),
+        username: _signupUsernameController.text.trim(),
       );
+
+      // Give a moment for AuthGuard stream to detect the change
+      await Future.delayed(const Duration(milliseconds: 500));
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Account created successfully!'),
             backgroundColor: Colors.green,
+            duration: Duration(seconds: 1),
           ),
         );
-
-        Navigator.of(context).pushAndRemoveUntil(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                const JourneyInputScreen(),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              );
-            },
-            transitionDuration: const Duration(milliseconds: 600),
-          ),
-          (route) => false,
-        );
+        // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       }
     } catch (e) {
+      final errorMsg = e.toString().replaceAll('Exception: ', '');
       setState(() {
-        _errorMessage = e.toString();
+        _errorMessage = errorMsg;
+        _isLoading = false;
       });
 
       if (mounted) {
@@ -168,12 +259,50 @@ class _AuthScreenState extends State<AuthScreen>
           SnackBar(
             content: Text(_errorMessage ?? 'Sign up failed'),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
           ),
         );
       }
-    } finally {
+    }
+  }
+
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await _authController.signInWithGoogle();
+
+      // Give a moment for AuthGuard stream to detect the change
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       if (mounted) {
-        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Signed in with Google!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    } catch (e) {
+      final errorMsg = e.toString().replaceAll('Exception: ', '');
+      setState(() {
+        _errorMessage = errorMsg;
+        _isLoading = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(_errorMessage ?? 'Google sign in failed'),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 3),
+          ),
+        );
       }
     }
   }
@@ -187,7 +316,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Header
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 20),
+              padding: const EdgeInsets.fromLTRB(20, 20, 80, 20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -201,32 +330,46 @@ class _AuthScreenState extends State<AuthScreen>
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'TuniTransport',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'Connexion & Inscription',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white.withValues(alpha: 0.85),
-                              ),
-                            ),
-                          ],
+                      // Logo
+                      Container(
+                        width: 50,
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
                         ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.directions_bus,
+                            color: Colors.white,
+                            size: 28,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'TuniTransport',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Connexion & Inscription',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white.withValues(alpha: 0.85),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -342,16 +485,16 @@ class _AuthScreenState extends State<AuthScreen>
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _obscurePassword
+                    _obscureLoginPassword
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                   ),
                   onPressed: () {
-                    setState(() => _obscurePassword = !_obscurePassword);
+                    setState(() => _obscureLoginPassword = !_obscureLoginPassword);
                   },
                 ),
               ),
-              obscureText: _obscurePassword,
+              obscureText: _obscureLoginPassword,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -366,9 +509,7 @@ class _AuthScreenState extends State<AuthScreen>
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
-                onPressed: () {
-                  // TODO: Implement forgot password
-                },
+                onPressed: _handleForgotPassword,
                 child: const Text('Oublié?'),
               ),
             ),
@@ -419,11 +560,9 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () {
-                  // TODO: Implement Google sign in
-                },
+                onPressed: _isLoading ? null : _handleGoogleSignIn,
                 icon: const Icon(Icons.g_mobiledata),
-                label: const Text('Google'),
+                label: const Text('Connexion avec Google'),
               ),
             ),
           ],
@@ -506,6 +645,33 @@ class _AuthScreenState extends State<AuthScreen>
               },
             ),
             const SizedBox(height: 16),
+            // Username field
+            Text(
+              'Nom d\'utilisateur',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textDark,
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextFormField(
+              controller: _signupUsernameController,
+              decoration: InputDecoration(
+                hintText: 'Choisir un nom d\'utilisateur',
+                prefixIcon: const Icon(Icons.person_add_outlined),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Nom d\'utilisateur is required';
+                }
+                if (value.length < 3) {
+                  return 'Username must be at least 3 characters';
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
             // Email field
             Text(
               'Email',
@@ -551,16 +717,16 @@ class _AuthScreenState extends State<AuthScreen>
                 prefixIcon: const Icon(Icons.lock_outline),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _obscurePassword
+                    _obscureSignupPassword
                         ? Icons.visibility_off_outlined
                         : Icons.visibility_outlined,
                   ),
                   onPressed: () {
-                    setState(() => _obscurePassword = !_obscurePassword);
+                    setState(() => _obscureSignupPassword = !_obscureSignupPassword);
                   },
                 ),
               ),
-              obscureText: _obscurePassword,
+              obscureText: _obscureSignupPassword,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Password is required';
@@ -622,6 +788,41 @@ class _AuthScreenState extends State<AuthScreen>
                         ),
                       )
                     : const Text('Créer un compte'),
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Divider
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: AppTheme.lightGrey,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'ou',
+                    style: TextStyle(color: AppTheme.mediumGrey),
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    height: 1,
+                    color: AppTheme.lightGrey,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // Social signup button
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _isLoading ? null : _handleGoogleSignIn,
+                icon: const Icon(Icons.g_mobiledata),
+                label: const Text('S\'inscrire avec Google'),
               ),
             ),
           ],

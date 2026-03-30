@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../constants/mock_data.dart';
 import 'journey_results_screen.dart';
 
 class JourneyInputScreen extends StatefulWidget {
@@ -13,6 +14,11 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
   final _departureController = TextEditingController();
   final _arrivalController = TextEditingController();
   bool _useCurrentLocation = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -45,11 +51,27 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                   children: [
                     Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.white),
-                          onPressed: () => Navigator.pop(context),
+                        // App Logo
+                        Container(
+                          width: 50,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.directions_bus,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                          ),
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -265,8 +287,9 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: 3,
+                      itemCount: MockData.recentSearches.length,
                       itemBuilder: (context, index) {
+                        final search = MockData.recentSearches[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Container(
@@ -290,15 +313,15 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      const Text(
-                                        'Tunis Centre → Hammamet',
-                                        style: TextStyle(
+                                      Text(
+                                        search['route']!,
+                                        style: const TextStyle(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 14,
                                         ),
                                       ),
                                       Text(
-                                        'Hier à 14:30',
+                                        search['time']!,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: AppTheme.mediumGrey,
