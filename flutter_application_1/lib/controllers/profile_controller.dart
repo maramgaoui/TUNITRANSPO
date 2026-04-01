@@ -8,26 +8,69 @@ class ProfileController {
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Get current user profile stream
+  // Get current user profile stream with retry logic
   Stream<Profile?> get profileStream {
     return _firebaseAuth.authStateChanges().asyncMap((firebase_auth.User? user) async {
       if (user == null) return null;
 
       try {
-        final profileDoc =
-            await _firestore.collection('profiles').doc(user.uid).get();
-        if (profileDoc.exists) {
-          return Profile.fromMap(profileDoc.data() ?? {});
-        } else {
-          // Create default profile if not in Firestore
-          return Profile(
+        // Retry logic to ensure Firestore data is available
+        Profile? profile;
+        int retries = 0;
+        const maxRetries = 5;
+        const delayMs = 800;
+
+        while (retries < maxRetries && profile == null) {
+          try {
+            // Wait before fetching
+            await Future.delayed(Duration(milliseconds: delayMs));
+
+            final userDoc = await _firestore.collection('users').doc(user.uid).get();
+            final profileDoc = await _firestore.collection('profiles').doc(user.uid).get();
+
+            final userData = userDoc.data() ?? {};
+            final profileData = profileDoc.data() ?? {};
+
+            developer.log('Attempt ${retries + 1}: User data: $userData', name: 'ProfileController');
+            developer.log('Attempt ${retries + 1}: Profile data: $profileData', name: 'ProfileController');
+
+            // Check if we got actual data
+            if (userData.isNotEmpty || profileData.isNotEmpty) {
+              final mergedData = {...userData, ...profileData};
+
+              // Ensure critical fields
+              if (mergedData['uid'] == null || mergedData['uid'].toString().isEmpty) {
+                mergedData['uid'] = user.uid;
+              }
+              if (mergedData['email'] == null || mergedData['email'].toString().isEmpty) {
+                mergedData['email'] = user.email ?? '';
+              }
+
+              developer.log('Final merged data: $mergedData', name: 'ProfileController');
+              profile = Profile.fromMap(mergedData);
+            }
+          } catch (e) {
+            developer.log('Retry $retries failed: $e', name: 'ProfileController');
+          }
+
+          if (profile == null) {
+            retries++;
+          }
+        }
+
+        // If still no data after retries, return empty profile
+        if (profile == null) {
+          developer.log('Max retries reached, returning empty profile', name: 'ProfileController');
+          profile = Profile(
             uid: user.uid,
             email: user.email ?? '',
             createdAt: DateTime.now(),
           );
         }
+
+        return profile;
       } catch (e) {
-        developer.log('Error fetching profile data: $e', name: 'ProfileController');
+        developer.log('Error in profileStream: $e', name: 'ProfileController');
         return Profile(
           uid: user.uid,
           email: user.email ?? '',
@@ -37,25 +80,69 @@ class ProfileController {
     });
   }
 
-  // Get current profile once
+  // Get current profile once with retry logic
   Future<Profile?> getCurrentProfile() async {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return null;
 
     try {
-      final profileDoc =
-          await _firestore.collection('profiles').doc(firebaseUser.uid).get();
-      if (profileDoc.exists) {
-        return Profile.fromMap(profileDoc.data() ?? {});
-      } else {
-        return Profile(
+      // Retry logic to ensure Firestore data is available
+      Profile? profile;
+      int retries = 0;
+      const maxRetries = 5;
+      const delayMs = 800;
+
+      while (retries < maxRetries && profile == null) {
+        try {
+          // Wait before fetching
+          await Future.delayed(Duration(milliseconds: delayMs));
+
+          final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+          final profileDoc = await _firestore.collection('profiles').doc(firebaseUser.uid).get();
+
+          final userData = userDoc.data() ?? {};
+          final profileData = profileDoc.data() ?? {};
+
+          developer.log('getCurrentProfile Attempt ${retries + 1}: User data: $userData', name: 'ProfileController');
+          developer.log('getCurrentProfile Attempt ${retries + 1}: Profile data: $profileData', name: 'ProfileController');
+
+          // Check if we got actual data
+          if (userData.isNotEmpty || profileData.isNotEmpty) {
+            final mergedData = {...userData, ...profileData};
+
+            // Ensure critical fields
+            if (mergedData['uid'] == null || mergedData['uid'].toString().isEmpty) {
+              mergedData['uid'] = firebaseUser.uid;
+            }
+            if (mergedData['email'] == null || mergedData['email'].toString().isEmpty) {
+              mergedData['email'] = firebaseUser.email ?? '';
+            }
+
+            developer.log('getCurrentProfile Final merged data: $mergedData', name: 'ProfileController');
+            profile = Profile.fromMap(mergedData);
+          }
+        } catch (e) {
+          developer.log('getCurrentProfile Retry $retries failed: $e', name: 'ProfileController');
+        }
+
+        if (profile == null) {
+          retries++;
+        }
+      }
+
+      // If still no data after retries, return empty profile
+      if (profile == null) {
+        developer.log('getCurrentProfile Max retries reached, returning empty profile', name: 'ProfileController');
+        profile = Profile(
           uid: firebaseUser.uid,
           email: firebaseUser.email ?? '',
           createdAt: DateTime.now(),
         );
       }
+
+      return profile;
     } catch (e) {
-      developer.log('Error fetching profile: $e', name: 'ProfileController');
+      developer.log('getCurrentProfile Error: $e', name: 'ProfileController');
       return null;
     }
   }

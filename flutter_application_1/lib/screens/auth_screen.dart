@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import '../theme/app_theme.dart';
+import '../widgets/validated_text_field.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -17,6 +18,16 @@ class _AuthScreenState extends State<AuthScreen>
   bool _obscureConfirmPassword = true;
   bool _isLoading = false;
   String? _errorMessage;
+
+  // Validation state tracking
+  bool _isLoginEmailValid = false;
+  bool _isLoginPasswordValid = false;
+  bool _isSignupNomValid = false;
+  bool _isSignupPrenomValid = false;
+  bool _isSignupUsernameValid = false;
+  bool _isSignupEmailValid = false;
+  bool _isSignupPasswordValid = false;
+  bool _isSignupConfirmPasswordValid = false;
 
   final _loginEmailController = TextEditingController();
   final _loginPasswordController = TextEditingController();
@@ -35,6 +46,13 @@ class _AuthScreenState extends State<AuthScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    
+    // Listen to password field changes to trigger confirm password revalidation
+    _signupPasswordController.addListener(() {
+      setState(() {
+        // Trigger rebuild to revalidate confirm password
+      });
+    });
   }
 
   @override
@@ -153,15 +171,43 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Future<void> _handleLogin() async {
-    if (!_loginFormKey.currentState!.validate()) {
-      setState(() => _errorMessage = 'Please fill in all fields');
+    // Validate form first - triggers all validators
+    final isFormValid = _loginFormKey.currentState!.validate();
+    
+    setState(() {
+      _isLoading = isFormValid;
+      if (!isFormValid) {
+        _errorMessage = 'Veuillez corriger les erreurs du formulaire';
+      }
+    });
+
+    if (!isFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs correctement'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      setState(() => _isLoading = false);
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+    // Double-check validation state flags
+    if (!_isLoginEmailValid || !_isLoginPasswordValid) {
+      setState(() {
+        _errorMessage = 'Veuillez corriger toutes les erreurs de validation';
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email ou mot de passe invalide'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      return;
+    }
 
     try {
       await _authController.signInWithEmail(
@@ -169,14 +215,12 @@ class _AuthScreenState extends State<AuthScreen>
         password: _loginPasswordController.text,
       );
 
-      // Give a moment for AuthGuard stream to detect the change
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Signed in successfully!'),
+            content: Text('Connexion réussie!'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 1),
           ),
@@ -192,7 +236,7 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_errorMessage ?? 'Sign in failed'),
+            content: Text(_errorMessage ?? 'Connexion échouée'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -202,28 +246,48 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Future<void> _handleSignUp() async {
-    if (!_signupFormKey.currentState!.validate()) {
-      setState(() => _errorMessage = 'Please fill in all fields');
+    // Validate form first - triggers all validators
+    final isFormValid = _signupFormKey.currentState!.validate();
+    
+    setState(() {
+      _isLoading = isFormValid;
+      if (!isFormValid) {
+        _errorMessage = 'Veuillez corriger les erreurs du formulaire';
+      }
+    });
+
+    if (!isFormValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Veuillez remplir tous les champs correctement'),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 2),
+        ),
+      );
+      setState(() => _isLoading = false);
       return;
     }
 
-    // Check if passwords match
-    if (_signupPasswordController.text != _signupConfirmPasswordController.text) {
-      setState(() => _errorMessage = 'Passwords do not match');
+    // Double-check all validation state flags
+    if (!_isSignupNomValid ||
+        !_isSignupPrenomValid ||
+        !_isSignupUsernameValid ||
+        !_isSignupEmailValid ||
+        !_isSignupPasswordValid ||
+        !_isSignupConfirmPasswordValid) {
+      setState(() {
+        _errorMessage = 'Veuillez corriger toutes les erreurs de validation';
+        _isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Les mots de passe ne correspondent pas'),
+          content: Text('Tous les champs doivent être valides'),
           backgroundColor: Colors.red,
-          duration: Duration(seconds: 3),
+          duration: Duration(seconds: 2),
         ),
       );
       return;
     }
-
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
 
     try {
       await _authController.signUpWithEmail(
@@ -234,18 +298,16 @@ class _AuthScreenState extends State<AuthScreen>
         username: _signupUsernameController.text.trim(),
       );
 
-      // Give a moment for AuthGuard stream to detect the change
       await Future.delayed(const Duration(milliseconds: 500));
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Account created successfully!'),
+            content: Text('Compte créé avec succès!'),
             backgroundColor: Colors.green,
             duration: Duration(seconds: 1),
           ),
         );
-        // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       }
     } catch (e) {
       final errorMsg = e.toString().replaceAll('Exception: ', '');
@@ -257,7 +319,7 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_errorMessage ?? 'Sign up failed'),
+            content: Text(_errorMessage ?? 'Inscription échouée'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -440,69 +502,32 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             const SizedBox(height: 28),
-            // Email field
-            Text(
-              'Email',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Email field with real-time validation
+            ValidatedTextField(
               controller: _loginEmailController,
-              decoration: InputDecoration(
-                hintText: 'votre@email.com',
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Email is required';
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return 'Please enter a valid email';
-                }
-                return null;
+              label: 'Email',
+              hintText: 'votre@email.com',
+              prefixIcon: Icons.email_outlined,
+              validationType: 'email',
+              onValidationChanged: (isValid) {
+                setState(() => _isLoginEmailValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Password field
-            Text(
-              'Mot de passe',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Password field with real-time validation
+            ValidatedTextField(
               controller: _loginPasswordController,
-              decoration: InputDecoration(
-                hintText: '••••••••',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureLoginPassword
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                  ),
-                  onPressed: () {
-                    setState(() => _obscureLoginPassword = !_obscureLoginPassword);
-                  },
-                ),
-              ),
+              label: 'Mot de passe',
+              hintText: '••••••••',
+              prefixIcon: Icons.lock_outline,
+              validationType: 'password',
               obscureText: _obscureLoginPassword,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password is required';
-                }
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
+              isPasswordField: true,
+              onVisibilityToggle: () {
+                setState(() => _obscureLoginPassword = !_obscureLoginPassword);
+              },
+              onValidationChanged: (isValid) {
+                setState(() => _isLoginPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 8),
@@ -514,11 +539,13 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             const SizedBox(height: 24),
-            // Login button
+            // Login button - enabled only when both fields are valid
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
+                onPressed: (_isLoading || !_isLoginEmailValid || !_isLoginPasswordValid)
+                    ? null
+                    : _handleLogin,
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
@@ -597,188 +624,104 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             const SizedBox(height: 28),
-            // Nom field
-            Text(
-              'Nom',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Nom field with real-time validation (letters only)
+            ValidatedTextField(
               controller: _signupNomController,
-              decoration: InputDecoration(
-                hintText: 'Votre nom',
-                prefixIcon: const Icon(Icons.person_outline),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Nom is required';
-                }
-                return null;
+              label: 'Nom',
+              hintText: 'Votre nom',
+              prefixIcon: Icons.person_outline,
+              validationType: 'name',
+              nameFieldType: 'Nom',
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupNomValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Prénom field
-            Text(
-              'Prénom',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Prénom field with real-time validation (letters only)
+            ValidatedTextField(
               controller: _signupPrenomController,
-              decoration: InputDecoration(
-                hintText: 'Votre prénom',
-                prefixIcon: const Icon(Icons.person_outline),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Prénom is required';
-                }
-                return null;
+              label: 'Prénom',
+              hintText: 'Votre prénom',
+              prefixIcon: Icons.person_outline,
+              validationType: 'name',
+              nameFieldType: 'Prénom',
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupPrenomValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Username field
-            Text(
-              'Nom d\'utilisateur',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Username field with real-time validation (letters and numbers)
+            ValidatedTextField(
               controller: _signupUsernameController,
-              decoration: InputDecoration(
-                hintText: 'Choisir un nom d\'utilisateur',
-                prefixIcon: const Icon(Icons.person_add_outlined),
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Nom d\'utilisateur is required';
-                }
-                if (value.length < 3) {
-                  return 'Username must be at least 3 characters';
-                }
-                return null;
+              label: 'Nom d\'utilisateur',
+              hintText: 'Choisir un nom d\'utilisateur',
+              prefixIcon: Icons.person_add_outlined,
+              validationType: 'username',
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupUsernameValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Email field
-            Text(
-              'Email',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Email field with real-time validation
+            ValidatedTextField(
               controller: _signupEmailController,
-              decoration: InputDecoration(
-                hintText: 'votre@email.com',
-                prefixIcon: const Icon(Icons.email_outlined),
-              ),
-              keyboardType: TextInputType.emailAddress,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Email is required';
-                }
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                  return 'Please enter a valid email';
-                }
-                return null;
+              label: 'Email',
+              hintText: 'votre@email.com',
+              prefixIcon: Icons.email_outlined,
+              validationType: 'email',
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupEmailValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Password field
-            Text(
-              'Mot de passe',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Password field with real-time validation and strength indicator
+            ValidatedTextField(
               controller: _signupPasswordController,
-              decoration: InputDecoration(
-                hintText: '••••••••',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureSignupPassword
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                  ),
-                  onPressed: () {
-                    setState(() => _obscureSignupPassword = !_obscureSignupPassword);
-                  },
-                ),
-              ),
+              label: 'Mot de passe',
+              hintText: '••••••••',
+              prefixIcon: Icons.lock_outline,
+              validationType: 'password',
               obscureText: _obscureSignupPassword,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Password is required';
-                }
-                if (value.length < 6) {
-                  return 'Password must be at least 6 characters';
-                }
-                return null;
+              isPasswordField: true,
+              onVisibilityToggle: () {
+                setState(() => _obscureSignupPassword = !_obscureSignupPassword);
+              },
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 16),
-            // Confirm password field
-            Text(
-              'Confirmer le mot de passe',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textDark,
-              ),
-            ),
-            const SizedBox(height: 8),
-            TextFormField(
+            // Confirm password field with real-time validation
+            ValidatedTextField(
               controller: _signupConfirmPasswordController,
-              decoration: InputDecoration(
-                hintText: '••••••••',
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: IconButton(
-                  icon: Icon(
-                    _obscureConfirmPassword
-                        ? Icons.visibility_off_outlined
-                        : Icons.visibility_outlined,
-                  ),
-                  onPressed: () {
-                    setState(
-                        () => _obscureConfirmPassword = !_obscureConfirmPassword);
-                  },
-                ),
-              ),
+              label: 'Confirmer le mot de passe',
+              hintText: '••••••••',
+              prefixIcon: Icons.lock_outline,
+              validationType: 'confirm_password',
+              confirmPasswordValue: _signupPasswordController.text,
               obscureText: _obscureConfirmPassword,
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please confirm your password';
-                }
-                return null;
+              isPasswordField: true,
+              onVisibilityToggle: () {
+                setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
+              },
+              onValidationChanged: (isValid) {
+                setState(() => _isSignupConfirmPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 24),
-            // Signup button
+            // Signup button - enabled only when all fields are valid
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleSignUp,
+                onPressed: (_isLoading ||
+                        !_isSignupNomValid ||
+                        !_isSignupPrenomValid ||
+                        !_isSignupUsernameValid ||
+                        !_isSignupEmailValid ||
+                        !_isSignupPasswordValid ||
+                        !_isSignupConfirmPasswordValid)
+                    ? null
+                    : _handleSignUp,
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,

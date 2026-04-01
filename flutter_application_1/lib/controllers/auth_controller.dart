@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:developer' as developer;
 import '../models/user_model.dart';
+import '../utils/validation_utils.dart';
 
 class AuthController {
   final firebase_auth.FirebaseAuth _firebaseAuth =
@@ -60,6 +61,34 @@ class AuthController {
     String? username,
   }) async {
     try {
+      // Validate all fields on backend before saving
+      final emailValidation = ValidationUtils.validateEmail(email);
+      if (emailValidation != null) {
+        throw Exception(emailValidation);
+      }
+
+      final firstNameValidation = ValidationUtils.validateName(firstName, 'Prénom');
+      if (firstNameValidation != null) {
+        throw Exception(firstNameValidation);
+      }
+
+      final lastNameValidation = ValidationUtils.validateName(lastName, 'Nom');
+      if (lastNameValidation != null) {
+        throw Exception(lastNameValidation);
+      }
+
+      final passwordValidation = ValidationUtils.validatePassword(password);
+      if (passwordValidation != null) {
+        throw Exception(passwordValidation);
+      }
+
+      if (username != null && username.isNotEmpty) {
+        final usernameValidation = ValidationUtils.validateUsername(username);
+        if (usernameValidation != null) {
+          throw Exception(usernameValidation);
+        }
+      }
+
       // Create Firebase Auth user
       final userCredential = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email,
@@ -68,7 +97,7 @@ class AuthController {
 
       final firebaseUser = userCredential.user;
       if (firebaseUser == null) {
-        throw Exception('Failed to create user account');
+        throw Exception('Impossible de créer le compte utilisateur');
       }
 
       // Create user model
@@ -80,28 +109,27 @@ class AuthController {
         createdAt: DateTime.now(),
       );
 
-      // Save user data to Firestore
+      // Save user data to Firestore 'users' collection
       await _firestore.collection('users').doc(firebaseUser.uid).set(user.toMap());
 
-      // Save profile with username
-      if (username != null && username.isNotEmpty) {
-        final profileData = {
-          'uid': firebaseUser.uid,
-          'email': email,
-          'username': username,
-          'firstName': firstName,
-          'lastName': lastName,
-          'createdAt': DateTime.now(),
-        };
-        await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
-      }
+      // Always save profile with registration data to 'profiles' collection
+      final profileData = {
+        'uid': firebaseUser.uid,
+        'email': email,
+        'username': username, // Save username as-is (should not be empty if validation passed)
+        'firstName': firstName,
+        'lastName': lastName,
+        'createdAt': DateTime.now(),
+      };
+      developer.log('Saving profile data: $profileData', name: 'AuthController');
+      await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
 
       return user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {
       developer.log('Sign up error: $e', name: 'AuthController');
-      throw Exception('An error occurred during sign up. Please try again.');
+      throw Exception(e.toString());
     }
   }
 

@@ -136,16 +136,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Sign Out'),
-        content: const Text('Are you sure you want to sign out?'),
+        title: const Text('Déconnexion'),
+        content: const Text('Êtes-vous sûr de vouloir vous déconnecter?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
+            child: const Text('Annuler'),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Sign Out'),
+            child: const Text('Déconnexion'),
           ),
         ],
       ),
@@ -174,7 +174,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Change Password'),
+          title: const Text('Changer le mot de passe'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: currentPasswordController,
                   obscureText: obscureCurrentPassword,
                   decoration: InputDecoration(
-                    labelText: 'Current Password',
+                    labelText: 'Mot de passe actuel',
                     suffixIcon: IconButton(
                       icon: Icon(obscureCurrentPassword
                           ? Icons.visibility_off
@@ -199,7 +199,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: newPasswordController,
                   obscureText: obscureNewPassword,
                   decoration: InputDecoration(
-                    labelText: 'New Password',
+                    labelText: 'Nouveau mot de passe',
                     suffixIcon: IconButton(
                       icon: Icon(obscureNewPassword
                           ? Icons.visibility_off
@@ -215,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: confirmPasswordController,
                   obscureText: obscureConfirmPassword,
                   decoration: InputDecoration(
-                    labelText: 'Confirm New Password',
+                    labelText: 'Confirmer le nouveau mot de passe',
                     suffixIcon: IconButton(
                       icon: Icon(obscureConfirmPassword
                           ? Icons.visibility_off
@@ -232,31 +232,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Annuler'),
             ),
             TextButton(
               onPressed: () async {
                 if (currentPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter current password')),
+                    const SnackBar(content: Text('Veuillez entrer votre mot de passe actuel')),
                   );
                   return;
                 }
                 if (newPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Please enter new password')),
+                    const SnackBar(content: Text('Veuillez entrer le nouveau mot de passe')),
                   );
                   return;
                 }
                 if (newPasswordController.text != confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Passwords do not match')),
+                    const SnackBar(content: Text('Les mots de passe ne correspondent pas')),
                   );
                   return;
                 }
                 if (newPasswordController.text.length < 6) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Password must be at least 6 characters')),
+                    const SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères')),
                   );
                   return;
                 }
@@ -271,21 +271,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (success) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Password changed successfully'),
+                        content: Text('Mot de passe changé avec succès'),
                         backgroundColor: AppTheme.primaryTeal,
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Failed to change password'),
+                        content: Text('Échec du changement de mot de passe'),
                         backgroundColor: Colors.red,
                       ),
                     );
                   }
                 }
               },
-              child: const Text('Change'),
+              child: const Text('Changer'),
             ),
           ],
         ),
@@ -298,7 +298,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Settings'),
+          title: const Text('Paramètres'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -306,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 // Theme Mode Section
                 const Text(
-                  'Theme Mode',
+                  'Mode de thème',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -321,7 +321,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       RadioListTile<ThemeMode>(
-                        title: const Text('Light Mode'),
+                        title: const Text('Mode clair'),
                         value: ThemeMode.light,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -332,7 +332,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 0),
                       RadioListTile<ThemeMode>(
-                        title: const Text('Dark Mode'),
+                        title: const Text('Mode sombre'),
                         value: ThemeMode.dark,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -343,7 +343,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 0),
                       RadioListTile<ThemeMode>(
-                        title: const Text('System Default'),
+                        title: const Text('Par défaut du système'),
                         value: ThemeMode.system,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -358,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const SizedBox(height: 24),
                 // Language Section
                 const Text(
-                  'Language',
+                  'Langue',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -384,7 +384,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 0),
                       RadioListTile<String>(
-                        title: const Text('English'),
+                        title: const Text('Anglais'),
                         value: 'English',
                         groupValue: _selectedLanguage,
                         onChanged: (value) {
@@ -413,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
+              child: const Text('Annuler'),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -436,7 +436,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Settings saved - Theme: ${_themeMode.name}, Language: $_selectedLanguage',
+                        'Paramètres enregistrés - Mode: ${_themeMode.name}, Langue: $_selectedLanguage',
                       ),
                       backgroundColor: AppTheme.primaryTeal,
                     ),
@@ -444,7 +444,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 }
               },
               child: const Text(
-                'Save',
+                'Enregistrer',
                 style: TextStyle(color: Colors.white),
               ),
             ),
@@ -458,7 +458,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Profil'),
         actions: [
           if (!_isEditing)
             IconButton(
@@ -549,7 +549,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       const SizedBox(height: 16),
                       // Full Name
                       Text(
-                        profile.fullName,
+                        '${profile.firstName ?? ''} ${profile.lastName ?? ''}'.trim(),
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -557,6 +557,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 4),
+                      // Username (if available)
+                      if (profile.username != null && profile.username!.isNotEmpty)
+                        Text(
+                          '@${profile.username}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.primaryTeal,
+                          ),
+                        ),
+                      const SizedBox(height: 8),
                       // Email
                       Text(
                         profile.email,
@@ -581,7 +592,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _showChangePasswordDialog,
                     icon: const Icon(Icons.lock),
-                    label: const Text('Change Password'),
+                    label: const Text('Changer le mot de passe'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.darkTeal,
                       foregroundColor: Colors.white,
@@ -596,7 +607,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _handleSignOut,
                     icon: const Icon(Icons.logout),
-                    label: const Text('Sign Out'),
+                    label: const Text('Déconnexion'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -616,15 +627,97 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildDetailRow('First Name', profile.firstName ?? 'Not set'),
-        _buildDetailRow('Last Name', profile.lastName ?? 'Not set'),
-        _buildDetailRow('Username', profile.username ?? 'Not set'),
-        _buildDetailRow('Phone Number', profile.phoneNumber ?? 'Not set'),
-        _buildDetailRow('Address', profile.address ?? 'Not set'),
-        _buildDetailRow('City', profile.city ?? 'Not set'),
-        _buildDetailRow('Country', profile.country ?? 'Not set'),
+        // Required fields - always show
+        _buildDetailRow('Nom d\'utilisateur', profile.username ?? 'Non défini'),
+        _buildDetailRow('Prénom', profile.firstName ?? 'Non défini'),
+        _buildDetailRow('Nom', profile.lastName ?? 'Non défini'),
+        _buildDetailRow('Email', profile.email),
+        
+        // Phone number with add button if empty
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Numéro de téléphone',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.mediumGrey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              if (profile.phoneNumber == null || profile.phoneNumber!.isEmpty)
+                OutlinedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _isEditing = true;
+                      _phoneNumberController.clear();
+                    });
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Ajouter un numéro de téléphone'),
+                )
+              else
+                Text(
+                  profile.phoneNumber!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppTheme.textDark,
+                  ),
+                ),
+              const Divider(color: AppTheme.lightGrey),
+            ],
+          ),
+        ),
+        
+        // City with add button if empty
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Ville',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.mediumGrey,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              if (profile.city == null || profile.city!.isEmpty)
+                OutlinedButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      _isEditing = true;
+                      _cityController.clear();
+                    });
+                  },
+                  icon: const Icon(Icons.add),
+                  label: const Text('Ajouter une ville'),
+                )
+              else
+                Text(
+                  profile.city!,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: AppTheme.textDark,
+                  ),
+                ),
+              const Divider(color: AppTheme.lightGrey),
+            ],
+          ),
+        ),
+        
+        // Optional fields - only show if not empty
+        if (profile.address != null && profile.address!.isNotEmpty)
+          _buildDetailRow('Adresse', profile.address!),
+        if (profile.country != null && profile.country!.isNotEmpty)
+          _buildDetailRow('Pays', profile.country!),
         if (profile.bio != null && profile.bio!.isNotEmpty)
-          _buildDetailRow('Bio', profile.bio ?? 'Not set'),
+          _buildDetailRow('Bio', profile.bio!),
       ],
     );
   }
@@ -664,58 +757,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
         children: [
           _buildTextFormField(
             controller: _firstNameController,
-            label: 'First Name',
-            hint: 'Enter first name',
+            label: 'Prénom',
+            hint: 'Entrez votre prénom',
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _lastNameController,
-            label: 'Last Name',
-            hint: 'Enter last name',
+            label: 'Nom',
+            hint: 'Entrez votre nom',
             icon: Icons.person_outline,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _usernameController,
-            label: 'Username',
-            hint: 'Enter username',
+            label: 'Nom d\'utilisateur',
+            hint: 'Entrez votre nom d\'utilisateur',
             icon: Icons.person_add_outlined,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _phoneNumberController,
-            label: 'Phone Number',
-            hint: 'Enter phone number',
+            label: 'Numéro de téléphone',
+            hint: 'Entrez votre numéro de téléphone',
             icon: Icons.phone_outlined,
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _addressController,
-            label: 'Address',
-            hint: 'Enter address',
+            label: 'Adresse',
+            hint: 'Entrez votre adresse',
             icon: Icons.location_on_outlined,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _cityController,
-            label: 'City',
-            hint: 'Enter city',
+            label: 'Ville',
+            hint: 'Entrez votre ville',
             icon: Icons.location_city_outlined,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _countryController,
-            label: 'Country',
-            hint: 'Enter country',
+            label: 'Pays',
+            hint: 'Entrez votre pays',
             icon: Icons.public_outlined,
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _bioController,
             label: 'Bio',
-            hint: 'Tell us about yourself',
+            hint: 'Parlez-nous de vous',
             icon: Icons.description_outlined,
             maxLines: 3,
           ),
