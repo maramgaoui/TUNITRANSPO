@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:developer' as developer;
+import 'dart:io';
 import '../models/profile_model.dart';
 
 class ProfileController {
   final firebase_auth.FirebaseAuth _firebaseAuth =
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   // Get current user profile stream with retry logic
   Stream<Profile?> get profileStream {
@@ -196,6 +199,34 @@ class ProfileController {
       return true;
     } catch (e) {
       developer.log('Error deleting profile photo: $e', name: 'ProfileController');
+      return false;
+    }
+  }
+
+  // Upload profile photo
+  Future<bool> uploadProfilePhoto(File imageFile) async {
+    final firebaseUser = _firebaseAuth.currentUser;
+    if (firebaseUser == null) return false;
+
+    try {
+      final fileName = 'profile_photos/${firebaseUser.uid}_${DateTime.now().millisecondsSinceEpoch}';
+      final ref = _firebaseStorage.ref().child(fileName);
+      
+      // Upload the file
+      await ref.putFile(imageFile);
+      
+      // Get the download URL
+      final photoUrl = await ref.getDownloadURL();
+      
+      // Update the profile with the new photoUrl
+      await _firestore.collection('profiles').doc(firebaseUser.uid).set({
+        'photoUrl': photoUrl,
+        'updatedAt': DateTime.now(),
+      }, SetOptions(merge: true));
+      
+      return true;
+    } catch (e) {
+      developer.log('Error uploading profile photo: $e', name: 'ProfileController');
       return false;
     }
   }
