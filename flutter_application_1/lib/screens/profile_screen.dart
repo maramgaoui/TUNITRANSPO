@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:avatar_plus/avatar_plus.dart';
+import 'package:tuni_transport/constants/avatar_options.dart';
 import 'package:tuni_transport/controllers/profile_controller.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/models/profile_model.dart';
@@ -27,18 +27,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late AuthController _authController;
   bool _isEditing = false;
   bool _isLoading = false;
-  bool _isUploadingPhoto = false;
   late String _selectedLanguage;
   late ThemeMode _themeMode;
-  final ImagePicker _imagePicker = ImagePicker();
 
   // Text controllers for editing
   late TextEditingController _firstNameController;
   late TextEditingController _lastNameController;
   late TextEditingController _usernameController;
-  late TextEditingController _phoneNumberController;
   late TextEditingController _cityController;
-  late TextEditingController _bioController;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -55,9 +51,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
     _usernameController = TextEditingController();
-    _phoneNumberController = TextEditingController();
     _cityController = TextEditingController();
-    _bioController = TextEditingController();
   }
 
   @override
@@ -65,9 +59,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _firstNameController.dispose();
     _lastNameController.dispose();
     _usernameController.dispose();
-    _phoneNumberController.dispose();
     _cityController.dispose();
-    _bioController.dispose();
     super.dispose();
   }
 
@@ -75,9 +67,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _firstNameController.text = profile.firstName ?? '';
     _lastNameController.text = profile.lastName ?? '';
     _usernameController.text = profile.username ?? '';
-    _phoneNumberController.text = profile.phoneNumber ?? '';
     _cityController.text = profile.city ?? '';
-    _bioController.text = profile.bio ?? '';
   }
 
   Future<void> _saveProfile(Profile profile) async {
@@ -94,11 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         username: _usernameController.text.isEmpty
             ? null
             : _usernameController.text,
-        phoneNumber: _phoneNumberController.text.isEmpty
-            ? null
-            : _phoneNumberController.text,
         city: _cityController.text.isEmpty ? null : _cityController.text,
-        bio: _bioController.text.isEmpty ? null : _bioController.text,
       );
 
       final success = await _profileController.updateProfile(updatedProfile);
@@ -154,130 +140,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _pickAndUploadProfilePhoto() async {
-    try {
-      final XFile? pickedFile = await _imagePicker.pickImage(
-        source: ImageSource.gallery,
-        imageQuality: 80,
-        maxWidth: 800,
-        maxHeight: 800,
-      );
-
-      if (pickedFile != null) {
-        setState(() => _isUploadingPhoto = true);
-
-        final success = await _profileController.uploadProfilePhoto(
-          File(pickedFile.path),
-        );
-
-        setState(() => _isUploadingPhoto = false);
-
-        if (success && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Photo de profil mise à jour avec succès'),
-              backgroundColor: AppTheme.primaryTeal,
-            ),
-          );
-        } else if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Erreur lors de la mise à jour de la photo'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Erreur: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    }
-  }
-
-  void _showProfilePhotoOptions(Profile profile) {
-    showModalBottomSheet(
+  Future<void> _showAvatarPicker(Profile profile) async {
+    String selectedAvatarId = profile.avatarId ?? avatarOptions.first;
+    final saved = await showDialog<bool>(
       context: context,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Choisir une photo'),
-              onTap: () {
-                Navigator.pop(context);
-                _pickAndUploadProfilePhoto();
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Choisir un avatar'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: GridView.builder(
+              shrinkWrap: true,
+              itemCount: avatarOptions.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemBuilder: (context, index) {
+                final avatarId = avatarOptions[index];
+                final isSelected = selectedAvatarId == avatarId;
+                return GestureDetector(
+                  onTap: () => setDialogState(() => selectedAvatarId = avatarId),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: isSelected
+                            ? AppTheme.primaryTeal
+                            : Colors.transparent,
+                        width: 2.5,
+                      ),
+                    ),
+                    padding: const EdgeInsets.all(2),
+                    child: ClipOval(
+                      child: AvatarPlus(
+                        avatarId,
+                        width: 56,
+                        height: 56,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
-            if (profile.photoUrl != null && profile.photoUrl!.isNotEmpty)
-              ListTile(
-                leading: const Icon(Icons.delete, color: Colors.red),
-                title: const Text('Supprimer la photo',
-                    style: TextStyle(color: Colors.red)),
-                onTap: () {
-                  Navigator.pop(context);
-                  _deleteProfilePhoto();
-                },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context, true),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryTeal,
               ),
-            ListTile(
-              leading: const Icon(Icons.close),
-              title: const Text('Annuler'),
-              onTap: () => Navigator.pop(context),
+              child: const Text(
+                'Enregistrer',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
       ),
     );
-  }
 
-  Future<void> _deleteProfilePhoto() async {
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Supprimer la photo'),
-        content: const Text('Êtes-vous sûr de vouloir supprimer votre photo de profil?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Annuler'),
+    if (saved == true && mounted) {
+      final success = await _profileController.updateProfileFields({
+        'avatarId': selectedAvatarId,
+      });
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            success ? 'Avatar mis à jour' : 'Échec de la mise à jour de l\'avatar',
           ),
-          TextButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Supprimer', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
-    );
-
-    if (confirmed ?? false) {
-      setState(() => _isUploadingPhoto = true);
-
-      final success = await _profileController.deleteProfilePhoto();
-
-      setState(() => _isUploadingPhoto = false);
-
-      if (success && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Photo de profil supprimée'),
-            backgroundColor: AppTheme.primaryTeal,
-          ),
-        );
-      } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Erreur lors de la suppression'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+          backgroundColor: success ? AppTheme.primaryTeal : Colors.red,
+        ),
+      );
     }
   }
 
@@ -643,84 +584,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Center(
                   child: Column(
                     children: [
-                      // Profile Avatar with camera icon
+                      // User avatar with avatar picker
                       Stack(
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              if (profile.photoUrl != null && profile.photoUrl!.isNotEmpty) {
-                                _showProfilePhotoOptions(profile);
-                              } else {
-                                _pickAndUploadProfilePhoto();
-                              }
-                            },
-                            child: Container(
+                          ClipOval(
+                            child: AvatarPlus(
+                              profile.avatarId ??
+                                  (profile.username?.isNotEmpty == true
+                                      ? profile.username!
+                                      : profile.email),
                               width: 120,
                               height: 120,
-                              decoration: BoxDecoration(
-                                color: AppTheme.lightTeal,
-                                shape: BoxShape.circle,
-                                image: profile.photoUrl != null
-                                    ? DecorationImage(
-                                        image: NetworkImage(profile.photoUrl!),
-                                        fit: BoxFit.cover,
-                                      )
-                                    : null,
-                              ),
-                              child: profile.photoUrl == null
-                                  ? const Icon(
-                                      Icons.person,
-                                      size: 60,
-                                      color: Colors.white,
-                                    )
-                                  : null,
+                              fit: BoxFit.cover,
                             ),
                           ),
-                          // Camera button
                           Positioned(
-                            bottom: 0,
                             right: 0,
-                            child: _isUploadingPhoto
-                                ? Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.primaryTeal,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const CircularProgressIndicator(
-                                      valueColor:
-                                          AlwaysStoppedAnimation<Color>(Colors.white),
-                                      strokeWidth: 2,
-                                    ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () {
-                                      if (profile.photoUrl != null &&
-                                          profile.photoUrl!.isNotEmpty) {
-                                        _showProfilePhotoOptions(profile);
-                                      } else {
-                                        _pickAndUploadProfilePhoto();
-                                      }
-                                    },
-                                    child: Container(
-                                      width: 40,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        color: AppTheme.primaryTeal,
-                                        shape: BoxShape.circle,
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: const Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
+                            bottom: 0,
+                            child: GestureDetector(
+                              onTap: () => _showAvatarPicker(profile),
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryTeal,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 18,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -811,45 +708,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _buildDetailRow('Nom', profile.lastName ?? 'Non défini'),
         _buildDetailRow('Email', profile.email),
         
-        // Phone number with add button if empty
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Numéro de téléphone',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.mediumGrey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 4),
-              if (profile.phoneNumber == null || profile.phoneNumber!.isEmpty)
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isEditing = true;
-                      _phoneNumberController.clear();
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Ajouter un numéro de téléphone'),
-                )
-              else
-                Text(
-                  profile.phoneNumber!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-              const Divider(color: AppTheme.lightGrey),
-            ],
-          ),
-        ),
-        
         // City with add button if empty
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 12),
@@ -889,44 +747,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
         
-        // Bio with add button if empty
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Bio',
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppTheme.mediumGrey,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 4),
-              if (profile.bio == null || profile.bio!.isEmpty)
-                OutlinedButton.icon(
-                  onPressed: () {
-                    setState(() {
-                      _isEditing = true;
-                      _bioController.clear();
-                    });
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text('Ajouter une bio'),
-                )
-              else
-                Text(
-                  profile.bio!,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: AppTheme.textDark,
-                  ),
-                ),
-              const Divider(color: AppTheme.lightGrey),
-            ],
-          ),
-        ),
       ],
     );
   }
@@ -986,26 +806,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
-            controller: _phoneNumberController,
-            label: 'Numéro de téléphone',
-            hint: 'Entrez votre numéro de téléphone',
-            icon: Icons.phone_outlined,
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 16),
-          _buildTextFormField(
             controller: _cityController,
             label: 'Ville',
             hint: 'Entrez votre ville',
             icon: Icons.location_city_outlined,
-          ),
-          const SizedBox(height: 16),
-          _buildTextFormField(
-            controller: _bioController,
-            label: 'Bio',
-            hint: 'Parlez-nous de vous',
-            icon: Icons.description_outlined,
-            maxLines: 3,
           ),
         ],
       ),

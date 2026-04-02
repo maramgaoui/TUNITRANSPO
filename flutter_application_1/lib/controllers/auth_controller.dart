@@ -26,7 +26,6 @@ class AuthController {
           return User(
             uid: user.uid,
             email: user.email ?? '',
-            createdAt: DateTime.now(),
           );
         }
       } catch (e) {
@@ -34,7 +33,6 @@ class AuthController {
         return User(
           uid: user.uid,
           email: user.email ?? '',
-          createdAt: DateTime.now(),
         );
       }
     });
@@ -48,7 +46,6 @@ class AuthController {
     return User(
       uid: firebaseUser.uid,
       email: firebaseUser.email ?? '',
-      createdAt: DateTime.now(),
     );
   }
 
@@ -59,6 +56,7 @@ class AuthController {
     required String firstName,
     required String lastName,
     String? username,
+    String? avatarId,
   }) async {
     try {
       // Validate all fields on backend before saving
@@ -104,25 +102,24 @@ class AuthController {
       final user = User(
         uid: firebaseUser.uid,
         email: email,
+        username: username,
         firstName: firstName,
         lastName: lastName,
-        createdAt: DateTime.now(),
+        avatarId: avatarId,
       );
 
-      // Save user data to Firestore 'users' collection
-      await _firestore.collection('users').doc(firebaseUser.uid).set(user.toMap());
-
-      // Always save profile with registration data to 'profiles' collection
-      final profileData = {
+      // Save full account + profile data in one users document
+      final userData = {
+        ...user.toMap(),
         'uid': firebaseUser.uid,
         'email': email,
-        'username': username, // Save username as-is (should not be empty if validation passed)
+        'username': username,
+        'avatarId': avatarId,
         'firstName': firstName,
         'lastName': lastName,
-        'createdAt': DateTime.now(),
       };
-      developer.log('Saving profile data: $profileData', name: 'AuthController');
-      await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
+      developer.log('Saving user data: $userData', name: 'AuthController');
+      await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
       return user;
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -159,7 +156,6 @@ class AuthController {
         return User(
           uid: firebaseUser.uid,
           email: firebaseUser.email ?? '',
-          createdAt: DateTime.now(),
         );
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -206,24 +202,22 @@ class AuthController {
         final user = User(
           uid: firebaseUser.uid,
           email: firebaseUser.email ?? '',
+          username: null,
           firstName: googleUser.displayName?.split(' ').first ?? '',
           lastName: googleUser.displayName?.split(' ').skip(1).join(' ') ?? '',
-          createdAt: DateTime.now(),
+          avatarId: 'avatar-01',
         );
 
-        // Save user data to Firestore
-        await _firestore.collection('users').doc(firebaseUser.uid).set(user.toMap());
-
-        // Create profile entry
-        final profileData = {
+        final userData = {
+          ...user.toMap(),
           'uid': firebaseUser.uid,
           'email': firebaseUser.email,
+          'username': null,
+          'avatarId': 'avatar-01',
           'firstName': googleUser.displayName?.split(' ').first ?? '',
           'lastName': googleUser.displayName?.split(' ').skip(1).join(' ') ?? '',
-          'photoUrl': googleUser.photoUrl,
-          'createdAt': DateTime.now(),
         };
-        await _firestore.collection('profiles').doc(firebaseUser.uid).set(profileData);
+        await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
         return user;
       }
@@ -248,18 +242,19 @@ class AuthController {
   // Update user profile
   Future<void> updateUserProfile({
     required String uid,
+    String? username,
     String? firstName,
     String? lastName,
-    String? photoUrl,
+    String? avatarId,
+    String? city,
   }) async {
     try {
-      final updateData = <String, dynamic>{
-        'updatedAt': DateTime.now(),
-      };
-
+      final updateData = <String, dynamic>{};
+      if (username != null) updateData['username'] = username;
       if (firstName != null) updateData['firstName'] = firstName;
       if (lastName != null) updateData['lastName'] = lastName;
-      if (photoUrl != null) updateData['photoUrl'] = photoUrl;
+      if (avatarId != null) updateData['avatarId'] = avatarId;
+      if (city != null) updateData['city'] = city;
 
       await _firestore.collection('users').doc(uid).update(updateData);
     } catch (e) {

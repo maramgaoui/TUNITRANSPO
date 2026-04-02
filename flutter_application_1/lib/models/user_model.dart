@@ -1,20 +1,20 @@
 class User {
   final String uid;
   final String email;
+  final String? username;
   final String? firstName;
   final String? lastName;
-  final String? photoUrl;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
+  final String? avatarId;
+  final String? city;
 
   User({
     required this.uid,
     required this.email,
+    this.username,
     this.firstName,
     this.lastName,
-    this.photoUrl,
-    required this.createdAt,
-    this.updatedAt,
+    this.avatarId,
+    this.city,
   });
 
   // Convert User to JSON for Firestore
@@ -22,11 +22,11 @@ class User {
     return {
       'uid': uid,
       'email': email,
+      'username': username,
       'firstName': firstName,
       'lastName': lastName,
-      'photoUrl': photoUrl,
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'avatarId': avatarId,
+      'city': city,
     };
   }
 
@@ -35,11 +35,11 @@ class User {
     return User(
       uid: map['uid'] ?? '',
       email: map['email'] ?? '',
+      username: map['username'],
       firstName: map['firstName'],
       lastName: map['lastName'],
-      photoUrl: map['photoUrl'],
-      createdAt: map['createdAt']?.toDate() ?? DateTime.now(),
-      updatedAt: map['updatedAt']?.toDate(),
+      avatarId: map['avatarId'],
+      city: map['city'],
     );
   }
 
@@ -47,20 +47,20 @@ class User {
   User copyWith({
     String? uid,
     String? email,
+    String? username,
     String? firstName,
     String? lastName,
-    String? photoUrl,
-    DateTime? createdAt,
-    DateTime? updatedAt,
+    String? avatarId,
+    String? city,
   }) {
     return User(
       uid: uid ?? this.uid,
       email: email ?? this.email,
+      username: username ?? this.username,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
-      photoUrl: photoUrl ?? this.photoUrl,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
+      avatarId: avatarId ?? this.avatarId,
+      city: city ?? this.city,
     );
   }
 

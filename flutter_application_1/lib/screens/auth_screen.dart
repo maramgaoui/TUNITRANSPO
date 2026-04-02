@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:avatar_plus/avatar_plus.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
+import 'package:tuni_transport/constants/avatar_options.dart';
 import '../theme/app_theme.dart';
 import '../widgets/validated_text_field.dart';
 
@@ -28,6 +30,7 @@ class _AuthScreenState extends State<AuthScreen>
   bool _isSignupEmailValid = false;
   bool _isSignupPasswordValid = false;
   bool _isSignupConfirmPasswordValid = false;
+  String _selectedAvatarId = avatarOptions.first;
 
   final _loginEmailController = TextEditingController();
   final _loginPasswordController = TextEditingController();
@@ -296,6 +299,7 @@ class _AuthScreenState extends State<AuthScreen>
         firstName: _signupPrenomController.text.trim(),
         lastName: _signupNomController.text.trim(),
         username: _signupUsernameController.text.trim(),
+        avatarId: _selectedAvatarId,
       );
 
       await Future.delayed(const Duration(milliseconds: 500));
@@ -707,6 +711,56 @@ class _AuthScreenState extends State<AuthScreen>
               onValidationChanged: (isValid) {
                 setState(() => _isSignupConfirmPasswordValid = isValid);
               },
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Choisissez votre avatar',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textDark,
+              ),
+            ),
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 210,
+              child: GridView.builder(
+                itemCount: avatarOptions.length,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                  childAspectRatio: 1,
+                ),
+                itemBuilder: (context, index) {
+                  final avatarId = avatarOptions[index];
+                  final isSelected = avatarId == _selectedAvatarId;
+                  return GestureDetector(
+                    onTap: () => setState(() => _selectedAvatarId = avatarId),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isSelected
+                              ? AppTheme.primaryTeal
+                              : Colors.transparent,
+                          width: 2.5,
+                        ),
+                      ),
+                      padding: const EdgeInsets.all(2),
+                      child: ClipOval(
+                        child: AvatarPlus(
+                          avatarId,
+                          width: 52,
+                          height: 52,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 24),
             // Signup button - enabled only when all fields are valid
