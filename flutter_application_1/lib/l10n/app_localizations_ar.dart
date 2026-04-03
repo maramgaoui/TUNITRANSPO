@@ -299,6 +299,79 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String get authHeaderSubtitle => 'تسجيل الدخول وإنشاء حساب';
+
+  @override
+  String get welcomeTitle => 'مرحبا!';
+
+  @override
+  String get signInToContinue => 'سجل الدخول للمتابعة';
+
+  @override
+  String get createAccountTitle => 'إنشاء حساب';
+
+  @override
+  String get joinTuniTranspo => 'انضم إلى توني ترانسبورت';
+
+  @override
+  String get forgotPasswordShort => 'نسيت؟';
+
+  @override
+  String get orLabel => 'أو';
+
+  @override
+  String get resetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetPasswordPrompt =>
+      'أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين';
+
+  @override
+  String get sendingResetLink => 'جارٍ إرسال رابط إعادة التعيين...';
+
+  @override
+  String get resetLinkSent =>
+      'تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين';
+
+  @override
+  String errorPrefix(Object message) {
+    return 'خطأ: $message';
+  }
+
+  @override
+  String get fixFormErrors => 'يرجى تصحيح أخطاء النموذج';
+
+  @override
+  String get fillAllFieldsCorrectly => 'يرجى ملء جميع الحقول بشكل صحيح';
+
+  @override
+  String get loginSuccess => 'تم تسجيل الدخول بنجاح!';
+
+  @override
+  String get signupSuccess => 'تم إنشاء الحساب بنجاح!';
+
+  @override
+  String get loginFailed => 'فشل تسجيل الدخول';
+
+  @override
+  String get signupFailed => 'فشل إنشاء الحساب';
+
+  @override
+  String get googleSignInSuccess => 'تم تسجيل الدخول عبر Google!';
+
+  @override
+  String get googleSignInFailed => 'فشل تسجيل الدخول عبر Google';
+
+  @override
+  String get signInWithGoogle => 'تسجيل الدخول عبر Google';
+
+  @override
+  String get signUpWithGoogle => 'إنشاء حساب عبر Google';
+
+  @override
+  String get favoriteUpdateFailed => 'فشل تحديث المفضلة.';
+
+  @override
   String get searchByNameOrEmail => 'البحث بالاسم أو البريد الإلكتروني...';
 
   @override

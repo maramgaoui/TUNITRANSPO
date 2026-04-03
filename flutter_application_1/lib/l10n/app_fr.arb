@@ -115,6 +115,34 @@
       "feature": {}
     }
   },
+  "authHeaderSubtitle": "Connexion & Inscription",
+  "welcomeTitle": "Bienvenue!",
+  "signInToContinue": "Connectez-vous pour continuer",
+  "createAccountTitle": "Créer un compte",
+  "joinTuniTranspo": "Rejoignez TuniTranspo",
+  "forgotPasswordShort": "Oublié?",
+  "orLabel": "ou",
+  "resetPasswordTitle": "Réinitialiser le mot de passe",
+  "resetPasswordPrompt": "Entrez votre adresse email pour recevoir un lien de réinitialisation",
+  "sendingResetLink": "Envoi du lien de réinitialisation...",
+  "resetLinkSent": "Vérifiez votre email pour le lien de réinitialisation",
+  "errorPrefix": "Erreur : {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "fixFormErrors": "Veuillez corriger les erreurs du formulaire",
+  "fillAllFieldsCorrectly": "Veuillez remplir tous les champs correctement",
+  "loginSuccess": "Connexion réussie!",
+  "signupSuccess": "Compte créé avec succès!",
+  "loginFailed": "Connexion échouée",
+  "signupFailed": "Inscription échouée",
+  "googleSignInSuccess": "Connecté avec Google!",
+  "googleSignInFailed": "Connexion Google échouée",
+  "signInWithGoogle": "Connexion avec Google",
+  "signUpWithGoogle": "S'inscrire avec Google",
+  "favoriteUpdateFailed": "Échec de la mise à jour des favoris.",
   "searchByNameOrEmail": "Rechercher par nom ou email…",
   "filterAll": "Tous",
   "filterActive": "Actif",

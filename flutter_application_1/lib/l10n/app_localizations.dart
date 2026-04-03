@@ -661,6 +661,144 @@ abstract class AppLocalizations {
   /// **'{feature} feature is ready to be connected.'**
   String featureReadyToBeConnected(Object feature);
 
+  /// No description provided for @authHeaderSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login & Register'**
+  String get authHeaderSubtitle;
+
+  /// No description provided for @welcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome!'**
+  String get welcomeTitle;
+
+  /// No description provided for @signInToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue'**
+  String get signInToContinue;
+
+  /// No description provided for @createAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get createAccountTitle;
+
+  /// No description provided for @joinTuniTranspo.
+  ///
+  /// In en, this message translates to:
+  /// **'Join TuniTranspo'**
+  String get joinTuniTranspo;
+
+  /// No description provided for @forgotPasswordShort.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot?'**
+  String get forgotPasswordShort;
+
+  /// No description provided for @orLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get orLabel;
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email address to receive a reset link'**
+  String get resetPasswordPrompt;
+
+  /// No description provided for @sendingResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending reset link...'**
+  String get sendingResetLink;
+
+  /// No description provided for @resetLinkSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email for the reset link'**
+  String get resetLinkSent;
+
+  /// No description provided for @errorPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Error: {message}'**
+  String errorPrefix(Object message);
+
+  /// No description provided for @fixFormErrors.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fix the form errors'**
+  String get fixFormErrors;
+
+  /// No description provided for @fillAllFieldsCorrectly.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields correctly'**
+  String get fillAllFieldsCorrectly;
+
+  /// No description provided for @loginSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful!'**
+  String get loginSuccess;
+
+  /// No description provided for @signupSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Account created successfully!'**
+  String get signupSuccess;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed'**
+  String get loginFailed;
+
+  /// No description provided for @signupFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up failed'**
+  String get signupFailed;
+
+  /// No description provided for @googleSignInSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with Google!'**
+  String get googleSignInSuccess;
+
+  /// No description provided for @googleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign in failed'**
+  String get googleSignInFailed;
+
+  /// No description provided for @signInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with Google'**
+  String get signInWithGoogle;
+
+  /// No description provided for @signUpWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign up with Google'**
+  String get signUpWithGoogle;
+
+  /// No description provided for @favoriteUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to update favorites.'**
+  String get favoriteUpdateFailed;
+
   /// No description provided for @searchByNameOrEmail.
   ///
   /// In en, this message translates to:

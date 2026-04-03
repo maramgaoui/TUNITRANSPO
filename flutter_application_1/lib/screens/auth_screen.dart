@@ -77,6 +77,7 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Future<void> _handleForgotPassword() async {
+    final l10n = AppLocalizations.of(context)!;
     final emailController = TextEditingController();
     final formKey = GlobalKey<FormState>();
     final messenger = ScaffoldMessenger.of(context);
@@ -85,21 +86,21 @@ class _AuthScreenState extends State<AuthScreen>
       await showDialog(
         context: context,
         builder: (dialogContext) => AlertDialog(
-          title: const Text('Réinitialiser le mot de passe'),
+          title: Text(l10n.resetPasswordTitle),
           content: Form(
             key: formKey,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
-                  'Entrez votre adresse email pour recevoir un lien de réinitialisation',
-                  style: TextStyle(fontSize: 14),
+                Text(
+                  l10n.resetPasswordPrompt,
+                  style: const TextStyle(fontSize: 14),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: emailController,
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: l10n.email,
                     hintText: 'votre@email.com',
                     prefixIcon: const Icon(Icons.email_outlined),
                     border: OutlineInputBorder(
@@ -116,7 +117,7 @@ class _AuthScreenState extends State<AuthScreen>
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(dialogContext),
-              child: const Text('Annuler'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -128,8 +129,8 @@ class _AuthScreenState extends State<AuthScreen>
 
                   // Show loading
                   messenger.showSnackBar(
-                    const SnackBar(
-                      content: Text('Envoi du lien de réinitialisation...'),
+                    SnackBar(
+                      content: Text(l10n.sendingResetLink),
                       backgroundColor: AppTheme.primaryTeal,
                     ),
                   );
@@ -144,12 +145,10 @@ class _AuthScreenState extends State<AuthScreen>
                     }
 
                     messenger.showSnackBar(
-                      const SnackBar(
-                        content: Text(
-                          'Vérifiez votre email pour le lien de réinitialisation',
-                        ),
+                      SnackBar(
+                        content: Text(l10n.resetLinkSent),
                         backgroundColor: Colors.green,
-                        duration: Duration(seconds: 3),
+                        duration: const Duration(seconds: 3),
                       ),
                     );
                   } catch (e) {
@@ -160,7 +159,7 @@ class _AuthScreenState extends State<AuthScreen>
                     final errorMsg = e.toString().replaceAll('Exception: ', '');
                     messenger.showSnackBar(
                       SnackBar(
-                        content: Text('Erreur: $errorMsg'),
+                        content: Text(l10n.errorPrefix(errorMsg)),
                         backgroundColor: Colors.red,
                         duration: const Duration(seconds: 3),
                       ),
@@ -168,9 +167,9 @@ class _AuthScreenState extends State<AuthScreen>
                   }
                 }
               },
-              child: const Text(
-                'Envoyer',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                l10n.send,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -184,18 +183,19 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _handleLogin() async {
     // Validate form first - triggers all validators
     final isFormValid = _loginFormKey.currentState!.validate();
+    final l10n = AppLocalizations.of(context)!;
 
     setState(() {
       _isLoading = isFormValid;
       if (!isFormValid) {
-        _errorMessage = 'Veuillez corriger les erreurs du formulaire';
+        _errorMessage = l10n.fixFormErrors;
       }
     });
 
     if (!isFormValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Veuillez remplir tous les champs correctement'),
+        SnackBar(
+          content: Text(l10n.fillAllFieldsCorrectly),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -214,10 +214,10 @@ class _AuthScreenState extends State<AuthScreen>
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Connexion réussie!'),
+          SnackBar(
+            content: Text(l10n.loginSuccess),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 1),
+            duration: const Duration(seconds: 1),
           ),
         );
       }
@@ -231,7 +231,7 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_errorMessage ?? 'Connexion échouée'),
+            content: Text(_errorMessage ?? l10n.loginFailed),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -247,18 +247,19 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _handleSignUp() async {
     // Validate form first - triggers all validators
     final isFormValid = _signupFormKey.currentState!.validate();
+    final l10n = AppLocalizations.of(context)!;
 
     setState(() {
       _isLoading = isFormValid;
       if (!isFormValid) {
-        _errorMessage = 'Veuillez corriger les erreurs du formulaire';
+        _errorMessage = l10n.fixFormErrors;
       }
     });
 
     if (!isFormValid) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Veuillez remplir tous les champs correctement'),
+        SnackBar(
+          content: Text(l10n.fillAllFieldsCorrectly),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 2),
         ),
@@ -281,10 +282,10 @@ class _AuthScreenState extends State<AuthScreen>
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Compte créé avec succès!'),
+          SnackBar(
+            content: Text(l10n.signupSuccess),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 1),
+            duration: const Duration(seconds: 1),
           ),
         );
       }
@@ -298,7 +299,7 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_errorMessage ?? 'Inscription échouée'),
+            content: Text(_errorMessage ?? l10n.signupFailed),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -326,10 +327,10 @@ class _AuthScreenState extends State<AuthScreen>
       // Auth state change triggers AuthGuard to rebuild and show HomeScreen
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Signed in with Google!'),
+          SnackBar(
+            content: Text(AppLocalizations.of(context)!.googleSignInSuccess),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 1),
+            duration: const Duration(seconds: 1),
           ),
         );
       }
@@ -343,7 +344,9 @@ class _AuthScreenState extends State<AuthScreen>
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(_errorMessage ?? 'Google sign in failed'),
+            content: Text(
+              _errorMessage ?? AppLocalizations.of(context)!.googleSignInFailed,
+            ),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
           ),
@@ -404,7 +407,7 @@ class _AuthScreenState extends State<AuthScreen>
                             ),
                           ),
                           Text(
-                            'Connexion & Inscription',
+                            l10n.authHeaderSubtitle,
                             style: TextStyle(
                               fontSize: 12,
                               color: Colors.white.withValues(alpha: 0.85),
@@ -463,9 +466,9 @@ class _AuthScreenState extends State<AuthScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Bienvenue!',
-              style: TextStyle(
+            Text(
+              l10n.welcomeTitle,
+              style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: AppTheme.textDark,
@@ -473,7 +476,7 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              'Connectez-vous pour continuer',
+              l10n.signInToContinue,
               style: TextStyle(fontSize: 14, color: AppTheme.mediumGrey),
             ),
             const SizedBox(height: 28),
@@ -504,7 +507,7 @@ class _AuthScreenState extends State<AuthScreen>
               alignment: Alignment.centerRight,
               child: TextButton(
                 onPressed: _handleForgotPassword,
-                child: const Text('Oublié?'),
+                child: Text(l10n.forgotPasswordShort),
               ),
             ),
             const SizedBox(height: 24),
@@ -532,7 +535,7 @@ class _AuthScreenState extends State<AuthScreen>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    'ou',
+                    l10n.orLabel,
                     style: TextStyle(color: AppTheme.mediumGrey),
                   ),
                 ),
@@ -548,7 +551,7 @@ class _AuthScreenState extends State<AuthScreen>
               child: OutlinedButton.icon(
                 onPressed: _isLoading ? null : _handleGoogleSignIn,
                 icon: const Icon(Icons.g_mobiledata),
-                label: const Text('Connexion avec Google'),
+                label: Text(l10n.signInWithGoogle),
               ),
             ),
             const SizedBox(height: 12),
@@ -589,9 +592,9 @@ class _AuthScreenState extends State<AuthScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            const Text(
-              'Créer un compte',
-              style: TextStyle(
+            Text(
+              l10n.createAccountTitle,
+              style: const TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.w700,
                 color: AppTheme.textDark,
@@ -599,7 +602,7 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              'Rejoignez TuniTranspo',
+              l10n.joinTuniTranspo,
               style: TextStyle(fontSize: 14, color: AppTheme.mediumGrey),
             ),
             const SizedBox(height: 28),
@@ -748,7 +751,7 @@ class _AuthScreenState extends State<AuthScreen>
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Text(
-                    'ou',
+                    l10n.orLabel,
                     style: TextStyle(color: AppTheme.mediumGrey),
                   ),
                 ),
@@ -764,7 +767,7 @@ class _AuthScreenState extends State<AuthScreen>
               child: OutlinedButton.icon(
                 onPressed: _isLoading ? null : _handleGoogleSignIn,
                 icon: const Icon(Icons.g_mobiledata),
-                label: const Text('S\'inscrire avec Google'),
+                label: Text(l10n.signUpWithGoogle),
               ),
             ),
           ],

@@ -60,16 +60,23 @@ class FavoritesController extends ChangeNotifier {
   }
 
   Future<void> toggleFavorite(Journey journey) async {
-    if (isFavorite(journey.id)) {
-      await _favoritesService.removeFavoriteJourney(journey.id);
-      _favorites.removeWhere((item) => item.id == journey.id);
-    } else {
-      final favoriteJourney = journey.copyWith(isFavorite: true);
-      await _favoritesService.addFavoriteJourney(favoriteJourney);
-      _favorites.insert(0, favoriteJourney);
-    }
+    final alreadyFavorite = isFavorite(journey.id);
+    final favoriteJourney = journey.copyWith(isFavorite: true);
 
-    notifyListeners();
+    try {
+      if (alreadyFavorite) {
+        await _favoritesService.removeFavoriteJourney(journey.id);
+        _favorites.removeWhere((item) => item.id == journey.id);
+      } else {
+        await _favoritesService.addFavoriteJourney(favoriteJourney);
+        _favorites.insert(0, favoriteJourney);
+      }
+
+      notifyListeners();
+    } catch (e) {
+      debugPrint('toggleFavorite failed for ${journey.id}: $e');
+      rethrow;
+    }
   }
 
   bool isFavorite(String journeyId) {

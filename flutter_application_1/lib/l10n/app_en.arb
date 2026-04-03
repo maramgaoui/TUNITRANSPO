@@ -115,6 +115,34 @@
       "feature": {}
     }
   },
+  "authHeaderSubtitle": "Login & Register",
+  "welcomeTitle": "Welcome!",
+  "signInToContinue": "Sign in to continue",
+  "createAccountTitle": "Create an account",
+  "joinTuniTranspo": "Join TuniTranspo",
+  "forgotPasswordShort": "Forgot?",
+  "orLabel": "or",
+  "resetPasswordTitle": "Reset password",
+  "resetPasswordPrompt": "Enter your email address to receive a reset link",
+  "sendingResetLink": "Sending reset link...",
+  "resetLinkSent": "Check your email for the reset link",
+  "errorPrefix": "Error: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "fixFormErrors": "Please fix the form errors",
+  "fillAllFieldsCorrectly": "Please fill all fields correctly",
+  "loginSuccess": "Login successful!",
+  "signupSuccess": "Account created successfully!",
+  "loginFailed": "Login failed",
+  "signupFailed": "Sign up failed",
+  "googleSignInSuccess": "Signed in with Google!",
+  "googleSignInFailed": "Google sign in failed",
+  "signInWithGoogle": "Sign in with Google",
+  "signUpWithGoogle": "Sign up with Google",
+  "favoriteUpdateFailed": "Failed to update favorites.",
   "searchByNameOrEmail": "Search by name or email…",
   "filterAll": "All",
   "filterActive": "Active",

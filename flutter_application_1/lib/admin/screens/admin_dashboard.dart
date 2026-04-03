@@ -139,6 +139,11 @@ class _DashboardTab extends StatelessWidget {
 
   final String? role;
 
+  static const int _actionManageUsers = 0;
+  static const int _actionManageJourneys = 1;
+  static const int _actionManageStations = 2;
+  static const int _actionSendNotifications = 3;
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -155,35 +160,48 @@ class _DashboardTab extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-          _buildActionButton(context, l10n.manageUsers, Icons.people_outline),
           _buildActionButton(
             context,
-            l10n.manageJourneys,
-            Icons.route_outlined,
+            label: l10n.manageUsers,
+            icon: Icons.people_outline,
+            actionId: _actionManageUsers,
           ),
           _buildActionButton(
             context,
-            l10n.manageStations,
-            Icons.train_outlined,
+            label: l10n.manageJourneys,
+            icon: Icons.route_outlined,
+            actionId: _actionManageJourneys,
           ),
           _buildActionButton(
             context,
-            l10n.sendNotifications,
-            Icons.notifications_active_outlined,
+            label: l10n.manageStations,
+            icon: Icons.train_outlined,
+            actionId: _actionManageStations,
+          ),
+          _buildActionButton(
+            context,
+            label: l10n.sendNotifications,
+            icon: Icons.notifications_active_outlined,
+            actionId: _actionSendNotifications,
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(BuildContext context, String label, IconData icon) {
+  Widget _buildActionButton(
+    BuildContext context, {
+    required String label,
+    required IconData icon,
+    required int actionId,
+  }) {
     final l10n = AppLocalizations.of(context)!;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ElevatedButton.icon(
         onPressed: () {
-          if (label == l10n.manageUsers) {
+          if (actionId == _actionManageUsers) {
             Navigator.of(context).push(
               MaterialPageRoute(builder: (_) => const ManageUsersScreen()),
             );

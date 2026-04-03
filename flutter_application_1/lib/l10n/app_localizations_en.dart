@@ -299,6 +299,78 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get authHeaderSubtitle => 'Login & Register';
+
+  @override
+  String get welcomeTitle => 'Welcome!';
+
+  @override
+  String get signInToContinue => 'Sign in to continue';
+
+  @override
+  String get createAccountTitle => 'Create an account';
+
+  @override
+  String get joinTuniTranspo => 'Join TuniTranspo';
+
+  @override
+  String get forgotPasswordShort => 'Forgot?';
+
+  @override
+  String get orLabel => 'or';
+
+  @override
+  String get resetPasswordTitle => 'Reset password';
+
+  @override
+  String get resetPasswordPrompt =>
+      'Enter your email address to receive a reset link';
+
+  @override
+  String get sendingResetLink => 'Sending reset link...';
+
+  @override
+  String get resetLinkSent => 'Check your email for the reset link';
+
+  @override
+  String errorPrefix(Object message) {
+    return 'Error: $message';
+  }
+
+  @override
+  String get fixFormErrors => 'Please fix the form errors';
+
+  @override
+  String get fillAllFieldsCorrectly => 'Please fill all fields correctly';
+
+  @override
+  String get loginSuccess => 'Login successful!';
+
+  @override
+  String get signupSuccess => 'Account created successfully!';
+
+  @override
+  String get loginFailed => 'Login failed';
+
+  @override
+  String get signupFailed => 'Sign up failed';
+
+  @override
+  String get googleSignInSuccess => 'Signed in with Google!';
+
+  @override
+  String get googleSignInFailed => 'Google sign in failed';
+
+  @override
+  String get signInWithGoogle => 'Sign in with Google';
+
+  @override
+  String get signUpWithGoogle => 'Sign up with Google';
+
+  @override
+  String get favoriteUpdateFailed => 'Failed to update favorites.';
+
+  @override
   String get searchByNameOrEmail => 'Search by name or email...';
 
   @override

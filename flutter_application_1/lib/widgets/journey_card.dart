@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
 
 import '../controllers/favorites_controller.dart';
 import '../models/journey_model.dart';
@@ -99,10 +100,25 @@ class JourneyCard extends StatelessWidget {
                       ),
                       if (showFavoriteButton)
                         IconButton(
-                          tooltip: 'Favori',
-                          onPressed: () {
+                          tooltip: AppLocalizations.of(context)!.favorites,
+                          onPressed: () async {
                             // Important: this writes to Firestore via controller.
-                            FavoritesController.instance.toggleFavorite(journey);
+                            try {
+                              await FavoritesController.instance.toggleFavorite(
+                                journey,
+                              );
+                            } catch (_) {
+                              if (!context.mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    AppLocalizations.of(context)!
+                                        .favoriteUpdateFailed,
+                                  ),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
                           },
                           icon: Icon(
                             isFavorite ? Icons.favorite : Icons.favorite_border,

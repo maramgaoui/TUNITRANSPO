@@ -115,6 +115,34 @@
       "feature": {}
     }
   },
+  "authHeaderSubtitle": "تسجيل الدخول وإنشاء حساب",
+  "welcomeTitle": "مرحبا!",
+  "signInToContinue": "سجل الدخول للمتابعة",
+  "createAccountTitle": "إنشاء حساب",
+  "joinTuniTranspo": "انضم إلى توني ترانسبورت",
+  "forgotPasswordShort": "نسيت؟",
+  "orLabel": "أو",
+  "resetPasswordTitle": "إعادة تعيين كلمة المرور",
+  "resetPasswordPrompt": "أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين",
+  "sendingResetLink": "جارٍ إرسال رابط إعادة التعيين...",
+  "resetLinkSent": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين",
+  "errorPrefix": "خطأ: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "fixFormErrors": "يرجى تصحيح أخطاء النموذج",
+  "fillAllFieldsCorrectly": "يرجى ملء جميع الحقول بشكل صحيح",
+  "loginSuccess": "تم تسجيل الدخول بنجاح!",
+  "signupSuccess": "تم إنشاء الحساب بنجاح!",
+  "loginFailed": "فشل تسجيل الدخول",
+  "signupFailed": "فشل إنشاء الحساب",
+  "googleSignInSuccess": "تم تسجيل الدخول عبر Google!",
+  "googleSignInFailed": "فشل تسجيل الدخول عبر Google",
+  "signInWithGoogle": "تسجيل الدخول عبر Google",
+  "signUpWithGoogle": "إنشاء حساب عبر Google",
+  "favoriteUpdateFailed": "فشل تحديث المفضلة.",
   "searchByNameOrEmail": "البحث بالاسم أو البريد الإلكتروني…",
   "filterAll": "الكل",
   "filterActive": "نشط",

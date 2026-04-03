@@ -185,11 +185,15 @@ class _AuthGuardState extends State<AuthGuard> {
       if (status == 'banned' &&
           banUntil != null &&
           DateTime.now().isAfter(banUntil)) {
-        // Ban expired — reactivate silently and allow access.
-        await _firestore.collection('users').doc(current.uid).update({
-          'status': 'active',
-          'banUntil': null,
-        });
+        // Ban expired — reactivate silently without blocking navigation.
+        unawaited(
+          _firestore.collection('users').doc(current.uid).update({
+            'status': 'active',
+            'banUntil': null,
+          }).catchError((error) {
+            debugPrint('Failed to auto-reactivate expired ban: $error');
+          }),
+        );
       } else if (status == 'banned' || status == 'blocked') {
         await _authController.signOut();
         return const _ResolvedSession.guest();

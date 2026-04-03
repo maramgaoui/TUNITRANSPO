@@ -236,7 +236,9 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                 icon: const Icon(
                                   Icons.admin_panel_settings_outlined,
                                 ),
-                                label: const Text('Admin Actions'),
+                                label: Text(
+                                  AppLocalizations.of(context)!.adminActions,
+                                ),
                               ),
                             ),
                           ],

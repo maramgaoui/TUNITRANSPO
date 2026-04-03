@@ -299,6 +299,80 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get authHeaderSubtitle => 'Connexion & Inscription';
+
+  @override
+  String get welcomeTitle => 'Bienvenue!';
+
+  @override
+  String get signInToContinue => 'Connectez-vous pour continuer';
+
+  @override
+  String get createAccountTitle => 'Créer un compte';
+
+  @override
+  String get joinTuniTranspo => 'Rejoignez TuniTranspo';
+
+  @override
+  String get forgotPasswordShort => 'Oublié?';
+
+  @override
+  String get orLabel => 'ou';
+
+  @override
+  String get resetPasswordTitle => 'Réinitialiser le mot de passe';
+
+  @override
+  String get resetPasswordPrompt =>
+      'Entrez votre adresse email pour recevoir un lien de réinitialisation';
+
+  @override
+  String get sendingResetLink => 'Envoi du lien de réinitialisation...';
+
+  @override
+  String get resetLinkSent =>
+      'Vérifiez votre email pour le lien de réinitialisation';
+
+  @override
+  String errorPrefix(Object message) {
+    return 'Erreur : $message';
+  }
+
+  @override
+  String get fixFormErrors => 'Veuillez corriger les erreurs du formulaire';
+
+  @override
+  String get fillAllFieldsCorrectly =>
+      'Veuillez remplir tous les champs correctement';
+
+  @override
+  String get loginSuccess => 'Connexion réussie!';
+
+  @override
+  String get signupSuccess => 'Compte créé avec succès!';
+
+  @override
+  String get loginFailed => 'Connexion échouée';
+
+  @override
+  String get signupFailed => 'Inscription échouée';
+
+  @override
+  String get googleSignInSuccess => 'Connecté avec Google!';
+
+  @override
+  String get googleSignInFailed => 'Connexion Google échouée';
+
+  @override
+  String get signInWithGoogle => 'Connexion avec Google';
+
+  @override
+  String get signUpWithGoogle => 'S\'inscrire avec Google';
+
+  @override
+  String get favoriteUpdateFailed => 'Échec de la mise à jour des favoris.';
+
+  @override
   String get searchByNameOrEmail => 'Rechercher par nom ou email...';
 
   @override
