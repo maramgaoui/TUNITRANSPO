@@ -184,5 +184,6 @@
       "date": {}
     }
   },
-  "accountBannedBody": "Your account has been banned by an administrator."
+  "accountBannedBody": "Your account has been banned by an administrator.",
+  "firestoreUpdateError": "Unable to update user. Check Firestore permissions."
 }

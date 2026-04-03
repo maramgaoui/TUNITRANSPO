@@ -350,10 +350,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e.message ?? 'Unable to update user. Check Firestore permissions.',
+            e.message ?? l10n.firestoreUpdateError,
           ),
           backgroundColor: Colors.red,
         ),
@@ -374,10 +375,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e.message ?? 'Unable to update user. Check Firestore permissions.',
+            e.message ?? l10n.firestoreUpdateError,
           ),
           backgroundColor: Colors.red,
         ),
@@ -398,10 +400,11 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            e.message ?? 'Unable to update user. Check Firestore permissions.',
+            e.message ?? l10n.firestoreUpdateError,
           ),
           backgroundColor: Colors.red,
         ),

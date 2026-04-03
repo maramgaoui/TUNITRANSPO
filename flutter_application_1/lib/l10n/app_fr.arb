@@ -184,5 +184,6 @@
       "date": {}
     }
   },
-  "accountBannedBody": "Votre compte a été banni par un administrateur."
+  "accountBannedBody": "Votre compte a été interdit par un administrateur.",
+  "firestoreUpdateError": "Impossible de mettre à jour l'utilisateur. Vérifiez les permissions Firestore."
 }

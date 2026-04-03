@@ -65,9 +65,11 @@ class FavoritesController extends ChangeNotifier {
 
     try {
       if (alreadyFavorite) {
+        // Remove from Firestore first, then update local state only if successful
         await _favoritesService.removeFavoriteJourney(journey.id);
         _favorites.removeWhere((item) => item.id == journey.id);
       } else {
+        // Add to Firestore first, then update local state only if successful
         await _favoritesService.addFavoriteJourney(favoriteJourney);
         _favorites.insert(0, favoriteJourney);
       }

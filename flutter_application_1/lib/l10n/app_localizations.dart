@@ -948,6 +948,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your account has been banned by an administrator.'**
   String get accountBannedBody;
+
+  /// No description provided for @firestoreUpdateError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to update user. Check Firestore permissions.'**
+  String get firestoreUpdateError;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

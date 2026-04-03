@@ -451,4 +451,8 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get accountBannedBody => 'تم حظر حسابك بواسطة المسؤول.';
+
+  @override
+  String get firestoreUpdateError =>
+      'تعذر تحديث المستخدم. تحقق من أذونات Firestore.';
 }

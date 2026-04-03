@@ -184,5 +184,6 @@
       "date": {}
     }
   },
-  "accountBannedBody": "تم حظر حسابك بواسطة المسؤول."
+  "accountBannedBody": "تم حظر حسابك بواسطة المسؤول.",
+  "firestoreUpdateError": "تعذر تحديث المستخدم. تحقق من أذونات Firestore."
 }

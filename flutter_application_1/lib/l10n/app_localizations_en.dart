@@ -452,4 +452,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get accountBannedBody =>
       'Your account has been banned by an administrator.';
+
+  @override
+  String get firestoreUpdateError =>
+      'Unable to update user. Check Firestore permissions.';
 }
