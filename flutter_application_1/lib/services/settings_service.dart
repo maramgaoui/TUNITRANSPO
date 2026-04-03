@@ -30,10 +30,25 @@ class SettingsService {
   }
 
   /// Get saved language preference
-  /// Default: Français
+  /// Default: fr
   String getLanguage() {
     _ensureInitialized();
-    return _prefs.getString(_languageKey) ?? 'Français';
+    final savedLanguage = _prefs.getString(_languageKey);
+    if (savedLanguage == null) {
+      return 'fr';
+    }
+
+    // Backward compatibility with old display-name values.
+    switch (savedLanguage) {
+      case 'English':
+        return 'en';
+      case 'العربية':
+        return 'ar';
+      case 'Français':
+        return 'fr';
+      default:
+        return savedLanguage;
+    }
   }
 
   /// Save language preference

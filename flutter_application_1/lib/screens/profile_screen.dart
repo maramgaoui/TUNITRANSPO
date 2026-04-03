@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
 import 'package:tuni_transport/controllers/profile_controller.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
@@ -86,6 +87,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _saveProfile(User profile) async {
+    final l10n = AppLocalizations.of(context)!;
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
@@ -108,15 +110,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (success) {
         setState(() => _isEditing = false);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Profile updated successfully'),
+          SnackBar(
+            content: Text(l10n.profileUpdatedSuccessfully),
             backgroundColor: AppTheme.primaryTeal,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to update profile'),
+          SnackBar(
+            content: Text(l10n.profileUpdateFailed),
             backgroundColor: Colors.red,
           ),
         );
@@ -125,19 +127,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _handleSignOut() async {
+    final l10n = AppLocalizations.of(context)!;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Déconnexion'),
-        content: const Text('Êtes-vous sûr de vouloir vous déconnecter?'),
+        title: Text(l10n.logout),
+        content: Text(l10n.confirmSignOut),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Annuler'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Déconnexion'),
+            child: Text(l10n.logout),
           ),
         ],
       ),
@@ -149,12 +152,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _showAvatarPicker(User profile) async {
+    final l10n = AppLocalizations.of(context)!;
     String selectedAvatarId = profile.avatarId ?? avatarOptions.first;
     final saved = await showDialog<bool>(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setDialogState) => AlertDialog(
-          title: const Text('Choisir un avatar'),
+          title: Text(l10n.chooseAvatar),
           content: SizedBox(
             width: double.maxFinite,
             child: GridView.builder(
@@ -197,16 +201,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Annuler'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryTeal,
               ),
-              child: const Text(
-                'Enregistrer',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                l10n.save,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -222,7 +226,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            success ? 'Avatar mis à jour' : 'Échec de la mise à jour de l\'avatar',
+            success ? l10n.avatarUpdated : l10n.avatarUpdateFailed,
           ),
           backgroundColor: success ? AppTheme.primaryTeal : Colors.red,
         ),
@@ -231,6 +235,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showChangePasswordDialog() {
+    final l10n = AppLocalizations.of(context)!;
     final currentPasswordController = TextEditingController();
     final newPasswordController = TextEditingController();
     final confirmPasswordController = TextEditingController();
@@ -242,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Changer le mot de passe'),
+          title: Text(l10n.changePassword),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -251,7 +256,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: currentPasswordController,
                   obscureText: obscureCurrentPassword,
                   decoration: InputDecoration(
-                    labelText: 'Mot de passe actuel',
+                    labelText: l10n.currentPassword,
                     suffixIcon: IconButton(
                       icon: Icon(obscureCurrentPassword
                           ? Icons.visibility_off
@@ -267,7 +272,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: newPasswordController,
                   obscureText: obscureNewPassword,
                   decoration: InputDecoration(
-                    labelText: 'Nouveau mot de passe',
+                    labelText: l10n.newPassword,
                     suffixIcon: IconButton(
                       icon: Icon(obscureNewPassword
                           ? Icons.visibility_off
@@ -283,7 +288,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   controller: confirmPasswordController,
                   obscureText: obscureConfirmPassword,
                   decoration: InputDecoration(
-                    labelText: 'Confirmer le nouveau mot de passe',
+                    labelText: l10n.confirmNewPassword,
                     suffixIcon: IconButton(
                       icon: Icon(obscureConfirmPassword
                           ? Icons.visibility_off
@@ -300,37 +305,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
+              child: Text(l10n.cancel),
             ),
             TextButton(
               onPressed: () async {
                 if (currentPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Veuillez entrer votre mot de passe actuel')),
+                    SnackBar(content: Text(l10n.enterCurrentPassword)),
                   );
                   return;
                 }
                 if (newPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Veuillez entrer le nouveau mot de passe')),
+                    SnackBar(content: Text(l10n.enterNewPassword)),
                   );
                   return;
                 }
                 if (confirmPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Veuillez confirmer le nouveau mot de passe')),
+                    SnackBar(content: Text(l10n.confirmNewPasswordPrompt)),
                   );
                   return;
                 }
                 if (newPasswordController.text != confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Les mots de passe ne correspondent pas')),
+                    SnackBar(content: Text(l10n.passwordsDoNotMatch)),
                   );
                   return;
                 }
                 if (newPasswordController.text.length < 6) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Le mot de passe doit contenir au moins 6 caractères')),
+                    SnackBar(content: Text(l10n.passwordMinLength)),
                   );
                   return;
                 }
@@ -344,8 +349,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   if (errorMessage == null) {
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Mot de passe changé avec succès'),
+                      SnackBar(
+                        content: Text(l10n.passwordChangedSuccessfully),
                         backgroundColor: AppTheme.primaryTeal,
                       ),
                     );
@@ -359,7 +364,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   }
                 }
               },
-              child: const Text('Changer'),
+              child: Text(l10n.changePassword),
             ),
           ],
         ),
@@ -368,19 +373,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showSettingsDialog() {
+    final l10n = AppLocalizations.of(context)!;
+
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
         builder: (context, setState) => AlertDialog(
-          title: const Text('Paramètres'),
+          title: Text(l10n.settings),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Theme Mode Section
-                const Text(
-                  'Mode de thème',
+                Text(
+                  l10n.themeMode,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -395,7 +402,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       RadioListTile<ThemeMode>(
-                        title: const Text('Mode clair'),
+                        title: Text(l10n.lightMode),
                         value: ThemeMode.light,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -406,7 +413,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 0),
                       RadioListTile<ThemeMode>(
-                        title: const Text('Mode sombre'),
+                        title: Text(l10n.darkMode),
                         value: ThemeMode.dark,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -417,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const Divider(height: 0),
                       RadioListTile<ThemeMode>(
-                        title: const Text('Par défaut du système'),
+                        title: Text(l10n.systemDefault),
                         value: ThemeMode.system,
                         groupValue: _themeMode,
                         onChanged: (value) {
@@ -431,8 +438,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 24),
                 // Language Section
-                const Text(
-                  'Langue',
+                Text(
+                  l10n.language,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
@@ -447,34 +454,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       RadioListTile<String>(
-                        title: const Text('Français'),
-                        value: 'Français',
+                        title: Text(l10n.french),
+                        value: 'fr',
                         groupValue: _selectedLanguage,
                         onChanged: (value) {
                           setState(() {
-                            _selectedLanguage = value ?? 'Français';
+                            _selectedLanguage = value ?? 'fr';
                           });
                         },
                       ),
                       const Divider(height: 0),
                       RadioListTile<String>(
-                        title: const Text('Anglais'),
-                        value: 'English',
+                        title: Text(l10n.english),
+                        value: 'en',
                         groupValue: _selectedLanguage,
                         onChanged: (value) {
                           setState(() {
-                            _selectedLanguage = value ?? 'English';
+                            _selectedLanguage = value ?? 'en';
                           });
                         },
                       ),
                       const Divider(height: 0),
                       RadioListTile<String>(
-                        title: const Text('العربية'),
-                        value: 'العربية',
+                        title: Text(l10n.arabic),
+                        value: 'ar',
                         groupValue: _selectedLanguage,
                         onChanged: (value) {
                           setState(() {
-                            _selectedLanguage = value ?? 'العربية';
+                            _selectedLanguage = value ?? 'ar';
                           });
                         },
                       ),
@@ -487,7 +494,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Annuler'),
+              child: Text(l10n.cancel),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -518,9 +525,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                 }
               },
-              child: const Text(
-                'Enregistrer',
-                style: TextStyle(color: Colors.white),
+              child: Text(
+                l10n.save,
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ],
@@ -531,9 +538,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profil'),
+        title: Text(l10n.profile),
         actions: [
           if (!_isEditing)
             IconButton(
@@ -688,7 +697,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _showChangePasswordDialog,
                     icon: const Icon(Icons.lock),
-                    label: const Text('Changer le mot de passe'),
+                    label: Text(l10n.changePassword),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.darkTeal,
                       foregroundColor: Colors.white,
@@ -703,7 +712,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   child: ElevatedButton.icon(
                     onPressed: _handleSignOut,
                     icon: const Icon(Icons.logout),
-                    label: const Text('Déconnexion'),
+                    label: Text(l10n.logout),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -720,14 +729,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildProfileDetails(User profile) {
+    final l10n = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Required fields - always show
-        _buildDetailRow('Nom d\'utilisateur', profile.username ?? 'Non défini'),
-        _buildDetailRow('Prénom', profile.firstName ?? 'Non défini'),
-        _buildDetailRow('Nom', profile.lastName ?? 'Non défini'),
-        _buildDetailRow('Email', profile.email),
+        _buildDetailRow(l10n.username, profile.username ?? l10n.notSet),
+        _buildDetailRow(l10n.firstName, profile.firstName ?? l10n.notSet),
+        _buildDetailRow(l10n.lastName, profile.lastName ?? l10n.notSet),
+        _buildDetailRow(l10n.email, profile.email),
         
         // City with add button if empty
         Padding(
@@ -736,7 +746,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Ville',
+                l10n.city,
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppTheme.mediumGrey,
@@ -753,7 +763,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     });
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text('Ajouter une ville'),
+                  label: Text(l10n.addCity),
                 )
               else
                 Text(
@@ -801,36 +811,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildEditForm() {
+    final l10n = AppLocalizations.of(context)!;
     return Form(
       key: _formKey,
       child: Column(
         children: [
           _buildTextFormField(
             controller: _firstNameController,
-            label: 'Prénom',
-            hint: 'Entrez votre prénom',
+            label: l10n.firstName,
+            hint: l10n.firstName,
             icon: Icons.person_outline,
             validator: (value) => ValidationUtils.validateName(
               value?.trim(),
-              'Prénom',
+              l10n.firstName,
             ),
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _lastNameController,
-            label: 'Nom',
-            hint: 'Entrez votre nom',
+            label: l10n.lastName,
+            hint: l10n.lastName,
             icon: Icons.person_outline,
             validator: (value) => ValidationUtils.validateName(
               value?.trim(),
-              'Nom',
+              l10n.lastName,
             ),
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _usernameController,
-            label: 'Nom d\'utilisateur',
-            hint: 'Entrez votre nom d\'utilisateur',
+            label: l10n.username,
+            hint: l10n.username,
             icon: Icons.person_add_outlined,
             validator: (value) => ValidationUtils.validateUsername(
               value?.trim(),
@@ -839,13 +850,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
           const SizedBox(height: 16),
           _buildTextFormField(
             controller: _cityController,
-            label: 'Ville',
-            hint: 'Entrez votre ville',
+            label: l10n.city,
+            hint: l10n.city,
             icon: Icons.location_city_outlined,
             validator: (value) {
               final trimmed = value?.trim() ?? '';
               if (trimmed.isEmpty) return null;
-              return ValidationUtils.validateName(trimmed, 'Ville');
+              return ValidationUtils.validateName(trimmed, l10n.city);
             },
           ),
         ],

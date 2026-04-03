@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import '../controllers/favorites_controller.dart';
 import '../theme/app_theme.dart';
 import '../models/journey_model.dart';
 import '../constants/mock_data.dart';
+import '../widgets/journey_card.dart';
 import 'journey_details_screen.dart';
 
 class JourneyResultsScreen extends StatefulWidget {
@@ -22,19 +24,10 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
   final List<Journey> journeys = MockData.mockJourneys;
   bool _isNavigatingToDetails = false;
 
-  IconData _iconFor(String iconKey) {
-    switch (iconKey) {
-      case 'bus':
-        return Icons.directions_bus;
-      case 'metro':
-        return Icons.directions_subway;
-      case 'taxi':
-        return Icons.local_taxi;
-      case 'train':
-        return Icons.train;
-      default:
-        return Icons.directions_transit;
-    }
+  @override
+  void initState() {
+    super.initState();
+    FavoritesController.instance.loadFavorites();
   }
 
   Future<void> _openJourneyDetails(BuildContext context, Journey journey) async {
@@ -169,204 +162,9 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
   }
 
   Widget _buildJourneyCard(Journey journey, BuildContext context) {
-    return GestureDetector(
+    return JourneyCard(
+      journey: journey,
       onTap: () => _openJourneyDetails(context, journey),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: journey.isOptimal
-              ? Border.all(color: AppTheme.primaryTeal, width: 2)
-              : Border.all(color: AppTheme.lightGrey),
-          boxShadow: journey.isOptimal
-              ? [
-                  BoxShadow(
-                    color: AppTheme.primaryTeal.withValues(alpha: 0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.08),
-                    blurRadius: 8,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-        ),
-        child: Stack(
-          children: [
-            if (journey.isOptimal)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryTeal,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.star, size: 14, color: Colors.white),
-                      SizedBox(width: 4),
-                      Text(
-                        'Optimal',
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppTheme.lightTeal.withValues(alpha: 0.2),
-                          shape: BoxShape.circle,
-                        ),
-                        padding: const EdgeInsets.all(10),
-                        child: Icon(
-                          _iconFor(journey.iconKey),
-                          color: AppTheme.primaryTeal,
-                          size: 24,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              journey.type,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              journey.operator,
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: AppTheme.mediumGrey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text(
-                            '${journey.price} TND',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: AppTheme.primaryTeal,
-                            ),
-                          ),
-                          Text(
-                            journey.line,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: AppTheme.mediumGrey,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: AppTheme.paleWhite,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding: const EdgeInsets.all(12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildTimeInfo(
-                          time: journey.departure,
-                          label: 'Départ',
-                        ),
-                        Expanded(
-                          child: Column(
-                            children: [
-                              Text(
-                                journey.duration,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: AppTheme.mediumGrey,
-                                ),
-                              ),
-                              if (journey.transfers > 0)
-                                Text(
-                                  '${journey.transfers} correspondance${journey.transfers > 1 ? 's' : ''}',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    color: journey.transfers > 1
-                                        ? Colors.orange
-                                        : AppTheme.mediumGrey,
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                        _buildTimeInfo(
-                          time: journey.arrival,
-                          label: 'Arrivée',
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => _openJourneyDetails(context, journey),
-                      child: const Text('Voir détails'),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTimeInfo({required String time, required String label}) {
-    return Column(
-      children: [
-        Text(
-          time,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: AppTheme.textDark,
-          ),
-        ),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: AppTheme.mediumGrey,
-          ),
-        ),
-      ],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/admin/screens/admin_login_screen.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
 import 'package:tuni_transport/utils/validation_utils.dart';
@@ -67,11 +69,12 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _handleForgotPassword() async {
     final emailController = TextEditingController();
     final formKey = GlobalKey<FormState>();
+    final messenger = ScaffoldMessenger.of(context);
 
     try {
       await showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Réinitialiser le mot de passe'),
           content: Form(
             key: formKey,
@@ -103,7 +106,7 @@ class _AuthScreenState extends State<AuthScreen>
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: const Text('Annuler'),
             ),
             ElevatedButton(
@@ -112,10 +115,10 @@ class _AuthScreenState extends State<AuthScreen>
               ),
               onPressed: () async {
                 if (formKey.currentState!.validate()) {
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
 
                   // Show loading
-                  ScaffoldMessenger.of(context).showSnackBar(
+                  messenger.showSnackBar(
                     const SnackBar(
                       content: Text('Envoi du lien de réinitialisation...'),
                       backgroundColor: AppTheme.primaryTeal,
@@ -127,26 +130,30 @@ class _AuthScreenState extends State<AuthScreen>
                       emailController.text.trim(),
                     );
 
-                    if (mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Vérifiez votre email pour le lien de réinitialisation'),
-                          backgroundColor: Colors.green,
-                          duration: Duration(seconds: 3),
-                        ),
-                      );
+                    if (!mounted) {
+                      return;
                     }
+
+                    messenger.showSnackBar(
+                      const SnackBar(
+                        content: Text('Vérifiez votre email pour le lien de réinitialisation'),
+                        backgroundColor: Colors.green,
+                        duration: Duration(seconds: 3),
+                      ),
+                    );
                   } catch (e) {
-                    if (mounted) {
-                      final errorMsg = e.toString().replaceAll('Exception: ', '');
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('Erreur: $errorMsg'),
-                          backgroundColor: Colors.red,
-                          duration: const Duration(seconds: 3),
-                        ),
-                      );
+                    if (!mounted) {
+                      return;
                     }
+
+                    final errorMsg = e.toString().replaceAll('Exception: ', '');
+                    messenger.showSnackBar(
+                      SnackBar(
+                        content: Text('Erreur: $errorMsg'),
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 3),
+                      ),
+                    );
                   }
                 }
               },
@@ -336,6 +343,8 @@ class _AuthScreenState extends State<AuthScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -410,16 +419,16 @@ class _AuthScreenState extends State<AuthScreen>
               unselectedLabelColor: AppTheme.mediumGrey,
               indicatorColor: AppTheme.primaryTeal,
               indicatorWeight: 3,
-              tabs: const [
+              tabs: [
                 Tab(
                   child: Text(
-                    'Connexion',
+                    l10n.login,
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
                 Tab(
                   child: Text(
-                    'S\'inscrire',
+                    l10n.register,
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
@@ -442,6 +451,8 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildLoginTab() {
+    final l10n = AppLocalizations.of(context)!;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Form(
@@ -470,7 +481,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Email field with real-time validation
             ValidatedTextField(
               controller: _loginEmailController,
-              label: 'Email',
+              label: l10n.email,
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
               validationType: 'email',
@@ -479,7 +490,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Password field with real-time validation
             ValidatedTextField(
               controller: _loginPasswordController,
-              label: 'Mot de passe',
+              label: l10n.password,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
               validationType: 'password',
@@ -511,7 +522,7 @@ class _AuthScreenState extends State<AuthScreen>
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text('Connexion'),
+                    : Text(l10n.login),
               ),
             ),
             const SizedBox(height: 16),
@@ -549,6 +560,23 @@ class _AuthScreenState extends State<AuthScreen>
                 label: const Text('Connexion avec Google'),
               ),
             ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _isLoading
+                    ? null
+                    : () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => const AdminLoginScreen(),
+                          ),
+                        );
+                      },
+                icon: const Icon(Icons.admin_panel_settings_outlined),
+                label: Text(l10n.loginAsAdmin),
+              ),
+            ),
           ],
         ),
       ),
@@ -556,6 +584,8 @@ class _AuthScreenState extends State<AuthScreen>
   }
 
   Widget _buildSignupTab() {
+    final l10n = AppLocalizations.of(context)!;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Form(
@@ -584,28 +614,28 @@ class _AuthScreenState extends State<AuthScreen>
             // Nom field with real-time validation (letters only)
             ValidatedTextField(
               controller: _signupNomController,
-              label: 'Nom',
-              hintText: 'Votre nom',
+              label: l10n.lastName,
+              hintText: l10n.lastName,
               prefixIcon: Icons.person_outline,
               validationType: 'name',
-              nameFieldType: 'Nom',
+              nameFieldType: l10n.lastName,
             ),
             const SizedBox(height: 16),
             // Prénom field with real-time validation (letters only)
             ValidatedTextField(
               controller: _signupPrenomController,
-              label: 'Prénom',
-              hintText: 'Votre prénom',
+              label: l10n.firstName,
+              hintText: l10n.firstName,
               prefixIcon: Icons.person_outline,
               validationType: 'name',
-              nameFieldType: 'Prénom',
+              nameFieldType: l10n.firstName,
             ),
             const SizedBox(height: 16),
             // Username field with real-time validation (letters and numbers)
             ValidatedTextField(
               controller: _signupUsernameController,
-              label: 'Nom d\'utilisateur',
-              hintText: 'Choisir un nom d\'utilisateur',
+              label: l10n.username,
+              hintText: l10n.username,
               prefixIcon: Icons.person_add_outlined,
               validationType: 'username',
             ),
@@ -613,7 +643,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Email field with real-time validation
             ValidatedTextField(
               controller: _signupEmailController,
-              label: 'Email',
+              label: l10n.email,
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
               validationType: 'email',
@@ -622,7 +652,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Password field with real-time validation and strength indicator
             ValidatedTextField(
               controller: _signupPasswordController,
-              label: 'Mot de passe',
+              label: l10n.password,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
               validationType: 'password',
@@ -636,7 +666,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Confirm password field with real-time validation
             ValidatedTextField(
               controller: _signupConfirmPasswordController,
-              label: 'Confirmer le mot de passe',
+              label: l10n.confirmNewPassword,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
               validationType: 'confirm_password',
@@ -648,8 +678,8 @@ class _AuthScreenState extends State<AuthScreen>
               },
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Choisissez votre avatar',
+            Text(
+              l10n.chooseAvatar,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -711,7 +741,7 @@ class _AuthScreenState extends State<AuthScreen>
                           strokeWidth: 2,
                         ),
                       )
-                    : const Text('Créer un compte'),
+                    : Text(l10n.register),
               ),
             ),
             const SizedBox(height: 16),

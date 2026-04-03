@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_options.dart';
 import 'controllers/auth_controller.dart';
+import 'controllers/notification_controller.dart';
 import 'models/user_model.dart';
 import 'screens/splash_screen.dart';
 import 'screens/auth_screen.dart';
 import 'screens/home_screen.dart';
+import 'services/notification_service.dart';
 import 'theme/app_theme.dart';
 import 'services/settings_service.dart';
 
@@ -15,6 +19,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  await NotificationService.instance.initialize();
+  await NotificationController.instance.initialize();
   
   // Initialize settings service to load saved preferences
   final settingsService = SettingsService();
@@ -59,11 +67,15 @@ class _MyAppState extends State<MyApp> {
   }
 
   Locale _localeFromLanguage(String language) {
+    // Store locale as language code (en/fr/ar), while supporting old saved labels.
     switch (language) {
+      case 'en':
       case 'English':
         return const Locale('en');
+      case 'ar':
       case 'العربية':
         return const Locale('ar');
+      case 'fr':
       case 'Français':
       default:
         return const Locale('fr');
@@ -73,17 +85,14 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'TuniTransport',
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.appTitle,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
       locale: _locale,
-      supportedLocales: const [
-        Locale('fr'),
-        Locale('en'),
-        Locale('ar'),
-      ],
+      supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

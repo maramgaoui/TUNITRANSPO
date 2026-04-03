@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
+import '../controllers/notification_controller.dart';
 import '../theme/app_theme.dart';
 import '../constants/mock_data.dart';
 import 'journey_results_screen.dart';
@@ -19,7 +21,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
   String _manualDepartureBackup = '';
 
   bool _isCurrentLocationText(String value) {
-    return value.startsWith('Position actuelle');
+    return value.startsWith('Position actuelle') || value.startsWith('Current location') || value.startsWith('الموقع الحالي');
   }
 
   void _swapLocations() {
@@ -57,6 +59,8 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
   }
 
   Future<void> _handleCurrentLocationToggle(bool enabled) async {
+    final l10n = AppLocalizations.of(context)!;
+
     if (!enabled) {
       setState(() {
         _useCurrentLocation = false;
@@ -76,7 +80,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
     try {
       final serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        _showLocationError('Le service de localisation est désactivé.');
+        _showLocationError(l10n.locationServiceDisabled);
         return;
       }
 
@@ -87,7 +91,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
 
       if (permission == LocationPermission.denied ||
           permission == LocationPermission.deniedForever) {
-        _showLocationError('Permission de localisation refusée.');
+        _showLocationError(l10n.locationPermissionDenied);
         return;
       }
 
@@ -100,10 +104,10 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
 
       setState(() {
         _departureController.text =
-            'Position actuelle (${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)})';
+            '${l10n.currentLocation} (${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)})';
       });
     } catch (e) {
-      _showLocationError('Impossible d\'obtenir votre position GPS.');
+      _showLocationError(l10n.unableGetGps);
     } finally {
       if (mounted) {
         setState(() {
@@ -128,6 +132,8 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -175,8 +181,8 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                'Planifier votre trajet',
+                              Text(
+                                l10n.planJourney,
                                 style: TextStyle(
                                   fontSize: 24,
                                   fontWeight: FontWeight.w700,
@@ -184,7 +190,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                                 ),
                               ),
                               Text(
-                                'Trouvez les meilleures options',
+                                l10n.findBestOptions,
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.white.withValues(alpha: 0.85),
@@ -224,7 +230,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                           TextField(
                             controller: _departureController,
                             decoration: InputDecoration(
-                              hintText: 'Point de départ',
+                              hintText: l10n.departurePoint,
                               prefixIcon: const Icon(Icons.location_on_outlined),
                               suffixIcon: _departureController.text.isNotEmpty
                                   ? IconButton(
@@ -264,7 +270,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                           TextField(
                             controller: _arrivalController,
                             decoration: InputDecoration(
-                              hintText: 'Point d\'arrivée',
+                              hintText: l10n.arrivalPoint,
                               prefixIcon: const Icon(Icons.location_off_outlined),
                               suffixIcon: _arrivalController.text.isNotEmpty
                                   ? IconButton(
@@ -302,15 +308,15 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Localisation actuelle',
+                                Text(
+                                  l10n.currentLocation,
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                   ),
                                 ),
                                 Text(
-                                  'Utiliser ma position GPS',
+                                  l10n.useMyGpsPosition,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: AppTheme.mediumGrey,
@@ -345,7 +351,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            'Récupération de votre position...',
+                            l10n.fetchingLocation,
                             style: TextStyle(
                               fontSize: 12,
                               color: AppTheme.mediumGrey,
@@ -362,6 +368,11 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                         onPressed: () {
                           if (_departureController.text.isNotEmpty &&
                               _arrivalController.text.isNotEmpty) {
+                            NotificationController.instance.addExampleJourneyNotification(
+                              _departureController.text,
+                              _arrivalController.text,
+                            );
+
                             Navigator.of(context).push(
                               PageRouteBuilder(
                                 pageBuilder: (context, animation,
@@ -386,21 +397,21 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
+                              SnackBar(
                                 content: Text(
-                                    'Veuillez remplir tous les champs'),
+                                    l10n.fillAllFields),
                               ),
                             );
                           }
                         },
                         icon: const Icon(Icons.search),
-                        label: const Text('Rechercher un trajet'),
+                        label: Text(l10n.searchJourney),
                       ),
                     ),
                     const SizedBox(height: 32),
                     // Recent searches
-                    const Text(
-                      'Trajets récents',
+                    Text(
+                      l10n.recentJourneys,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w700,

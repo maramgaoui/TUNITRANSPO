@@ -2,8 +2,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
 
 import '../controllers/auth_controller.dart';
+import '../controllers/notification_controller.dart';
 import '../theme/app_theme.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -58,13 +60,14 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   String _displayNameFromRaw(String raw) {
+    final l10n = AppLocalizations.of(context)!;
     final value = raw.trim();
-    if (value.isEmpty) return 'Utilisateur';
+    if (value.isEmpty) return l10n.username;
 
     // Avoid exposing full email addresses in message headers.
     if (value.contains('@')) {
       final local = value.split('@').first.trim();
-      return local.isEmpty ? 'Utilisateur' : local;
+      return local.isEmpty ? l10n.username : local;
     }
 
     return value;
@@ -109,6 +112,11 @@ class _ChatScreenState extends State<ChatScreen> {
 
       await _messagesRef.add(payload);
 
+      NotificationController.instance.addExampleChatNotification(
+        username,
+        _previewText(text),
+      );
+
       if (!mounted) return;
       setState(() {
         _messageController.clear();
@@ -117,9 +125,10 @@ class _ChatScreenState extends State<ChatScreen> {
       _scheduleScrollToBottom();
     } catch (_) {
       if (!mounted) return;
+      final l10n = AppLocalizations.of(context)!;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Impossible d\'envoyer le message.'),
+        SnackBar(
+          content: Text(l10n.unableSendMessage),
         ),
       );
     } finally {
@@ -140,6 +149,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final onPrimary = Theme.of(context).colorScheme.onPrimary;
 
     return Container(
@@ -163,7 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Communauté',
+                  l10n.community,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w700,
@@ -171,7 +181,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ),
                 Text(
-                  'Discussion publique',
+                  l10n.publicDiscussion,
                   style: TextStyle(
                     fontSize: 12,
                     color: onPrimary.withValues(alpha: 0.9),
@@ -190,6 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Map<String, dynamic> replyTo,
     bool isMine,
   ) {
+    final l10n = AppLocalizations.of(context)!;
     final textColor = isMine
         ? Theme.of(context).colorScheme.onPrimary
         : Theme.of(context).colorScheme.onSurface;
@@ -213,7 +224,7 @@ class _ChatScreenState extends State<ChatScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Réponse à ${replyTo['username'] ?? 'Utilisateur'}',
+            l10n.replyToUser((replyTo['username'] ?? l10n.username).toString()),
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
@@ -364,6 +375,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildInputArea(BuildContext context, bool isAuthenticated) {
+    final l10n = AppLocalizations.of(context)!;
     final borderColor = Theme.of(context).colorScheme.outlineVariant;
 
     if (!isAuthenticated) {
@@ -386,7 +398,7 @@ class _ChatScreenState extends State<ChatScreen> {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                'Connectez-vous pour participer',
+                l10n.signInToParticipate,
                 style: TextStyle(
                   fontSize: 13,
                   color: AppTheme.mediumGrey,
@@ -443,7 +455,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Réponse à ${_replyingTo!['username']}',
+                          l10n.replyToUser(_replyingTo!['username'].toString()),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
@@ -466,7 +478,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   IconButton(
-                    tooltip: 'Annuler la réponse',
+                    tooltip: l10n.cancelReply,
                     onPressed: () => setState(() => _replyingTo = null),
                     icon: Icon(
                       Icons.close,
@@ -489,8 +501,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   minLines: 1,
                   maxLines: 4,
                   textInputAction: TextInputAction.newline,
-                  decoration: const InputDecoration(
-                    hintText: 'Écrire un message...',
+                  // Pull message input text from localization for live language switching.
+                  decoration: InputDecoration(
+                    hintText: l10n.writeMessageHint,
                   ),
                   onChanged: (_) => setState(() {}),
                 ),
@@ -513,7 +526,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             ? Theme.of(context).colorScheme.primary
                             : AppTheme.mediumGrey,
                       ),
-                tooltip: 'Envoyer',
+                tooltip: l10n.send,
               ),
             ],
           ),
@@ -524,6 +537,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final isAuthenticated = _authController.currentUser != null;
 
     return Scaffold(
@@ -541,7 +555,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (snapshot.hasError) {
                   return Center(
                     child: Text(
-                      'Erreur de chargement des messages',
+                      l10n.messagesLoadError,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.error,
                         fontWeight: FontWeight.w600,
@@ -560,7 +574,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 if (docs.isEmpty) {
                   return Center(
                     child: Text(
-                      'Soyez le premier à écrire!',
+                      l10n.beFirstToWrite,
                       style: TextStyle(
                         fontSize: 16,
                         color: AppTheme.mediumGrey,

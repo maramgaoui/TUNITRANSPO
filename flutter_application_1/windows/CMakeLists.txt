@@ -1,5 +1,11 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
+
+# CMake 4 removed compatibility with projects requesting <3.5.
+# Firebase C++ SDK shipped with FlutterFire still declares 3.1 in its extracted
+# CMakeLists, so we set this minimum policy version globally for subprojects.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+
 project(tuni_transport LANGUAGES CXX)
 
 # The name of the executable created for the application. Change this to change
