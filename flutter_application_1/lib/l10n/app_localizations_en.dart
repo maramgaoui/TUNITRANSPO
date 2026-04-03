@@ -297,4 +297,87 @@ class AppLocalizationsEn extends AppLocalizations {
   String featureReadyToBeConnected(Object feature) {
     return '$feature feature is ready to be connected.';
   }
+
+  @override
+  String get searchByNameOrEmail => 'Search by name or email...';
+
+  @override
+  String get filterAll => 'All';
+
+  @override
+  String get filterActive => 'Active';
+
+  @override
+  String get filterBanned => 'Banned';
+
+  @override
+  String get filterBlocked => 'Blocked';
+
+  @override
+  String get noUsersFound => 'No users found.';
+
+  @override
+  String get noUsersMatchFilter => 'No users match the current filter.';
+
+  @override
+  String get statusActive => 'Status: Active';
+
+  @override
+  String get statusBlocked => 'Status: Blocked';
+
+  @override
+  String statusBannedUntil(Object date) {
+    return 'Status: Banned until $date';
+  }
+
+  @override
+  String get statusBanned => 'Status: Banned';
+
+  @override
+  String get adminActions => 'Admin Actions';
+
+  @override
+  String get adminActionsPrompt => 'Select an action for this user.';
+
+  @override
+  String get banFor3Days => 'Ban for 3 days';
+
+  @override
+  String get banFor7Days => 'Ban for 7 days';
+
+  @override
+  String get blockPermanently => 'Block permanently';
+
+  @override
+  String get unblockUser => 'Unblock user';
+
+  @override
+  String userBannedDays(int days) {
+    return 'User banned for $days days.';
+  }
+
+  @override
+  String get userBlockedPermanently => 'User blocked permanently.';
+
+  @override
+  String get userUnblocked => 'User unblocked successfully.';
+
+  @override
+  String get accountBlockedTitle => 'Account Blocked';
+
+  @override
+  String get accountBlockedBody =>
+      'Your account has been permanently blocked by an administrator.';
+
+  @override
+  String get accountBannedTitle => 'Account Banned';
+
+  @override
+  String accountBannedUntil(Object date) {
+    return 'Your account has been banned until $date.';
+  }
+
+  @override
+  String get accountBannedBody =>
+      'Your account has been banned by an administrator.';
 }

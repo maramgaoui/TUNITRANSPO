@@ -114,5 +114,47 @@
     "placeholders": {
       "feature": {}
     }
-  }
+  },
+  "searchByNameOrEmail": "Search by name or email…",
+  "filterAll": "All",
+  "filterActive": "Active",
+  "filterBanned": "Banned",
+  "filterBlocked": "Blocked",
+  "noUsersFound": "No users found.",
+  "noUsersMatchFilter": "No users match the current filter.",
+  "statusActive": "Status: Active",
+  "statusBlocked": "Status: Blocked",
+  "statusBannedUntil": "Status: Banned until {date}",
+  "@statusBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "statusBanned": "Status: Banned",
+  "adminActions": "Admin Actions",
+  "adminActionsPrompt": "Select an action for this user.",
+  "banFor3Days": "Ban for 3 days",
+  "banFor7Days": "Ban for 7 days",
+  "blockPermanently": "Block permanently",
+  "unblockUser": "Unblock user",
+  "userBannedDays": "User banned for {days} days.",
+  "@userBannedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "userBlockedPermanently": "User blocked permanently.",
+  "userUnblocked": "User unblocked successfully.",
+  "accountBlockedTitle": "Account Blocked",
+  "accountBlockedBody": "Your account has been permanently blocked by an administrator.",
+  "accountBannedTitle": "Account Banned",
+  "accountBannedUntil": "Your account has been banned until {date}.",
+  "@accountBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "accountBannedBody": "Your account has been banned by an administrator."
 }

@@ -18,8 +18,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
-    // Load favorites from Firestore each time screen is initialized.
-    _controller.loadFavorites();
+    // Singleton controller caches per-user favorites; load only once.
+    _controller.ensureFavoritesLoaded();
   }
 
   @override

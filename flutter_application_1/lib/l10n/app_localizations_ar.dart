@@ -297,4 +297,85 @@ class AppLocalizationsAr extends AppLocalizations {
   String featureReadyToBeConnected(Object feature) {
     return 'ميزة $feature جاهزة للربط.';
   }
+
+  @override
+  String get searchByNameOrEmail => 'البحث بالاسم أو البريد الإلكتروني...';
+
+  @override
+  String get filterAll => 'الكل';
+
+  @override
+  String get filterActive => 'نشط';
+
+  @override
+  String get filterBanned => 'محظور مؤقت';
+
+  @override
+  String get filterBlocked => 'محظور دائم';
+
+  @override
+  String get noUsersFound => 'لا يوجد مستخدمون.';
+
+  @override
+  String get noUsersMatchFilter => 'لا يوجد مستخدمون يطابقون الفلتر الحالي.';
+
+  @override
+  String get statusActive => 'الحالة: نشط';
+
+  @override
+  String get statusBlocked => 'الحالة: محظور دائم';
+
+  @override
+  String statusBannedUntil(Object date) {
+    return 'الحالة: محظور حتى $date';
+  }
+
+  @override
+  String get statusBanned => 'الحالة: محظور مؤقت';
+
+  @override
+  String get adminActions => 'إجراءات الإدارة';
+
+  @override
+  String get adminActionsPrompt => 'اختر إجراءً لهذا المستخدم.';
+
+  @override
+  String get banFor3Days => 'حظر 3 أيام';
+
+  @override
+  String get banFor7Days => 'حظر 7 أيام';
+
+  @override
+  String get blockPermanently => 'حظر دائم';
+
+  @override
+  String get unblockUser => 'رفع الحظر';
+
+  @override
+  String userBannedDays(int days) {
+    return 'تم حظر المستخدم لمدة $days أيام.';
+  }
+
+  @override
+  String get userBlockedPermanently => 'تم الحظر الدائم للمستخدم.';
+
+  @override
+  String get userUnblocked => 'تم رفع الحظر بنجاح.';
+
+  @override
+  String get accountBlockedTitle => 'تم حظر الحساب';
+
+  @override
+  String get accountBlockedBody => 'تم حظر حسابك نهائيا بواسطة المسؤول.';
+
+  @override
+  String get accountBannedTitle => 'تم حظر الحساب مؤقتا';
+
+  @override
+  String accountBannedUntil(Object date) {
+    return 'حسابك محظور حتى $date.';
+  }
+
+  @override
+  String get accountBannedBody => 'تم حظر حسابك بواسطة المسؤول.';
 }

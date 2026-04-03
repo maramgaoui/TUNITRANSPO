@@ -1,6 +1,7 @@
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Filter options shown in the chip bar above the list.
 enum _UserFilter { all, active, banned, blocked }
@@ -59,7 +60,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Manage Users')),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.manageUsers)),
       body: Column(
         children: [
           // ── Search bar ──────────────────────────────────────────────
@@ -68,7 +69,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search by name or email…',
+                hintText: AppLocalizations.of(context)!.searchByNameOrEmail,
                 prefixIcon: const Icon(Icons.search),
                 suffixIcon: _searchQuery.isNotEmpty
                     ? IconButton(
@@ -91,11 +92,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
             padding: const EdgeInsets.fromLTRB(12, 0, 12, 8),
             child: Row(
               children: _UserFilter.values.map((filter) {
+                final l10n = AppLocalizations.of(context)!;
                 final label = switch (filter) {
-                  _UserFilter.all     => 'All',
-                  _UserFilter.active  => 'Active',
-                  _UserFilter.banned  => 'Banned',
-                  _UserFilter.blocked => 'Blocked',
+                  _UserFilter.all     => l10n.filterAll,
+                  _UserFilter.active  => l10n.filterActive,
+                  _UserFilter.banned  => l10n.filterBanned,
+                  _UserFilter.blocked => l10n.filterBlocked,
                 };
                 final color = switch (filter) {
                   _UserFilter.active  => Colors.green.shade700,
@@ -155,12 +157,12 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                     .toList();
 
                 if (allDocs.isEmpty) {
-                  return const Center(child: Text('No users found.'));
+                  return Center(child: Text(AppLocalizations.of(context)!.noUsersFound));
                 }
 
                 if (docs.isEmpty) {
-                  return const Center(
-                    child: Text('No users match the current filter.'),
+                  return Center(
+                    child: Text(AppLocalizations.of(context)!.noUsersMatchFilter),
                   );
                 }
 
@@ -214,7 +216,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
                                       Text(email),
                                       const SizedBox(height: 4),
                                       Text(
-                                        _statusLabel(status, banUntil),
+                                        _statusLabel(context, status, banUntil),
                                         style: TextStyle(
                                           color: _statusColor(status),
                                           fontWeight: FontWeight.w600,
@@ -251,15 +253,16 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     );
   }
 
-  String _statusLabel(String status, DateTime? banUntil) {
+  String _statusLabel(BuildContext context, String status, DateTime? banUntil) {
+    final l10n = AppLocalizations.of(context)!;
     switch (status) {
       case 'blocked':
-        return 'Status: Blocked';
+        return l10n.statusBlocked;
       case 'banned':
-        if (banUntil == null) return 'Status: Banned';
-        return 'Status: Banned until ${_formatDateTime(banUntil)}';
+        if (banUntil == null) return l10n.statusBanned;
+        return l10n.statusBannedUntil(_formatDateTime(banUntil));
       default:
-        return 'Status: Active';
+        return l10n.statusActive;
     }
   }
 
@@ -286,40 +289,43 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   Future<void> _showAdminActions(BuildContext context, String userId) async {
     await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Admin Actions'),
-        content: const Text('Select an action for this user.'),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _banUser(context, userId, days: 3);
-            },
-            child: const Text('Ban for 3 days'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _banUser(context, userId, days: 7);
-            },
-            child: const Text('Ban for 7 days'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _blockUser(context, userId);
-            },
-            child: const Text('Block permanently'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.of(context).pop();
-              await _unblockUser(context, userId);
-            },
-            child: const Text('Unblock user'),
-          ),
-        ],
-      ),
+      builder: (ctx) {
+        final l10n = AppLocalizations.of(ctx)!;
+        return AlertDialog(
+          title: Text(l10n.adminActions),
+          content: Text(l10n.adminActionsPrompt),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await _banUser(context, userId, days: 3);
+              },
+              child: Text(l10n.banFor3Days),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await _banUser(context, userId, days: 7);
+              },
+              child: Text(l10n.banFor7Days),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await _blockUser(context, userId);
+              },
+              child: Text(l10n.blockPermanently),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(ctx).pop();
+                await _unblockUser(context, userId);
+              },
+              child: Text(l10n.unblockUser),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -338,7 +344,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('User banned for $days days.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.userBannedDays(days))),
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;
@@ -362,7 +368,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User blocked permanently.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.userBlockedPermanently)),
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;
@@ -386,7 +392,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('User unblocked successfully.')),
+        SnackBar(content: Text(AppLocalizations.of(context)!.userUnblocked)),
       );
     } on FirebaseException catch (e) {
       if (!context.mounted) return;

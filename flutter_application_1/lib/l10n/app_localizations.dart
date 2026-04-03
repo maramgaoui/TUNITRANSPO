@@ -660,6 +660,156 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{feature} feature is ready to be connected.'**
   String featureReadyToBeConnected(Object feature);
+
+  /// No description provided for @searchByNameOrEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by name or email...'**
+  String get searchByNameOrEmail;
+
+  /// No description provided for @filterAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get filterAll;
+
+  /// No description provided for @filterActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get filterActive;
+
+  /// No description provided for @filterBanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Banned'**
+  String get filterBanned;
+
+  /// No description provided for @filterBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Blocked'**
+  String get filterBlocked;
+
+  /// No description provided for @noUsersFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No users found.'**
+  String get noUsersFound;
+
+  /// No description provided for @noUsersMatchFilter.
+  ///
+  /// In en, this message translates to:
+  /// **'No users match the current filter.'**
+  String get noUsersMatchFilter;
+
+  /// No description provided for @statusActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: Active'**
+  String get statusActive;
+
+  /// No description provided for @statusBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: Blocked'**
+  String get statusBlocked;
+
+  /// No description provided for @statusBannedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: Banned until {date}'**
+  String statusBannedUntil(Object date);
+
+  /// No description provided for @statusBanned.
+  ///
+  /// In en, this message translates to:
+  /// **'Status: Banned'**
+  String get statusBanned;
+
+  /// No description provided for @adminActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Actions'**
+  String get adminActions;
+
+  /// No description provided for @adminActionsPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Select an action for this user.'**
+  String get adminActionsPrompt;
+
+  /// No description provided for @banFor3Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban for 3 days'**
+  String get banFor3Days;
+
+  /// No description provided for @banFor7Days.
+  ///
+  /// In en, this message translates to:
+  /// **'Ban for 7 days'**
+  String get banFor7Days;
+
+  /// No description provided for @blockPermanently.
+  ///
+  /// In en, this message translates to:
+  /// **'Block permanently'**
+  String get blockPermanently;
+
+  /// No description provided for @unblockUser.
+  ///
+  /// In en, this message translates to:
+  /// **'Unblock user'**
+  String get unblockUser;
+
+  /// No description provided for @userBannedDays.
+  ///
+  /// In en, this message translates to:
+  /// **'User banned for {days} days.'**
+  String userBannedDays(int days);
+
+  /// No description provided for @userBlockedPermanently.
+  ///
+  /// In en, this message translates to:
+  /// **'User blocked permanently.'**
+  String get userBlockedPermanently;
+
+  /// No description provided for @userUnblocked.
+  ///
+  /// In en, this message translates to:
+  /// **'User unblocked successfully.'**
+  String get userUnblocked;
+
+  /// No description provided for @accountBlockedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Blocked'**
+  String get accountBlockedTitle;
+
+  /// No description provided for @accountBlockedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been permanently blocked by an administrator.'**
+  String get accountBlockedBody;
+
+  /// No description provided for @accountBannedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Banned'**
+  String get accountBannedTitle;
+
+  /// No description provided for @accountBannedUntil.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been banned until {date}.'**
+  String accountBannedUntil(Object date);
+
+  /// No description provided for @accountBannedBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been banned by an administrator.'**
+  String get accountBannedBody;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

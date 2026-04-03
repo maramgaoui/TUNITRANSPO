@@ -13,7 +13,7 @@ Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   );
 
   // Background isolate: keep lightweight work only.
-  print('Background notification: ${message.messageId} ${message.data}');
+  debugPrint('Background notification received: ${message.messageId}');
 }
 
 class NotificationService {
@@ -43,7 +43,7 @@ class NotificationService {
     }
 
     await _requestPermissions();
-    await _printToken();
+    await _initializeToken();
     _registerForegroundHandler();
     _registerOpenedAppHandler();
     await _handleInitialMessage();
@@ -59,13 +59,15 @@ class NotificationService {
       provisional: false,
     );
 
-    print('Notification permission status: ${settings.authorizationStatus}');
+    debugPrint('Notification permission status: ${settings.authorizationStatus}');
   }
 
-  Future<void> _printToken() async {
+  Future<void> _initializeToken() async {
     try {
-      final token = await _messaging.getToken();
-      print('FCM token: $token');
+      await _messaging.getToken();
+      if (kDebugMode) {
+        debugPrint('FCM token initialized.');
+      }
     } on MissingPluginException {
       // Defensive fallback for desktop targets where channel impl is absent.
       debugPrint('FCM getToken is not implemented on this platform.');
@@ -74,14 +76,14 @@ class NotificationService {
 
   void _registerForegroundHandler() {
     FirebaseMessaging.onMessage.listen((message) {
-      print('Foreground notification: ${message.messageId} ${message.data}');
+      debugPrint('Foreground notification received: ${message.messageId}');
       NotificationController.instance.addFromRemoteMessage(message);
     });
   }
 
   void _registerOpenedAppHandler() {
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print('Opened from notification: ${message.messageId} ${message.data}');
+      debugPrint('Opened from notification: ${message.messageId}');
       NotificationController.instance.addFromRemoteMessage(message);
     });
   }
@@ -90,7 +92,7 @@ class NotificationService {
     final initialMessage = await _messaging.getInitialMessage();
     if (initialMessage == null) return;
 
-    print('Initial notification open: ${initialMessage.messageId} ${initialMessage.data}');
+    debugPrint('Initial notification open: ${initialMessage.messageId}');
     NotificationController.instance.addFromRemoteMessage(initialMessage);
   }
 }

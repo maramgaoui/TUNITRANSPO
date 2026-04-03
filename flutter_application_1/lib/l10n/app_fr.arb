@@ -90,8 +90,8 @@
   "avatarUpdateFailed": "Échec de la mise à jour de l'avatar",
   "confirmSignOut": "Êtes-vous sûr de vouloir vous déconnecter?",
   "notSet": "Non défini",
-  "profileUpdatedSuccessfully": "Profile updated successfully",
-  "profileUpdateFailed": "Failed to update profile",
+  "profileUpdatedSuccessfully": "Profil mis à jour avec succès",
+  "profileUpdateFailed": "Échec de la mise à jour du profil",
   "noFavoriteJourneysYet": "Aucun trajet favori pour le moment",
   "noNotificationsYet": "Aucune notification",
   "markAllAsRead": "Tout marquer comme lu",
@@ -114,5 +114,47 @@
     "placeholders": {
       "feature": {}
     }
-  }
+  },
+  "searchByNameOrEmail": "Rechercher par nom ou email…",
+  "filterAll": "Tous",
+  "filterActive": "Actif",
+  "filterBanned": "Banni",
+  "filterBlocked": "Bloqué",
+  "noUsersFound": "Aucun utilisateur trouvé.",
+  "noUsersMatchFilter": "Aucun utilisateur ne correspond au filtre actuel.",
+  "statusActive": "Statut : Actif",
+  "statusBlocked": "Statut : Bloqué",
+  "statusBannedUntil": "Statut : Banni jusqu'au {date}",
+  "@statusBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "statusBanned": "Statut : Banni",
+  "adminActions": "Actions admin",
+  "adminActionsPrompt": "Sélectionnez une action pour cet utilisateur.",
+  "banFor3Days": "Bannir 3 jours",
+  "banFor7Days": "Bannir 7 jours",
+  "blockPermanently": "Bloquer définitivement",
+  "unblockUser": "Débloquer l'utilisateur",
+  "userBannedDays": "Utilisateur banni pour {days} jours.",
+  "@userBannedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "userBlockedPermanently": "Utilisateur bloqué définitivement.",
+  "userUnblocked": "Utilisateur débloqué avec succès.",
+  "accountBlockedTitle": "Compte bloqué",
+  "accountBlockedBody": "Votre compte a été bloqué définitivement par un administrateur.",
+  "accountBannedTitle": "Compte banni",
+  "accountBannedUntil": "Votre compte est banni jusqu'au {date}.",
+  "@accountBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "accountBannedBody": "Votre compte a été banni par un administrateur."
 }

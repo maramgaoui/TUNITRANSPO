@@ -127,6 +127,8 @@ class AuthGuard extends StatefulWidget {
 class _AuthGuardState extends State<AuthGuard> {
   late final AuthController _authController;
   late final FirebaseFirestore _firestore;
+  Future<_ResolvedSession>? _resolvedSessionFuture;
+  String? _resolvedSessionUid;
 
   @override
   void initState() {
@@ -135,9 +137,8 @@ class _AuthGuardState extends State<AuthGuard> {
     _firestore = FirebaseFirestore.instance;
   }
 
-  Future<_ResolvedSession> _resolveSession() async {
-    final current = _authController.currentUser;
-    if (current == null) {
+  Future<_ResolvedSession> _resolveSession(User current) async {
+    if (current.uid.isEmpty) {
       return const _ResolvedSession.guest();
     }
 
@@ -167,6 +168,34 @@ class _AuthGuardState extends State<AuthGuard> {
       );
     }
 
+
+    // Check ban/block status before allowing access to HomeScreen.
+    final userDoc = await _firestore
+        .collection('users')
+        .doc(current.uid)
+        .get();
+
+    if (userDoc.exists) {
+      final data = userDoc.data() ?? {};
+      final status = (data['status'] ?? 'active').toString();
+      final banUntilRaw = data['banUntil'];
+      DateTime? banUntil;
+      if (banUntilRaw is Timestamp) banUntil = banUntilRaw.toDate();
+
+      if (status == 'banned' &&
+          banUntil != null &&
+          DateTime.now().isAfter(banUntil)) {
+        // Ban expired — reactivate silently and allow access.
+        await _firestore.collection('users').doc(current.uid).update({
+          'status': 'active',
+          'banUntil': null,
+        });
+      } else if (status == 'banned' || status == 'blocked') {
+        await _authController.signOut();
+        return const _ResolvedSession.guest();
+      }
+    }
+
     return const _ResolvedSession.user();
   }
 
@@ -182,8 +211,14 @@ class _AuthGuardState extends State<AuthGuard> {
 
         // Authenticated session: route based on role source in Firestore.
         if (snapshot.hasData && snapshot.data != null) {
+          final currentUser = snapshot.data!;
+          if (_resolvedSessionFuture == null || _resolvedSessionUid != currentUser.uid) {
+            _resolvedSessionUid = currentUser.uid;
+            _resolvedSessionFuture = _resolveSession(currentUser);
+          }
+
           return FutureBuilder<_ResolvedSession>(
-            future: _resolveSession(),
+            future: _resolvedSessionFuture,
             builder: (context, resolvedSnapshot) {
               if (resolvedSnapshot.connectionState != ConnectionState.done) {
                 return const SplashScreen();
@@ -213,6 +248,9 @@ class _AuthGuardState extends State<AuthGuard> {
             },
           );
         }
+
+        _resolvedSessionFuture = null;
+        _resolvedSessionUid = null;
 
         // User is logged out
         return AuthScreen(
@@ -313,16 +351,16 @@ class _BanWatcherState extends State<_BanWatcher> {
 
   Future<void> _showBanDialog(String status, dynamic banUntilRaw) async {
     _dialogActive = true;
+    final l10n = AppLocalizations.of(context)!;
 
     final String title;
     final String message;
 
     if (status == 'blocked') {
-      title = 'Account Blocked';
-      message =
-          'Your account has been permanently blocked by an administrator.';
+      title = l10n.accountBlockedTitle;
+      message = l10n.accountBlockedBody;
     } else {
-      title = 'Account Banned';
+      title = l10n.accountBannedTitle;
       DateTime? banUntil;
       if (banUntilRaw is Timestamp) banUntil = banUntilRaw.toDate();
       if (banUntil != null) {
@@ -331,9 +369,9 @@ class _BanWatcherState extends State<_BanWatcher> {
         final d = banUntil.day.toString().padLeft(2, '0');
         final h = banUntil.hour.toString().padLeft(2, '0');
         final mi = banUntil.minute.toString().padLeft(2, '0');
-        message = 'Your account has been banned until $y-$mo-$d $h:$mi.';
+        message = l10n.accountBannedUntil('$y-$mo-$d $h:$mi');
       } else {
-        message = 'Your account has been banned by an administrator.';
+        message = l10n.accountBannedBody;
       }
     }
 
@@ -346,7 +384,7 @@ class _BanWatcherState extends State<_BanWatcher> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+            child: Text(MaterialLocalizations.of(context).okButtonLabel),
           ),
         ],
       ),

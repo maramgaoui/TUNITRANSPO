@@ -3,6 +3,7 @@ import 'package:tuni_transport/admin/screens/manage_users_screen.dart';
 import 'package:tuni_transport/admin/screens/admin_profile_screen.dart';
 import 'package:tuni_transport/controllers/notification_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/models/notification_model.dart';
 import 'package:tuni_transport/screens/chat_screen.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
@@ -218,6 +219,77 @@ class _AdminEditTab extends StatefulWidget {
 class _AdminNotificationsTab extends StatelessWidget {
   const _AdminNotificationsTab();
 
+  static const String _l10nPrefix = 'l10n:';
+
+  String _resolveL10nToken(AppLocalizations l10n, String value) {
+    if (!value.startsWith(_l10nPrefix)) {
+      return value;
+    }
+
+    final key = value.substring(_l10nPrefix.length);
+    switch (key) {
+      case 'newNotificationTitle':
+        return l10n.newNotificationTitle;
+      case 'receivedNotificationBody':
+        return l10n.receivedNotificationBody;
+      case 'newMessageNotification':
+        return l10n.newMessageNotification;
+      case 'newJourneyNotification':
+        return l10n.newJourneyNotification;
+      case 'systemAnnouncementTitle':
+        return l10n.systemAnnouncementTitle;
+      case 'systemWelcomeBody':
+        return l10n.systemWelcomeBody;
+      default:
+        return value;
+    }
+  }
+
+  String _localizedTitle(AppLocalizations l10n, NotificationModel item) {
+    final tokenResolved = _resolveL10nToken(l10n, item.title);
+    if (tokenResolved != item.title) {
+      return tokenResolved;
+    }
+
+    switch (item.title) {
+      case 'Nouveau message':
+      case 'New message':
+        return l10n.newMessageNotification;
+      case 'Nouveau trajet cree':
+      case 'Nouveau trajet créé':
+      case 'New journey created':
+        return l10n.newJourneyNotification;
+      case 'Annonce systeme':
+      case 'Annonce système':
+      case 'System announcement':
+        return l10n.systemAnnouncementTitle;
+      case 'Nouvelle notification':
+      case 'New notification':
+        return l10n.newNotificationTitle;
+      default:
+        return item.title;
+    }
+  }
+
+  String _localizedBody(AppLocalizations l10n, NotificationModel item) {
+    final tokenResolved = _resolveL10nToken(l10n, item.body);
+    if (tokenResolved != item.body) {
+      return tokenResolved;
+    }
+
+    switch (item.body) {
+      case 'Vous avez recu une notification':
+      case 'Vous avez reçu une notification':
+      case 'You received a notification':
+        return l10n.receivedNotificationBody;
+      case 'Bienvenue sur TuniTranspo. Bonne navigation!':
+      case 'Welcome to TuniTranspo. Enjoy your trip!':
+        return l10n.systemWelcomeBody;
+      default:
+        return item.body;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -271,8 +343,8 @@ class _AdminNotificationsTab extends StatelessWidget {
                           ? Icons.notifications_outlined
                           : Icons.notifications_active,
                     ),
-                    title: Text(item.title),
-                    subtitle: Text(item.body),
+                    title: Text(_localizedTitle(l10n, item)),
+                    subtitle: Text(_localizedBody(l10n, item)),
                     trailing: Text(
                       '${item.timestamp.hour.toString().padLeft(2, '0')}:${item.timestamp.minute.toString().padLeft(2, '0')}',
                     ),

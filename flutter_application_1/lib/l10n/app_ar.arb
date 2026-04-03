@@ -114,5 +114,47 @@
     "placeholders": {
       "feature": {}
     }
-  }
+  },
+  "searchByNameOrEmail": "البحث بالاسم أو البريد الإلكتروني…",
+  "filterAll": "الكل",
+  "filterActive": "نشط",
+  "filterBanned": "محظور مؤقت",
+  "filterBlocked": "محظور دائم",
+  "noUsersFound": "لا يوجد مستخدمون.",
+  "noUsersMatchFilter": "لا يوجد مستخدمون يطابقون الفلتر الحالي.",
+  "statusActive": "الحالة: نشط",
+  "statusBlocked": "الحالة: محظور دائم",
+  "statusBannedUntil": "الحالة: محظور حتى {date}",
+  "@statusBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "statusBanned": "الحالة: محظور مؤقت",
+  "adminActions": "إجراءات الإدارة",
+  "adminActionsPrompt": "اختر إجراءً لهذا المستخدم.",
+  "banFor3Days": "حظر 3 أيام",
+  "banFor7Days": "حظر 7 أيام",
+  "blockPermanently": "حظر دائم",
+  "unblockUser": "رفع الحظر",
+  "userBannedDays": "تم حظر المستخدم لمدة {days} أيام.",
+  "@userBannedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "userBlockedPermanently": "تم الحظر الدائم للمستخدم.",
+  "userUnblocked": "تم رفع الحظر بنجاح.",
+  "accountBlockedTitle": "تم حظر الحساب",
+  "accountBlockedBody": "تم حظر حسابك نهائيا بواسطة المسؤول.",
+  "accountBannedTitle": "تم حظر الحساب مؤقتا",
+  "accountBannedUntil": "حسابك محظور حتى {date}.",
+  "@accountBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "accountBannedBody": "تم حظر حسابك بواسطة المسؤول."
 }

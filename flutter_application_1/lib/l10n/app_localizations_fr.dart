@@ -256,10 +256,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notSet => 'Non défini';
 
   @override
-  String get profileUpdatedSuccessfully => 'Profile updated successfully';
+  String get profileUpdatedSuccessfully => 'Profil mis à jour avec succès';
 
   @override
-  String get profileUpdateFailed => 'Failed to update profile';
+  String get profileUpdateFailed => 'Échec de la mise à jour du profil';
 
   @override
   String get noFavoriteJourneysYet => 'Aucun trajet favori pour le moment';
@@ -297,4 +297,89 @@ class AppLocalizationsFr extends AppLocalizations {
   String featureReadyToBeConnected(Object feature) {
     return 'La fonctionnalité $feature est prête à être connectée.';
   }
+
+  @override
+  String get searchByNameOrEmail => 'Rechercher par nom ou email...';
+
+  @override
+  String get filterAll => 'Tous';
+
+  @override
+  String get filterActive => 'Actif';
+
+  @override
+  String get filterBanned => 'Banni';
+
+  @override
+  String get filterBlocked => 'Bloqué';
+
+  @override
+  String get noUsersFound => 'Aucun utilisateur trouvé.';
+
+  @override
+  String get noUsersMatchFilter =>
+      'Aucun utilisateur ne correspond au filtre actuel.';
+
+  @override
+  String get statusActive => 'Statut : Actif';
+
+  @override
+  String get statusBlocked => 'Statut : Bloqué';
+
+  @override
+  String statusBannedUntil(Object date) {
+    return 'Statut : Banni jusqu\'au $date';
+  }
+
+  @override
+  String get statusBanned => 'Statut : Banni';
+
+  @override
+  String get adminActions => 'Actions admin';
+
+  @override
+  String get adminActionsPrompt =>
+      'Sélectionnez une action pour cet utilisateur.';
+
+  @override
+  String get banFor3Days => 'Bannir 3 jours';
+
+  @override
+  String get banFor7Days => 'Bannir 7 jours';
+
+  @override
+  String get blockPermanently => 'Bloquer définitivement';
+
+  @override
+  String get unblockUser => 'Débloquer l\'utilisateur';
+
+  @override
+  String userBannedDays(int days) {
+    return 'Utilisateur banni pour $days jours.';
+  }
+
+  @override
+  String get userBlockedPermanently => 'Utilisateur bloqué définitivement.';
+
+  @override
+  String get userUnblocked => 'Utilisateur débloqué avec succès.';
+
+  @override
+  String get accountBlockedTitle => 'Compte bloqué';
+
+  @override
+  String get accountBlockedBody =>
+      'Votre compte a été bloqué définitivement par un administrateur.';
+
+  @override
+  String get accountBannedTitle => 'Compte banni';
+
+  @override
+  String accountBannedUntil(Object date) {
+    return 'Votre compte est banni jusqu\'au $date.';
+  }
+
+  @override
+  String get accountBannedBody =>
+      'Votre compte a été banni par un administrateur.';
 }
