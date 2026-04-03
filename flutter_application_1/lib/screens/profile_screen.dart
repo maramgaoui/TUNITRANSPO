@@ -5,17 +5,19 @@ import 'package:tuni_transport/controllers/profile_controller.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/models/profile_model.dart';
 import 'package:tuni_transport/services/settings_service.dart';
+import 'package:tuni_transport/utils/validation_utils.dart';
 import '../theme/app_theme.dart';
-import 'auth_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final SettingsService settingsService;
   final Function(ThemeMode) onThemeChanged;
+  final ValueChanged<String> onLanguageChanged;
   
   const ProfileScreen({
     super.key,
     required this.settingsService,
     required this.onThemeChanged,
+    required this.onLanguageChanged,
   });
 
   @override
@@ -27,6 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   late AuthController _authController;
   bool _isEditing = false;
   bool _isLoading = false;
+  String? _lastSyncedProfileFingerprint;
   late String _selectedLanguage;
   late ThemeMode _themeMode;
 
@@ -70,21 +73,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _cityController.text = profile.city ?? '';
   }
 
+  String _profileFingerprint(Profile profile) {
+    return [
+      profile.uid,
+      profile.email,
+      profile.firstName ?? '',
+      profile.lastName ?? '',
+      profile.username ?? '',
+      profile.city ?? '',
+      profile.avatarId ?? '',
+    ].join('|');
+  }
+
   Future<void> _saveProfile(Profile profile) async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
+      final firstName = _firstNameController.text.trim();
+      final lastName = _lastNameController.text.trim();
+      final username = _usernameController.text.trim();
+      final city = _cityController.text.trim();
+
       final updatedProfile = profile.copyWith(
-        firstName: _firstNameController.text.isEmpty
-            ? null
-            : _firstNameController.text,
-        lastName: _lastNameController.text.isEmpty
-            ? null
-            : _lastNameController.text,
-        username: _usernameController.text.isEmpty
-            ? null
-            : _usernameController.text,
-        city: _cityController.text.isEmpty ? null : _cityController.text,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        city: city.isEmpty ? null : city,
       );
 
       final success = await _profileController.updateProfile(updatedProfile);
@@ -131,12 +145,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     if (confirmed ?? false) {
       await _authController.signOut();
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const AuthScreen()),
-          (route) => false,
-        );
-      }
     }
   }
 
@@ -308,6 +316,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   );
                   return;
                 }
+                if (confirmPasswordController.text.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Veuillez confirmer le nouveau mot de passe')),
+                  );
+                  return;
+                }
                 if (newPasswordController.text != confirmPasswordController.text) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Les mots de passe ne correspondent pas')),
@@ -321,14 +335,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return;
                 }
 
-                final success = await _profileController.changePassword(
+                final errorMessage = await _profileController.changePassword(
                   currentPasswordController.text,
                   newPasswordController.text,
                 );
 
                 if (mounted) {
-                  Navigator.pop(context);
-                  if (success) {
+                  if (errorMessage == null) {
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Mot de passe changé avec succès'),
@@ -337,8 +351,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Échec du changement de mot de passe'),
+                      SnackBar(
+                        content: Text(errorMessage),
                         backgroundColor: Colors.red,
                       ),
                     );
@@ -490,6 +504,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 
                 // Notify parent of theme change
                 widget.onThemeChanged(_themeMode);
+                widget.onLanguageChanged(_selectedLanguage);
                 
                 if (mounted) {
                   Navigator.pop(context);
@@ -574,7 +589,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             );
           }
 
-          if (!_isEditing) _loadProfileData(profile);
+          if (!_isEditing) {
+            final fingerprint = _profileFingerprint(profile);
+            if (_lastSyncedProfileFingerprint != fingerprint) {
+              _loadProfileData(profile);
+              _lastSyncedProfileFingerprint = fingerprint;
+            }
+          }
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
@@ -789,6 +810,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Prénom',
             hint: 'Entrez votre prénom',
             icon: Icons.person_outline,
+            validator: (value) => ValidationUtils.validateName(
+              value?.trim(),
+              'Prénom',
+            ),
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
@@ -796,6 +821,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Nom',
             hint: 'Entrez votre nom',
             icon: Icons.person_outline,
+            validator: (value) => ValidationUtils.validateName(
+              value?.trim(),
+              'Nom',
+            ),
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
@@ -803,6 +832,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Nom d\'utilisateur',
             hint: 'Entrez votre nom d\'utilisateur',
             icon: Icons.person_add_outlined,
+            validator: (value) => ValidationUtils.validateUsername(
+              value?.trim(),
+            ),
           ),
           const SizedBox(height: 16),
           _buildTextFormField(
@@ -810,6 +842,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             label: 'Ville',
             hint: 'Entrez votre ville',
             icon: Icons.location_city_outlined,
+            validator: (value) {
+              final trimmed = value?.trim() ?? '';
+              if (trimmed.isEmpty) return null;
+              return ValidationUtils.validateName(trimmed, 'Ville');
+            },
           ),
         ],
       ),
@@ -823,6 +860,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required IconData icon,
     TextInputType keyboardType = TextInputType.text,
     int maxLines = 1,
+    String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
@@ -843,10 +881,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       keyboardType: keyboardType,
       maxLines: maxLines,
-      validator: (value) {
-        // Add custom validation if needed
-        return null;
-      },
+      validator: validator,
     );
   }
 }

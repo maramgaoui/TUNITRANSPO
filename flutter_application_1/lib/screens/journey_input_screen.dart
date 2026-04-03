@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import '../theme/app_theme.dart';
 import '../constants/mock_data.dart';
 import 'journey_results_screen.dart';
@@ -14,6 +15,8 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
   final _departureController = TextEditingController();
   final _arrivalController = TextEditingController();
   bool _useCurrentLocation = false;
+  bool _isLocatingCurrentPosition = false;
+  String _manualDepartureBackup = '';
 
   @override
   void initState() {
@@ -25,6 +28,76 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
     _departureController.dispose();
     _arrivalController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handleCurrentLocationToggle(bool enabled) async {
+    if (!enabled) {
+      setState(() {
+        _useCurrentLocation = false;
+        if (_departureController.text.startsWith('Position actuelle')) {
+          _departureController.text = _manualDepartureBackup;
+        }
+      });
+      return;
+    }
+
+    _manualDepartureBackup = _departureController.text;
+    setState(() {
+      _useCurrentLocation = true;
+      _isLocatingCurrentPosition = true;
+    });
+
+    try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        _showLocationError('Le service de localisation est désactivé.');
+        return;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+
+      if (permission == LocationPermission.denied ||
+          permission == LocationPermission.deniedForever) {
+        _showLocationError('Permission de localisation refusée.');
+        return;
+      }
+
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+        timeLimit: const Duration(seconds: 10),
+      );
+
+      if (!mounted) return;
+
+      setState(() {
+        _departureController.text =
+            'Position actuelle (${position.latitude.toStringAsFixed(5)}, ${position.longitude.toStringAsFixed(5)})';
+      });
+    } catch (e) {
+      _showLocationError('Impossible d\'obtenir votre position GPS.');
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLocatingCurrentPosition = false;
+        });
+      }
+    }
+  }
+
+  void _showLocationError(String message) {
+    if (!mounted) return;
+
+    setState(() {
+      _useCurrentLocation = false;
+      _isLocatingCurrentPosition = false;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
@@ -222,15 +295,39 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                           ),
                           Checkbox(
                             value: _useCurrentLocation,
-                            onChanged: (value) {
-                              setState(() =>
-                                  _useCurrentLocation = value ?? false);
-                            },
+                            onChanged: _isLocatingCurrentPosition
+                                ? null
+                                : (value) => _handleCurrentLocationToggle(
+                                      value ?? false,
+                                    ),
                             activeColor: AppTheme.primaryTeal,
                           ),
                         ],
                       ),
                     ),
+                    if (_isLocatingCurrentPosition) ...[
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 14,
+                            height: 14,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: AppTheme.primaryTeal,
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Récupération de votre position...',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.mediumGrey,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                     const SizedBox(height: 28),
                     // Search button
                     SizedBox(

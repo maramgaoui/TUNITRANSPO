@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'controllers/auth_controller.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late ThemeMode _themeMode;
+  late Locale _locale;
 
   @override
   void initState() {
@@ -43,10 +45,29 @@ class _MyAppState extends State<MyApp> {
     // Load saved theme preference
     final themeSetting = widget.settingsService.getThemeMode();
     _themeMode = themeSetting == 'dark' ? ThemeMode.dark : ThemeMode.light;
+
+    final languageSetting = widget.settingsService.getLanguage();
+    _locale = _localeFromLanguage(languageSetting);
   }
 
   void _updateThemeMode(ThemeMode mode) {
     setState(() => _themeMode = mode);
+  }
+
+  void _updateLanguage(String language) {
+    setState(() => _locale = _localeFromLanguage(language));
+  }
+
+  Locale _localeFromLanguage(String language) {
+    switch (language) {
+      case 'English':
+        return const Locale('en');
+      case 'العربية':
+        return const Locale('ar');
+      case 'Français':
+      default:
+        return const Locale('fr');
+    }
   }
 
   @override
@@ -54,11 +75,23 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'TuniTransport',
       theme: AppTheme.lightTheme,
-      darkTheme: ThemeData.dark(useMaterial3: true),
+      darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
+      locale: _locale,
+      supportedLocales: const [
+        Locale('fr'),
+        Locale('en'),
+        Locale('ar'),
+      ],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: AuthGuard(
         settingsService: widget.settingsService,
         onThemeChanged: _updateThemeMode,
+        onLanguageChanged: _updateLanguage,
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -69,11 +102,13 @@ class _MyAppState extends State<MyApp> {
 class AuthGuard extends StatefulWidget {
   final SettingsService settingsService;
   final Function(ThemeMode) onThemeChanged;
+  final ValueChanged<String> onLanguageChanged;
   
   const AuthGuard({
     super.key,
     required this.settingsService,
     required this.onThemeChanged,
+    required this.onLanguageChanged,
   });
 
   @override
@@ -104,6 +139,7 @@ class _AuthGuardState extends State<AuthGuard> {
           return HomeScreen(
             settingsService: widget.settingsService,
             onThemeChanged: widget.onThemeChanged,
+            onLanguageChanged: widget.onLanguageChanged,
           );
         }
 

@@ -1,10 +1,12 @@
-import 'package:flutter/material.dart';
-
 class Journey {
   final String type;
-  final IconData icon;
+  final String iconKey;
   final String departure;
   final String arrival;
+  final String departureStation;
+  final String arrivalStation;
+  final String? transferStation;
+  final String? transferTime;
   final String duration;
   final String price;
   final int transfers;
@@ -14,9 +16,13 @@ class Journey {
 
   Journey({
     required this.type,
-    required this.icon,
+    required this.iconKey,
     required this.departure,
     required this.arrival,
+    required this.departureStation,
+    required this.arrivalStation,
+    this.transferStation,
+    this.transferTime,
     required this.duration,
     required this.price,
     required this.transfers,

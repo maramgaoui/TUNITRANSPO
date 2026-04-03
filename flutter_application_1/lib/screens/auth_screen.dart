@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
+import 'package:tuni_transport/utils/validation_utils.dart';
 import '../theme/app_theme.dart';
 import '../widgets/validated_text_field.dart';
 
@@ -21,15 +22,6 @@ class _AuthScreenState extends State<AuthScreen>
   bool _isLoading = false;
   String? _errorMessage;
 
-  // Validation state tracking
-  bool _isLoginEmailValid = false;
-  bool _isLoginPasswordValid = false;
-  bool _isSignupNomValid = false;
-  bool _isSignupPrenomValid = false;
-  bool _isSignupUsernameValid = false;
-  bool _isSignupEmailValid = false;
-  bool _isSignupPasswordValid = false;
-  bool _isSignupConfirmPasswordValid = false;
   String _selectedAvatarId = avatarOptions.first;
 
   final _loginEmailController = TextEditingController();
@@ -76,101 +68,99 @@ class _AuthScreenState extends State<AuthScreen>
     final emailController = TextEditingController();
     final formKey = GlobalKey<FormState>();
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Réinitialiser le mot de passe'),
-        content: Form(
-          key: formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'Entrez votre adresse email pour recevoir un lien de réinitialisation',
-                style: TextStyle(fontSize: 14),
-              ),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  hintText: 'votre@email.com',
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+    try {
+      await showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Réinitialiser le mot de passe'),
+          content: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Entrez votre adresse email pour recevoir un lien de réinitialisation',
+                  style: TextStyle(fontSize: 14),
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'votre@email.com',
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) => ValidationUtils.validateEmail(
+                    value?.trim(),
                   ),
                 ),
-                keyboardType: TextInputType.emailAddress,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Email is required';
-                  }
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                    return 'Please enter a valid email';
-                  }
-                  return null;
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Annuler'),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primaryTeal,
+              ],
             ),
-            onPressed: () async {
-              if (formKey.currentState!.validate()) {
-                Navigator.pop(context);
-                
-                // Show loading
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Envoi du lien de réinitialisation...'),
-                    backgroundColor: AppTheme.primaryTeal,
-                  ),
-                );
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Annuler'),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryTeal,
+              ),
+              onPressed: () async {
+                if (formKey.currentState!.validate()) {
+                  Navigator.pop(context);
 
-                try {
-                  await _authController.sendPasswordResetEmail(
-                    emailController.text.trim(),
+                  // Show loading
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Envoi du lien de réinitialisation...'),
+                      backgroundColor: AppTheme.primaryTeal,
+                    ),
                   );
-                  
-                  if (mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Vérifiez votre email pour le lien de réinitialisation'),
-                        backgroundColor: Colors.green,
-                        duration: Duration(seconds: 3),
-                      ),
+
+                  try {
+                    await _authController.sendPasswordResetEmail(
+                      emailController.text.trim(),
                     );
-                  }
-                } catch (e) {
-                  if (mounted) {
-                    final errorMsg = e.toString().replaceAll('Exception: ', '');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Erreur: $errorMsg'),
-                        backgroundColor: Colors.red,
-                        duration: const Duration(seconds: 3),
-                      ),
-                    );
+
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Vérifiez votre email pour le lien de réinitialisation'),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 3),
+                        ),
+                      );
+                    }
+                  } catch (e) {
+                    if (mounted) {
+                      final errorMsg = e.toString().replaceAll('Exception: ', '');
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Erreur: $errorMsg'),
+                          backgroundColor: Colors.red,
+                          duration: const Duration(seconds: 3),
+                        ),
+                      );
+                    }
                   }
                 }
-              }
-            },
-            child: const Text(
-              'Envoyer',
-              style: TextStyle(color: Colors.white),
+              },
+              child: const Text(
+                'Envoyer',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    } finally {
+      emailController.dispose();
+    }
   }
 
   Future<void> _handleLogin() async {
@@ -193,22 +183,6 @@ class _AuthScreenState extends State<AuthScreen>
         ),
       );
       setState(() => _isLoading = false);
-      return;
-    }
-
-    // Double-check validation state flags
-    if (!_isLoginEmailValid || !_isLoginPasswordValid) {
-      setState(() {
-        _errorMessage = 'Veuillez corriger toutes les erreurs de validation';
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Email ou mot de passe invalide'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
       return;
     }
 
@@ -245,6 +219,10 @@ class _AuthScreenState extends State<AuthScreen>
           ),
         );
       }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
     }
   }
 
@@ -268,27 +246,6 @@ class _AuthScreenState extends State<AuthScreen>
         ),
       );
       setState(() => _isLoading = false);
-      return;
-    }
-
-    // Double-check all validation state flags
-    if (!_isSignupNomValid ||
-        !_isSignupPrenomValid ||
-        !_isSignupUsernameValid ||
-        !_isSignupEmailValid ||
-        !_isSignupPasswordValid ||
-        !_isSignupConfirmPasswordValid) {
-      setState(() {
-        _errorMessage = 'Veuillez corriger toutes les erreurs de validation';
-        _isLoading = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Tous les champs doivent être valides'),
-          backgroundColor: Colors.red,
-          duration: Duration(seconds: 2),
-        ),
-      );
       return;
     }
 
@@ -328,6 +285,10 @@ class _AuthScreenState extends State<AuthScreen>
             duration: const Duration(seconds: 3),
           ),
         );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
       }
     }
   }
@@ -513,9 +474,6 @@ class _AuthScreenState extends State<AuthScreen>
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
               validationType: 'email',
-              onValidationChanged: (isValid) {
-                setState(() => _isLoginEmailValid = isValid);
-              },
             ),
             const SizedBox(height: 16),
             // Password field with real-time validation
@@ -529,9 +487,6 @@ class _AuthScreenState extends State<AuthScreen>
               isPasswordField: true,
               onVisibilityToggle: () {
                 setState(() => _obscureLoginPassword = !_obscureLoginPassword);
-              },
-              onValidationChanged: (isValid) {
-                setState(() => _isLoginPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 8),
@@ -547,9 +502,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (_isLoading || !_isLoginEmailValid || !_isLoginPasswordValid)
-                    ? null
-                    : _handleLogin,
+                onPressed: _isLoading ? null : _handleLogin,
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
@@ -636,9 +589,6 @@ class _AuthScreenState extends State<AuthScreen>
               prefixIcon: Icons.person_outline,
               validationType: 'name',
               nameFieldType: 'Nom',
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupNomValid = isValid);
-              },
             ),
             const SizedBox(height: 16),
             // Prénom field with real-time validation (letters only)
@@ -649,9 +599,6 @@ class _AuthScreenState extends State<AuthScreen>
               prefixIcon: Icons.person_outline,
               validationType: 'name',
               nameFieldType: 'Prénom',
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupPrenomValid = isValid);
-              },
             ),
             const SizedBox(height: 16),
             // Username field with real-time validation (letters and numbers)
@@ -661,9 +608,6 @@ class _AuthScreenState extends State<AuthScreen>
               hintText: 'Choisir un nom d\'utilisateur',
               prefixIcon: Icons.person_add_outlined,
               validationType: 'username',
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupUsernameValid = isValid);
-              },
             ),
             const SizedBox(height: 16),
             // Email field with real-time validation
@@ -673,9 +617,6 @@ class _AuthScreenState extends State<AuthScreen>
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
               validationType: 'email',
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupEmailValid = isValid);
-              },
             ),
             const SizedBox(height: 16),
             // Password field with real-time validation and strength indicator
@@ -689,9 +630,6 @@ class _AuthScreenState extends State<AuthScreen>
               isPasswordField: true,
               onVisibilityToggle: () {
                 setState(() => _obscureSignupPassword = !_obscureSignupPassword);
-              },
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 16),
@@ -707,9 +645,6 @@ class _AuthScreenState extends State<AuthScreen>
               isPasswordField: true,
               onVisibilityToggle: () {
                 setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
-              },
-              onValidationChanged: (isValid) {
-                setState(() => _isSignupConfirmPasswordValid = isValid);
               },
             ),
             const SizedBox(height: 20),
@@ -763,19 +698,11 @@ class _AuthScreenState extends State<AuthScreen>
               ),
             ),
             const SizedBox(height: 24),
-            // Signup button - enabled only when all fields are valid
+            // Signup button - validation handled by Form.validate() on submit
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: (_isLoading ||
-                        !_isSignupNomValid ||
-                        !_isSignupPrenomValid ||
-                        !_isSignupUsernameValid ||
-                        !_isSignupEmailValid ||
-                        !_isSignupPasswordValid ||
-                        !_isSignupConfirmPasswordValid)
-                    ? null
-                    : _handleSignUp,
+              onPressed: _isLoading ? null : _handleSignUp,
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,

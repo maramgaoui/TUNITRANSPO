@@ -8,130 +8,71 @@ class ProfileController {
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Get current user profile stream with retry logic
+  // Stream profile updates directly from Firestore to avoid retry delays.
   Stream<Profile?> get profileStream {
-    return _firebaseAuth.authStateChanges().asyncMap((firebase_auth.User? user) async {
-      if (user == null) return null;
+    return _firebaseAuth.authStateChanges().asyncExpand((firebase_auth.User? user) {
+      if (user == null) return Stream<Profile?>.value(null);
 
-      try {
-        // Retry logic to ensure Firestore data is available
-        Profile? profile;
-        int retries = 0;
-        const maxRetries = 5;
-        const delayMs = 800;
+      return _firestore.collection('users').doc(user.uid).snapshots().asyncMap((userDoc) async {
+        try {
+          final userData = userDoc.data() ?? <String, dynamic>{};
+          userData['uid'] = (userData['uid']?.toString().isNotEmpty ?? false)
+              ? userData['uid']
+              : user.uid;
+          userData['email'] = (userData['email']?.toString().isNotEmpty ?? false)
+              ? userData['email']
+              : (user.email ?? '');
 
-        while (retries < maxRetries && profile == null) {
-          try {
-            // Wait before fetching
-            await Future.delayed(Duration(milliseconds: delayMs));
-
-            final userDoc = await _firestore.collection('users').doc(user.uid).get();
-            final userData = userDoc.data() ?? {};
-
-            developer.log(
-              'Attempt ${retries + 1}: User data: $userData',
-              name: 'ProfileController',
-            );
-
-            if (userData.isNotEmpty) {
-              if (userData['uid'] == null || userData['uid'].toString().isEmpty) {
-                userData['uid'] = user.uid;
-              }
-              if (userData['email'] == null || userData['email'].toString().isEmpty) {
-                userData['email'] = user.email ?? '';
-              }
-
-              developer.log('Final user data: $userData', name: 'ProfileController');
-              profile = Profile.fromMap(userData);
-            }
-          } catch (e) {
-            developer.log('Retry $retries failed: $e', name: 'ProfileController');
-          }
-
-          if (profile == null) {
-            retries++;
-          }
-        }
-
-        // If still no data after retries, return empty profile
-        if (profile == null) {
-          developer.log('Max retries reached, returning empty profile', name: 'ProfileController');
-          profile = Profile(
+          return Profile.fromMap(userData);
+        } catch (e) {
+          developer.log('Error mapping profile stream: $e', name: 'ProfileController');
+          return Profile(
             uid: user.uid,
             email: user.email ?? '',
           );
         }
-
-        return profile;
-      } catch (e) {
-        developer.log('Error in profileStream: $e', name: 'ProfileController');
-        return Profile(
-          uid: user.uid,
-          email: user.email ?? '',
-        );
-      }
+      });
     });
   }
 
-  // Get current profile once with retry logic
+  // Read current profile once, with a short exponential backoff for transient delays.
   Future<Profile?> getCurrentProfile() async {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return null;
 
-    try {
-      // Retry logic to ensure Firestore data is available
-      Profile? profile;
-      int retries = 0;
-      const maxRetries = 5;
-      const delayMs = 800;
+    const maxAttempts = 4;
+    var delayMs = 150;
 
-      while (retries < maxRetries && profile == null) {
-        try {
-          // Wait before fetching
-          await Future.delayed(Duration(milliseconds: delayMs));
+    for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+        final userData = userDoc.data() ?? <String, dynamic>{};
 
-          final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
-          final userData = userDoc.data() ?? {};
+        if (userData.isNotEmpty || attempt == maxAttempts) {
+          userData['uid'] = (userData['uid']?.toString().isNotEmpty ?? false)
+              ? userData['uid']
+              : firebaseUser.uid;
+          userData['email'] = (userData['email']?.toString().isNotEmpty ?? false)
+              ? userData['email']
+              : (firebaseUser.email ?? '');
 
-          developer.log(
-            'getCurrentProfile Attempt ${retries + 1}: User data: $userData',
-            name: 'ProfileController',
-          );
-
-          if (userData.isNotEmpty) {
-            if (userData['uid'] == null || userData['uid'].toString().isEmpty) {
-              userData['uid'] = firebaseUser.uid;
-            }
-            if (userData['email'] == null || userData['email'].toString().isEmpty) {
-              userData['email'] = firebaseUser.email ?? '';
-            }
-
-            developer.log('getCurrentProfile Final user data: $userData', name: 'ProfileController');
-            profile = Profile.fromMap(userData);
-          }
-        } catch (e) {
-          developer.log('getCurrentProfile Retry $retries failed: $e', name: 'ProfileController');
+          return Profile.fromMap(userData);
         }
-
-        if (profile == null) {
-          retries++;
+      } catch (e) {
+        if (attempt == maxAttempts) {
+          developer.log('getCurrentProfile Error after retries: $e', name: 'ProfileController');
+          break;
         }
       }
 
-      // If still no data after retries, return empty profile
-      if (profile == null) {
-        developer.log('getCurrentProfile Max retries reached, returning empty profile', name: 'ProfileController');
-        profile = Profile(
-          uid: firebaseUser.uid,
-          email: firebaseUser.email ?? '',
-        );
-      }
-
-      return profile;
-    } catch (e) {
-      developer.log('getCurrentProfile Error: $e', name: 'ProfileController');
-      return null;
+      await Future.delayed(Duration(milliseconds: delayMs));
+      delayMs *= 2;
     }
+
+    return Profile(
+      uid: firebaseUser.uid,
+      email: firebaseUser.email ?? '',
+    );
   }
 
   // Update profile
@@ -168,10 +109,12 @@ class ProfileController {
     }
   }
 
-  // Change password
-  Future<bool> changePassword(String currentPassword, String newPassword) async {
+  // Change password. Returns null on success, otherwise an error message.
+  Future<String?> changePassword(String currentPassword, String newPassword) async {
     final firebaseUser = _firebaseAuth.currentUser;
-    if (firebaseUser == null) return false;
+    if (firebaseUser == null) {
+      return 'Utilisateur non connecté';
+    }
 
     try {
       // Re-authenticate user before changing password
@@ -184,10 +127,29 @@ class ProfileController {
 
       // Update password
       await firebaseUser.updatePassword(newPassword);
-      return true;
+      return null;
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      developer.log(
+        'Error changing password (${e.code}): ${e.message}',
+        name: 'ProfileController',
+      );
+
+      switch (e.code) {
+        case 'wrong-password':
+        case 'invalid-credential':
+          return 'Le mot de passe actuel est incorrect';
+        case 'weak-password':
+          return 'Le nouveau mot de passe est trop faible';
+        case 'requires-recent-login':
+          return 'Session expirée. Veuillez vous reconnecter puis réessayer';
+        case 'too-many-requests':
+          return 'Trop de tentatives. Veuillez réessayer plus tard';
+        default:
+          return 'Échec du changement de mot de passe';
+      }
     } catch (e) {
       developer.log('Error changing password: $e', name: 'ProfileController');
-      return false;
+      return 'Échec du changement de mot de passe';
     }
   }
 }

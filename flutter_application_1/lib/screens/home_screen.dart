@@ -10,11 +10,13 @@ import 'profile_screen.dart';
 class HomeScreen extends StatefulWidget {
   final SettingsService settingsService;
   final Function(ThemeMode) onThemeChanged;
+  final ValueChanged<String> onLanguageChanged;
   
   const HomeScreen({
     super.key,
     required this.settingsService,
     required this.onThemeChanged,
+    required this.onLanguageChanged,
   });
 
   @override
@@ -37,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ProfileScreen(
         settingsService: widget.settingsService,
         onThemeChanged: widget.onThemeChanged,
+        onLanguageChanged: widget.onLanguageChanged,
       ),
     ];
   }

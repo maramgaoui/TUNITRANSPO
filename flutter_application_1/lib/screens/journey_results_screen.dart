@@ -20,6 +20,51 @@ class JourneyResultsScreen extends StatefulWidget {
 
 class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
   final List<Journey> journeys = MockData.mockJourneys;
+  bool _isNavigatingToDetails = false;
+
+  IconData _iconFor(String iconKey) {
+    switch (iconKey) {
+      case 'bus':
+        return Icons.directions_bus;
+      case 'metro':
+        return Icons.directions_subway;
+      case 'taxi':
+        return Icons.local_taxi;
+      case 'train':
+        return Icons.train;
+      default:
+        return Icons.directions_transit;
+    }
+  }
+
+  Future<void> _openJourneyDetails(BuildContext context, Journey journey) async {
+    if (_isNavigatingToDetails) return;
+
+    setState(() => _isNavigatingToDetails = true);
+
+    try {
+      await Navigator.of(context).push(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              JourneyDetailsScreen(journey: journey),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(animation),
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 600),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isNavigatingToDetails = false);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,24 +170,7 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
 
   Widget _buildJourneyCard(Journey journey, BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                JourneyDetailsScreen(journey: journey),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              return SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(animation),
-                child: child,
-              );
-            },
-            transitionDuration: const Duration(milliseconds: 600),
-          ),
-        );
-      },
+      onTap: () => _openJourneyDetails(context, journey),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -209,7 +237,7 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
                         ),
                         padding: const EdgeInsets.all(10),
                         child: Icon(
-                          journey.icon,
+                          _iconFor(journey.iconKey),
                           color: AppTheme.primaryTeal,
                           size: 24,
                         ),
@@ -307,27 +335,7 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    JourneyDetailsScreen(journey: journey),
-                            transitionsBuilder: (context, animation,
-                                secondaryAnimation, child) {
-                              return SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(1, 0),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              );
-                            },
-                            transitionDuration:
-                                const Duration(milliseconds: 600),
-                          ),
-                        );
-                      },
+                      onPressed: () => _openJourneyDetails(context, journey),
                       child: const Text('Voir détails'),
                     ),
                   ),

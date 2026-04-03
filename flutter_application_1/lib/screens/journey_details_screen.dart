@@ -15,6 +15,21 @@ class JourneyDetailsScreen extends StatefulWidget {
 }
 
 class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
+  IconData _iconFor(String iconKey) {
+    switch (iconKey) {
+      case 'bus':
+        return Icons.directions_bus;
+      case 'metro':
+        return Icons.directions_subway;
+      case 'taxi':
+        return Icons.local_taxi;
+      case 'train':
+        return Icons.train;
+      default:
+        return Icons.directions_transit;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,7 +152,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                       child: Row(
                         children: [
                           Icon(
-                            widget.journey.icon,
+                            _iconFor(widget.journey.iconKey),
                             color: AppTheme.primaryTeal,
                             size: 28,
                           ),
@@ -190,21 +205,30 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                           const SizedBox(height: 16),
                           _buildRouteStep(
                             time: widget.journey.departure,
-                            station: 'Tunis Centre',
+                            station: widget.journey.departureStation,
                             isFirst: true,
-                            isLast: false,
-                          ),
-                          _buildRouteStep(
-                            time: '15:45',
-                            station: 'La Marsa',
-                            isFirst: false,
                             isLast: widget.journey.transfers == 0,
-                            type: 'Correspondance',
                           ),
                           if (widget.journey.transfers > 0)
                             _buildRouteStep(
+                              time: widget.journey.transferTime ?? widget.journey.departure,
+                              station: widget.journey.transferStation ?? widget.journey.line,
+                              isFirst: false,
+                              isLast: false,
+                              type: 'Correspondance',
+                            ),
+                          if (widget.journey.transfers > 0)
+                            _buildRouteStep(
                               time: widget.journey.arrival,
-                              station: widget.journey.line,
+                              station: widget.journey.arrivalStation,
+                              isFirst: false,
+                              isLast: true,
+                              type: 'Destination',
+                            ),
+                          if (widget.journey.transfers == 0)
+                            _buildRouteStep(
+                              time: widget.journey.arrival,
+                              station: widget.journey.arrivalStation,
                               isFirst: false,
                               isLast: true,
                               type: 'Destination',

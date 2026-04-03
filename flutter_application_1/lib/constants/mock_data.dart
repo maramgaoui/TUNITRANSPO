@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../models/journey_model.dart';
 
 /// Mock data for development and testing
@@ -23,9 +22,13 @@ class MockData {
   static final List<Journey> mockJourneys = [
     Journey(
       type: 'Bus',
-      icon: Icons.directions_bus,
+      iconKey: 'bus',
       departure: '14:30',
       arrival: '16:45',
+      departureStation: 'Tunis Centre',
+      arrivalStation: 'Hammamet',
+      transferStation: 'Nabeul',
+      transferTime: '15:45',
       duration: '2h 15m',
       price: '4.500',
       transfers: 1,
@@ -35,9 +38,13 @@ class MockData {
     ),
     Journey(
       type: 'Métro',
-      icon: Icons.directions_subway,
+      iconKey: 'metro',
       departure: '14:50',
       arrival: '17:20',
+      departureStation: 'Bab Alioua',
+      arrivalStation: 'La Marsa',
+      transferStation: 'Tunis Marine',
+      transferTime: '15:40',
       duration: '2h 30m',
       price: '3.750',
       transfers: 2,
@@ -47,9 +54,11 @@ class MockData {
     ),
     Journey(
       type: 'Louage',
-      icon: Icons.local_taxi,
+      iconKey: 'taxi',
       departure: '14:35',
       arrival: '15:50',
+      departureStation: 'Tunis Centre',
+      arrivalStation: 'Sousse',
       duration: '1h 15m',
       price: '15.000',
       transfers: 0,
@@ -59,9 +68,13 @@ class MockData {
     ),
     Journey(
       type: 'Combiné',
-      icon: Icons.train,
+      iconKey: 'train',
       departure: '15:00',
       arrival: '16:30',
+      departureStation: 'Tunis Ville',
+      arrivalStation: 'La Goulette',
+      transferStation: 'Tunis Marine',
+      transferTime: '15:40',
       duration: '1h 30m',
       price: '6.250',
       transfers: 1,
