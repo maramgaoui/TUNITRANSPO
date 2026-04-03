@@ -113,10 +113,28 @@ async function main() {
 
       try {
         const uid = await createAdminAuthAccount(email, password, matricule);
+
+        // Write a UID-keyed mirror document so Firestore rules can check
+        // exists(/admins/{request.auth.uid}) during access control.
+        await db.collection('admins').doc(uid).set(
+          { ...adminData, uid },
+          { merge: true }
+        );
+        console.log(`  🔑 UID document written: admins/${uid}`);
+
         successCount++;
       } catch (error) {
         if (error.code === 'auth/email-already-exists') {
           console.log(`⚠️  Email already registered: ${email}`);
+          // Still try to resolve the UID and write the mirror document.
+          try {
+            const existingUser = await auth.getUserByEmail(email);
+            await db.collection('admins').doc(existingUser.uid).set(
+              { ...adminData, uid: existingUser.uid },
+              { merge: true }
+            );
+            console.log(`  🔑 UID document written: admins/${existingUser.uid}`);
+          } catch (_) {}
           skipCount++;
         } else {
           errorCount++;

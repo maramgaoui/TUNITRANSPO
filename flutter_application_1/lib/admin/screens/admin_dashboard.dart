@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuni_transport/admin/screens/manage_users_screen.dart';
 import 'package:tuni_transport/admin/screens/admin_profile_screen.dart';
 import 'package:tuni_transport/controllers/notification_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
@@ -175,16 +176,21 @@ class _DashboardTab extends StatelessWidget {
   }
 
   Widget _buildActionButton(BuildContext context, String label, IconData icon) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: ElevatedButton.icon(
         onPressed: () {
+          if (label == l10n.manageUsers) {
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const ManageUsersScreen()),
+            );
+            return;
+          }
+
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.featureReadyToBeConnected(label),
-              ),
-            ),
+            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
           );
         },
         icon: Icon(icon),

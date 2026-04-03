@@ -11,29 +11,42 @@ class AuthController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
+  static const String _blockedMessage =
+      'Your account has been permanently blocked.';
+
   // Get current user stream
   Stream<User?> get authStateChanges {
-    return _firebaseAuth.authStateChanges().asyncMap((firebase_auth.User? user) async {
+    return _firebaseAuth.authStateChanges().asyncMap((
+      firebase_auth.User? user,
+    ) async {
       if (user == null) return null;
+
+      // Ban logic on app open: if banUntil has expired, automatically reactivate user.
+      // If user is still blocked/banned, sign out to prevent app access.
+      final accessError = await _validateAndNormalizeUserAccess(
+        uid: user.uid,
+        enforceRestriction: true,
+      );
+      if (accessError != null) {
+        await _firebaseAuth.signOut();
+        return null;
+      }
 
       // Fetch user data from Firestore
       try {
-        final userDoc = await _firestore.collection('users').doc(user.uid).get();
+        final userDoc = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .get();
         if (userDoc.exists) {
           return User.fromMap(userDoc.data() ?? {});
         } else {
           // Create default user if not in Firestore
-          return User(
-            uid: user.uid,
-            email: user.email ?? '',
-          );
+          return User(uid: user.uid, email: user.email ?? '');
         }
       } catch (e) {
         developer.log('Error fetching user data: $e', name: 'AuthController');
-        return User(
-          uid: user.uid,
-          email: user.email ?? '',
-        );
+        return User(uid: user.uid, email: user.email ?? '');
       }
     });
   }
@@ -43,10 +56,7 @@ class AuthController {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return null;
 
-    return User(
-      uid: firebaseUser.uid,
-      email: firebaseUser.email ?? '',
-    );
+    return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
   }
 
   // Sign up with email and password
@@ -65,7 +75,10 @@ class AuthController {
         throw Exception(emailValidation);
       }
 
-      final firstNameValidation = ValidationUtils.validateName(firstName, 'Prénom');
+      final firstNameValidation = ValidationUtils.validateName(
+        firstName,
+        'Prénom',
+      );
       if (firstNameValidation != null) {
         throw Exception(firstNameValidation);
       }
@@ -110,6 +123,8 @@ class AuthController {
 
       // Save full account + profile data in one users document
       final userData = user.toMap();
+      userData['status'] = 'active';
+      userData['banUntil'] = null;
       developer.log('Saving user data: $userData', name: 'AuthController');
       await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
@@ -138,20 +153,32 @@ class AuthController {
         throw Exception('Failed to sign in');
       }
 
+      final accessError = await _validateAndNormalizeUserAccess(
+        uid: firebaseUser.uid,
+        enforceRestriction: true,
+      );
+      if (accessError != null) {
+        await _firebaseAuth.signOut();
+        throw Exception(accessError);
+      }
+
       // Fetch user data from Firestore
-      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get();
 
       if (userDoc.exists) {
         return User.fromMap(userDoc.data() ?? {});
       } else {
         // Return basic user if not in Firestore
-        return User(
-          uid: firebaseUser.uid,
-          email: firebaseUser.email ?? '',
-        );
+        return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
+    } on Exception {
+      // Re-throw ban/block messages and other known exceptions as-is.
+      rethrow;
     } catch (e) {
       developer.log('Sign in error: $e', name: 'AuthController');
       throw Exception('An error occurred during sign in. Please try again.');
@@ -177,7 +204,9 @@ class AuthController {
       );
 
       // Sign in with Firebase
-      final userCredential = await _firebaseAuth.signInWithCredential(credential);
+      final userCredential = await _firebaseAuth.signInWithCredential(
+        credential,
+      );
       final firebaseUser = userCredential.user;
 
       if (firebaseUser == null) {
@@ -185,9 +214,20 @@ class AuthController {
       }
 
       // Check if user already exists in Firestore
-      final userDoc = await _firestore.collection('users').doc(firebaseUser.uid).get();
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get();
 
       if (userDoc.exists) {
+        final accessError = await _validateAndNormalizeUserAccess(
+          uid: firebaseUser.uid,
+          enforceRestriction: true,
+        );
+        if (accessError != null) {
+          await _firebaseAuth.signOut();
+          throw Exception(accessError);
+        }
         return User.fromMap(userDoc.data() ?? {});
       } else {
         // Create new user document
@@ -201,15 +241,24 @@ class AuthController {
         );
 
         final userData = user.toMap();
-        await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
+        userData['status'] = 'active';
+        userData['banUntil'] = null;
+        await _firestore
+            .collection('users')
+            .doc(firebaseUser.uid)
+            .set(userData);
 
         return user;
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
+    } on Exception {
+      rethrow;
     } catch (e) {
       developer.log('Google sign in error: $e', name: 'AuthController');
-      throw Exception('An error occurred during Google sign in. Please try again.');
+      throw Exception(
+        'An error occurred during Google sign in. Please try again.',
+      );
     }
   }
 
@@ -270,22 +319,88 @@ class AuthController {
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
     } catch (e) {
-      developer.log('Send password reset email error: $e', name: 'AuthController');
-      throw Exception('Impossible d\'envoyer l\'email. Vérifiez que votre adresse email est correcte.');
+      developer.log(
+        'Send password reset email error: $e',
+        name: 'AuthController',
+      );
+      throw Exception(
+        'Impossible d\'envoyer l\'email. Vérifiez que votre adresse email est correcte.',
+      );
     }
   }
 
   // Handle Firebase Auth exceptions
   Exception _handleAuthException(firebase_auth.FirebaseAuthException e) {
     return Exception(switch (e.code) {
-      'weak-password' => 'The password provided is too weak. Please use a stronger password.',
-      'email-already-in-use' => 'This email is already registered. Please sign in or use a different email.',
-      'invalid-email' => 'The email address is invalid. Please check and try again.',
+      'weak-password' =>
+        'The password provided is too weak. Please use a stronger password.',
+      'email-already-in-use' =>
+        'This email is already registered. Please sign in or use a different email.',
+      'invalid-email' =>
+        'The email address is invalid. Please check and try again.',
       'user-disabled' => 'This user account has been disabled.',
       'user-not-found' => 'No account found with this email address.',
-      'wrong-password' => 'The password is incorrect. Please try again.',
+      'wrong-password' || 'invalid-credential' =>
+        'The password is incorrect. Please try again.',
       'too-many-requests' => 'Too many login attempts. Please try again later.',
       _ => 'An authentication error occurred. Please try again.',
     });
+  }
+
+  Future<String?> _validateAndNormalizeUserAccess({
+    required String uid,
+    required bool enforceRestriction,
+  }) async {
+    final userDoc = await _firestore.collection('users').doc(uid).get();
+    if (!userDoc.exists) {
+      return null;
+    }
+
+    final data = userDoc.data() ?? <String, dynamic>{};
+    final status = (data['status'] ?? 'active').toString();
+    final banUntilValue = data['banUntil'];
+
+    DateTime? banUntil;
+    if (banUntilValue is Timestamp) {
+      banUntil = banUntilValue.toDate();
+    } else if (banUntilValue is String) {
+      banUntil = DateTime.tryParse(banUntilValue);
+    }
+
+    if (status == 'banned' &&
+        banUntil != null &&
+        DateTime.now().isAfter(banUntil)) {
+      await _firestore.collection('users').doc(uid).update({
+        'status': 'active',
+        'banUntil': null,
+      });
+      return null;
+    }
+
+    if (!enforceRestriction) {
+      return null;
+    }
+
+    if (status == 'blocked') {
+      return _blockedMessage;
+    }
+
+    if (status == 'banned') {
+      if (banUntil == null) {
+        return 'Your account is banned until further notice.';
+      }
+      return 'Your account is banned until ${_formatBanDate(banUntil)}';
+    }
+
+    return null;
+  }
+
+  String _formatBanDate(DateTime date) {
+    final yyyy = date.year.toString().padLeft(4, '0');
+    final mm = date.month.toString().padLeft(2, '0');
+    final dd = date.day.toString().padLeft(2, '0');
+    final hh = date.hour.toString().padLeft(2, '0');
+    final min = date.minute.toString().padLeft(2, '0');
+    return '$yyyy-$mm-$dd $hh:$min';
   }
 }

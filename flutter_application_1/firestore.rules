@@ -1,12 +1,31 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin check for rule evaluation.
+    // Supports setups where admin documents are keyed by Firebase uid
+    // or by admin email in the admins collection.
+    function isAdmin() {
+      return isSignedIn()
+        && (
+          exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+          || (
+            request.auth.token.email != null
+            && exists(/databases/$(database)/documents/admins/$(request.auth.token.email))
+          )
+        );
+    }
+
     match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if isSignedIn() && (request.auth.uid == userId || isAdmin());
     }
 
     match /users/{userId}/favorites/{journeyId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
     match /community_messages/{messageId} {
@@ -51,8 +70,9 @@ service cloud.firestore {
         && resource.data.uid == request.auth.uid;
     }
 
-    // Admin credentials are read during admin login.
-    // Keep client writes disabled to avoid unauthorized admin creation.
+    // Admin credentials are read during admin login (before Firebase Auth sign-in),
+    // so reads must be allowed without requiring authentication.
+    // Write access is permanently disabled to prevent unauthorized admin creation.
     match /admins/{adminId} {
       allow read: if true;
       allow write: if false;
