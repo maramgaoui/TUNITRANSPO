@@ -5,8 +5,8 @@ import 'package:avatar_plus/avatar_plus.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 
 import '../controllers/auth_controller.dart';
-import '../controllers/notification_controller.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_header.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({
@@ -180,50 +180,6 @@ class _ChatScreenState extends State<ChatScreen> {
         'text': _previewText(text),
       };
     });
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    final onPrimary = Theme.of(context).colorScheme.onPrimary;
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppTheme.primaryTeal, AppTheme.lightTeal],
-        ),
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Row(
-          children: [
-            Icon(Icons.forum, color: onPrimary, size: 28),
-            const SizedBox(width: 10),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  l10n.community,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    color: onPrimary,
-                  ),
-                ),
-                Text(
-                  l10n.publicDiscussion,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: onPrimary.withValues(alpha: 0.9),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget _buildReplySnippet(
@@ -563,7 +519,15 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       body: Column(
         children: [
-          _buildHeader(context),
+          AppHeader(
+            title: l10n.community,
+            subtitle: l10n.publicDiscussion,
+            leading: Icon(
+              Icons.forum,
+              color: Theme.of(context).colorScheme.onPrimary,
+              size: 28,
+            ),
+          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: _messagesRef

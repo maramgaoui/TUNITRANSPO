@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tuni_transport/models/journey_model.dart';
 import 'package:tuni_transport/screens/splash_screen.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
-import 'package:tuni_transport/widgets/journey_card.dart';
 import 'package:tuni_transport/widgets/validated_text_field.dart';
 
 void main() {

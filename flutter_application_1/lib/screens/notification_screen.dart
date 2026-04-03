@@ -4,6 +4,8 @@ import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../controllers/notification_controller.dart';
 import '../models/notification_model.dart';
 import '../theme/app_theme.dart';
+import '../utils/notification_l10n.dart';
+import '../widgets/app_header.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -14,7 +16,6 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   NotificationController get _controller => NotificationController.instance;
-  static const String _l10nPrefix = 'l10n:';
 
   String _formatTime(DateTime timestamp) {
     final now = DateTime.now();
@@ -42,78 +43,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-  String _resolveL10nToken(AppLocalizations l10n, String value) {
-    if (!value.startsWith(_l10nPrefix)) {
-      return value;
-    }
-
-    final key = value.substring(_l10nPrefix.length);
-    switch (key) {
-      case 'newNotificationTitle':
-        return l10n.newNotificationTitle;
-      case 'receivedNotificationBody':
-        return l10n.receivedNotificationBody;
-      case 'newMessageNotification':
-        return l10n.newMessageNotification;
-      case 'newJourneyNotification':
-        return l10n.newJourneyNotification;
-      case 'systemAnnouncementTitle':
-        return l10n.systemAnnouncementTitle;
-      case 'systemWelcomeBody':
-        return l10n.systemWelcomeBody;
-      default:
-        return value;
-    }
-  }
-
-  String _localizedTitle(BuildContext context, NotificationModel notification) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final tokenResolved = _resolveL10nToken(l10n, notification.title);
-    if (tokenResolved != notification.title) {
-      return tokenResolved;
-    }
-
-    // Map known legacy/static titles to localization keys for dynamic language switching.
-    switch (notification.title) {
-      case 'Nouveau message':
-      case 'New message':
-        return l10n.newMessageNotification;
-      case 'Nouveau trajet créé':
-      case 'New journey created':
-        return l10n.newJourneyNotification;
-      case 'Annonce système':
-      case 'System announcement':
-        return l10n.systemAnnouncementTitle;
-      case 'Nouvelle notification':
-      case 'New notification':
-        return l10n.newNotificationTitle;
-      default:
-        return notification.title;
-    }
-  }
-
-  String _localizedBody(BuildContext context, NotificationModel notification) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final tokenResolved = _resolveL10nToken(l10n, notification.body);
-    if (tokenResolved != notification.body) {
-      return tokenResolved;
-    }
-
-    // Keep message payloads untouched unless they match localizable defaults.
-    switch (notification.body) {
-      case 'Vous avez reçu une notification':
-      case 'You received a notification':
-        return l10n.receivedNotificationBody;
-      case 'Bienvenue sur TuniTranspo. Bonne navigation!':
-      case 'Welcome to TuniTranspo. Enjoy your trip!':
-        return l10n.systemWelcomeBody;
-      default:
-        return notification.body;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -122,39 +51,41 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Directionality(
       textDirection: Directionality.of(context),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(l10n.notifications),
-          actions: [
-            AnimatedBuilder(
-              animation: _controller,
-              builder: (context, _) {
-                return Padding(
-                  padding: const EdgeInsetsDirectional.only(end: 12),
-                  child: Center(
-                    child: Container(
-                      padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        l10n.unreadCountLabel(_controller.unreadCount),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
+        body: Column(
+          children: [
+            AppHeader(
+              title: l10n.notifications,
+              leading: Icon(
+                Icons.notifications,
+                color: Theme.of(context).colorScheme.onPrimary,
+                size: 28,
+              ),
+              trailing: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, _) {
+                  final onPrimary = Theme.of(context).colorScheme.onPrimary;
+                  return Container(
+                    padding: const EdgeInsetsDirectional.fromSTEB(10, 6, 10, 6),
+                    decoration: BoxDecoration(
+                      color: onPrimary.withValues(alpha: 0.16),
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                    child: Text(
+                      l10n.unreadCountLabel(_controller.unreadCount),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: onPrimary,
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ],
-        ),
-        body: AnimatedBuilder(
-          animation: _controller,
-          builder: (context, _) {
+            Expanded(
+              child: AnimatedBuilder(
+                animation: _controller,
+                builder: (context, _) {
             final items = _controller.notifications;
 
             if (items.isEmpty) {
@@ -245,7 +176,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            _localizedTitle(context, notification),
+                                            NotificationL10n.localizedTitle(l10n, notification),
                                             style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.w700,
@@ -266,7 +197,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
-                                      _localizedBody(context, notification),
+                                      NotificationL10n.localizedBody(l10n, notification),
                                       style: TextStyle(
                                         fontSize: 13,
                                         color: Theme.of(context)
@@ -297,7 +228,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 ),
               ],
             );
-          },
+                },
+              ),
+            ),
+          ],
         ),
       ),
     );

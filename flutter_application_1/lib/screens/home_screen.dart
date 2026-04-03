@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../services/settings_service.dart';
 import 'journey_input_screen.dart';
@@ -24,10 +25,31 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex = 0;
+  int _tabIndexFromLocation(String path) {
+    if (path.startsWith('/home/favorites')) return 1;
+    if (path.startsWith('/home/notifications')) return 2;
+    if (path.startsWith('/home/chat')) return 3;
+    if (path.startsWith('/home/profile')) return 4;
+    return 0;
+  }
+
+  String _pathForIndex(int index) {
+    switch (index) {
+      case 1:
+        return '/home/favorites';
+      case 2:
+        return '/home/notifications';
+      case 3:
+        return '/home/chat';
+      case 4:
+        return '/home/profile';
+      case 0:
+      default:
+        return '/home/journey-input';
+    }
+  }
 
   List<Widget> _buildScreens() {
-    // Build tab pages on demand so locale/theme changes are reflected instantly.
     return [
       const JourneyInputScreen(),
       const FavoritesScreen(),
@@ -41,26 +63,22 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final screens = _buildScreens();
+    final path = GoRouterState.of(context).uri.path;
+    final selectedIndex = _tabIndexFromLocation(path);
 
     // Wrap the shell in inherited text direction to keep RTL/LTR behavior consistent.
     return Directionality(
       textDirection: Directionality.of(context),
       child: Scaffold(
-        body: screens[_selectedIndex],
+        body: screens[selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
+          currentIndex: selectedIndex,
+          onTap: (index) => context.go(_pathForIndex(index)),
           backgroundColor: Theme.of(context).colorScheme.surface,
           selectedItemColor: Theme.of(context).colorScheme.primary,
           unselectedItemColor: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6),

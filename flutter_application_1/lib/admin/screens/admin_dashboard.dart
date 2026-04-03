@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:tuni_transport/admin/screens/manage_users_screen.dart';
-import 'package:tuni_transport/admin/screens/admin_profile_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/controllers/notification_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
-import 'package:tuni_transport/models/notification_model.dart';
 import 'package:tuni_transport/screens/chat_screen.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
+import 'package:tuni_transport/utils/notification_l10n.dart';
 
 class AdminDashboard extends StatefulWidget {
   const AdminDashboard({
@@ -68,19 +67,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
           IconButton(
             icon: const Icon(Icons.person),
             onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AdminProfileScreen(
-                    matricule: widget.matricule,
-                    role: widget.role,
-                    adminName: widget.adminName,
-                    settingsService: widget.settingsService,
-                    onThemeChanged: widget.onThemeChanged,
-                    onLanguageChanged: widget.onLanguageChanged,
-                  ),
-                ),
-              );
+              final role = Uri.encodeComponent(widget.role ?? '');
+              final matricule = Uri.encodeComponent(widget.matricule ?? '');
+              final name = Uri.encodeComponent(widget.adminName ?? '');
+              context.push('/admin/profile?role=$role&matricule=$matricule&name=$name');
             },
           ),
         ],
@@ -139,14 +129,47 @@ class _DashboardTab extends StatelessWidget {
 
   final String? role;
 
-  static const int _actionManageUsers = 0;
-  static const int _actionManageJourneys = 1;
-  static const int _actionManageStations = 2;
-  static const int _actionSendNotifications = 3;
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final actions = <_AdminAction>[
+      _AdminAction(
+        labelKey: (l) => l.manageUsers,
+        icon: Icons.people_outline,
+        onTap: (ctx) => ctx.push('/admin/manage-users'),
+      ),
+      _AdminAction(
+        labelKey: (l) => l.manageJourneys,
+        icon: Icons.route_outlined,
+        onTap: (ctx) {
+          final label = l10n.manageJourneys;
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
+          );
+        },
+      ),
+      _AdminAction(
+        labelKey: (l) => l.manageStations,
+        icon: Icons.train_outlined,
+        onTap: (ctx) {
+          final label = l10n.manageStations;
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
+          );
+        },
+      ),
+      _AdminAction(
+        labelKey: (l) => l.sendNotifications,
+        icon: Icons.notifications_active_outlined,
+        onTap: (ctx) {
+          final label = l10n.sendNotifications;
+          ScaffoldMessenger.of(ctx).showSnackBar(
+            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
+          );
+        },
+      ),
+    ];
+
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -160,63 +183,33 @@ class _DashboardTab extends StatelessWidget {
                 style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-          _buildActionButton(
-            context,
-            label: l10n.manageUsers,
-            icon: Icons.people_outline,
-            actionId: _actionManageUsers,
-          ),
-          _buildActionButton(
-            context,
-            label: l10n.manageJourneys,
-            icon: Icons.route_outlined,
-            actionId: _actionManageJourneys,
-          ),
-          _buildActionButton(
-            context,
-            label: l10n.manageStations,
-            icon: Icons.train_outlined,
-            actionId: _actionManageStations,
-          ),
-          _buildActionButton(
-            context,
-            label: l10n.sendNotifications,
-            icon: Icons.notifications_active_outlined,
-            actionId: _actionSendNotifications,
-          ),
+          ...actions.map((action) {
+            final label = action.labelKey(l10n);
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: ElevatedButton.icon(
+                onPressed: () => action.onTap(context),
+                icon: Icon(action.icon),
+                label: Text(label),
+              ),
+            );
+          }),
         ],
       ),
     );
   }
+}
 
-  Widget _buildActionButton(
-    BuildContext context, {
-    required String label,
-    required IconData icon,
-    required int actionId,
-  }) {
-    final l10n = AppLocalizations.of(context)!;
+class _AdminAction {
+  const _AdminAction({
+    required this.labelKey,
+    required this.icon,
+    required this.onTap,
+  });
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: ElevatedButton.icon(
-        onPressed: () {
-          if (actionId == _actionManageUsers) {
-            Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const ManageUsersScreen()),
-            );
-            return;
-          }
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
-          );
-        },
-        icon: Icon(icon),
-        label: Text(label),
-      ),
-    );
-  }
+  final String Function(AppLocalizations) labelKey;
+  final IconData icon;
+  final void Function(BuildContext) onTap;
 }
 
 class _AdminEditTab extends StatefulWidget {
@@ -236,77 +229,6 @@ class _AdminEditTab extends StatefulWidget {
 
 class _AdminNotificationsTab extends StatelessWidget {
   const _AdminNotificationsTab();
-
-  static const String _l10nPrefix = 'l10n:';
-
-  String _resolveL10nToken(AppLocalizations l10n, String value) {
-    if (!value.startsWith(_l10nPrefix)) {
-      return value;
-    }
-
-    final key = value.substring(_l10nPrefix.length);
-    switch (key) {
-      case 'newNotificationTitle':
-        return l10n.newNotificationTitle;
-      case 'receivedNotificationBody':
-        return l10n.receivedNotificationBody;
-      case 'newMessageNotification':
-        return l10n.newMessageNotification;
-      case 'newJourneyNotification':
-        return l10n.newJourneyNotification;
-      case 'systemAnnouncementTitle':
-        return l10n.systemAnnouncementTitle;
-      case 'systemWelcomeBody':
-        return l10n.systemWelcomeBody;
-      default:
-        return value;
-    }
-  }
-
-  String _localizedTitle(AppLocalizations l10n, NotificationModel item) {
-    final tokenResolved = _resolveL10nToken(l10n, item.title);
-    if (tokenResolved != item.title) {
-      return tokenResolved;
-    }
-
-    switch (item.title) {
-      case 'Nouveau message':
-      case 'New message':
-        return l10n.newMessageNotification;
-      case 'Nouveau trajet cree':
-      case 'Nouveau trajet créé':
-      case 'New journey created':
-        return l10n.newJourneyNotification;
-      case 'Annonce systeme':
-      case 'Annonce système':
-      case 'System announcement':
-        return l10n.systemAnnouncementTitle;
-      case 'Nouvelle notification':
-      case 'New notification':
-        return l10n.newNotificationTitle;
-      default:
-        return item.title;
-    }
-  }
-
-  String _localizedBody(AppLocalizations l10n, NotificationModel item) {
-    final tokenResolved = _resolveL10nToken(l10n, item.body);
-    if (tokenResolved != item.body) {
-      return tokenResolved;
-    }
-
-    switch (item.body) {
-      case 'Vous avez recu une notification':
-      case 'Vous avez reçu une notification':
-      case 'You received a notification':
-        return l10n.receivedNotificationBody;
-      case 'Bienvenue sur TuniTranspo. Bonne navigation!':
-      case 'Welcome to TuniTranspo. Enjoy your trip!':
-        return l10n.systemWelcomeBody;
-      default:
-        return item.body;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -361,8 +283,8 @@ class _AdminNotificationsTab extends StatelessWidget {
                           ? Icons.notifications_outlined
                           : Icons.notifications_active,
                     ),
-                    title: Text(_localizedTitle(l10n, item)),
-                    subtitle: Text(_localizedBody(l10n, item)),
+                    title: Text(NotificationL10n.localizedTitle(l10n, item)),
+                    subtitle: Text(NotificationL10n.localizedBody(l10n, item)),
                     trailing: Text(
                       '${item.timestamp.hour.toString().padLeft(2, '0')}:${item.timestamp.minute.toString().padLeft(2, '0')}',
                     ),

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
-import 'package:tuni_transport/admin/screens/admin_login_screen.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/utils/validation_utils.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_header.dart';
 import '../widgets/validated_text_field.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -363,62 +364,26 @@ class _AuthScreenState extends State<AuthScreen>
       body: SafeArea(
         child: Column(
           children: [
-            // Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(20, 20, 80, 20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [AppTheme.primaryTeal, AppTheme.lightTeal],
+            AppHeader(
+              title: 'TuniTransport',
+              subtitle: l10n.authHeaderSubtitle,
+              leading: Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: const Center(
+                  child: Icon(
+                    Icons.directions_bus,
+                    color: Colors.white,
+                    size: 28,
+                  ),
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      // Logo
-                      Container(
-                        width: 50,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
-                        child: const Center(
-                          child: Icon(
-                            Icons.directions_bus,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'TuniTransport',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                          Text(
-                            l10n.authHeaderSubtitle,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.white.withValues(alpha: 0.85),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              trailing: const SizedBox(width: 60),
             ),
             // Tab bar
             TabBar(
@@ -561,15 +526,7 @@ class _AuthScreenState extends State<AuthScreen>
                 onPressed: _isLoading
                     ? null
                     : () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => AdminLoginScreen(
-                              settingsService: widget.settingsService,
-                              onThemeChanged: widget.onThemeChanged,
-                              onLanguageChanged: widget.onLanguageChanged,
-                            ),
-                          ),
-                        );
+                        context.push('/admin/login');
                       },
                 icon: const Icon(Icons.admin_panel_settings_outlined),
                 label: Text(l10n.loginAsAdmin),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../controllers/favorites_controller.dart';
 import '../theme/app_theme.dart';
+import '../widgets/app_header.dart';
 import '../widgets/journey_card.dart';
-import 'journey_details_screen.dart';
 
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
@@ -29,46 +30,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     return Scaffold(
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppTheme.primaryTeal,
-                  AppTheme.lightTeal,
-                ],
-              ),
-            ),
-            child: SafeArea(
-              bottom: false,
-              child: Row(
-                children: [
-                  const Icon(Icons.favorite, color: Colors.white, size: 28),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        l10n.favorites,
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        l10n.savedJourneys,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.9),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+          AppHeader(
+            title: l10n.favorites,
+            subtitle: l10n.savedJourneys,
+            leading: const Icon(Icons.favorite, color: Colors.white, size: 28),
           ),
           Expanded(
             child: AnimatedBuilder(
@@ -103,11 +68,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                       child: JourneyCard(
                         journey: journey,
                         onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => JourneyDetailsScreen(journey: journey),
-                            ),
-                          );
+                          context.push('/home/journey-details', extra: journey);
                         },
                       ),
                     );

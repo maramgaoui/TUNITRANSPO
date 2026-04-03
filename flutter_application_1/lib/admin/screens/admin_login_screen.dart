@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/admin/controllers/admin_auth_controller.dart';
-import 'package:tuni_transport/admin/screens/admin_dashboard.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
@@ -62,19 +62,10 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
     });
 
     if (result.isAuthenticated) {
-      // Replace the login page with dashboard once credentials are valid.
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (_) => AdminDashboard(
-            role: result.role,
-            matricule: result.matricule,
-            adminName: result.name,
-            settingsService: widget.settingsService,
-            onThemeChanged: widget.onThemeChanged,
-            onLanguageChanged: widget.onLanguageChanged,
-          ),
-        ),
-      );
+      final role = Uri.encodeComponent(result.role ?? '');
+      final matricule = Uri.encodeComponent(result.matricule ?? '');
+      final name = Uri.encodeComponent(result.name ?? '');
+      context.go('/admin?role=$role&matricule=$matricule&name=$name');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -97,8 +88,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Go back to the normal login/registration screen.
-            Navigator.of(context).pop();
+            context.go('/auth');
           },
         ),
       ),
@@ -174,7 +164,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   OutlinedButton.icon(
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () => context.go('/auth'),
                     icon: const Icon(Icons.arrow_back),
                     label: Text(l10n.backToUserLogin),
                   ),

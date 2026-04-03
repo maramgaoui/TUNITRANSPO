@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:developer' as developer;
 import '../models/user_model.dart';
+import '../models/session_result.dart';
 import '../utils/validation_utils.dart';
 
 class AuthController {
@@ -260,6 +262,92 @@ class AuthController {
         'An error occurred during Google sign in. Please try again.',
       );
     }
+  }
+
+  /// Resolves the role and ban status of the currently signed-in user.
+  /// Returns whether the user should be treated as guest, user, or admin.
+  Future<SessionResult> resolveSession(User current) async {
+    if (current.uid.isEmpty) {
+      return const SessionResult(role: SessionRole.guest);
+    }
+
+    final email = current.email.trim();
+    QuerySnapshot<Map<String, dynamic>>? adminSnapshot;
+
+    // 1) Primary lookup by email.
+    if (email.isNotEmpty) {
+      adminSnapshot = await _firestore
+          .collection('admins')
+          .where('email', isEqualTo: email)
+          .limit(1)
+          .get();
+    }
+
+    // 2) Fallback lookup by Firebase uid.
+    if (adminSnapshot == null || adminSnapshot.docs.isEmpty) {
+      adminSnapshot = await _firestore
+          .collection('admins')
+          .where('uid', isEqualTo: current.uid)
+          .limit(1)
+          .get();
+    }
+
+    // 3) Compatibility fallback for legacy synthetic admin emails: <matricule>@admin.local
+    if ((adminSnapshot == null || adminSnapshot.docs.isEmpty) &&
+        email.isNotEmpty &&
+        email.toLowerCase().endsWith('@admin.local')) {
+      final matricule = email.split('@').first.trim();
+      if (matricule.isNotEmpty) {
+        adminSnapshot = await _firestore
+            .collection('admins')
+            .where('matricule', isEqualTo: matricule)
+            .limit(1)
+            .get();
+      }
+    }
+
+    if (adminSnapshot != null && adminSnapshot.docs.isNotEmpty) {
+      final adminData = adminSnapshot.docs.first.data();
+      return SessionResult(
+        role: SessionRole.admin,
+        adminRole: adminData['role'] as String?,
+        adminMatricule: (adminData['matricule'] ?? '').toString(),
+        adminName: adminData['name'] as String?,
+      );
+    }
+
+    final userDoc = await _firestore.collection('users').doc(current.uid).get();
+
+    if (userDoc.exists) {
+      final data = userDoc.data() ?? {};
+      final status = (data['status'] ?? 'active').toString();
+      final banUntilRaw = data['banUntil'];
+      DateTime? banUntil;
+      if (banUntilRaw is Timestamp) {
+        banUntil = banUntilRaw.toDate();
+      }
+
+      if (status == 'banned' &&
+          banUntil != null &&
+          DateTime.now().isAfter(banUntil)) {
+        unawaited(
+          _firestore.collection('users').doc(current.uid).update({
+            'status': 'active',
+            'banUntil': null,
+          }).catchError((error) {
+            developer.log(
+              'Failed to auto-reactivate expired ban: $error',
+              name: 'AuthController',
+            );
+          }),
+        );
+      } else if (status == 'banned' || status == 'blocked') {
+        await signOut();
+        return const SessionResult(role: SessionRole.guest);
+      }
+    }
+
+    return const SessionResult(role: SessionRole.user);
   }
 
   // Sign out

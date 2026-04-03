@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../controllers/notification_controller.dart';
 import '../theme/app_theme.dart';
 import '../constants/mock_data.dart';
-import 'journey_results_screen.dart';
+import '../widgets/app_header.dart';
 
 class JourneyInputScreen extends StatefulWidget {
   const JourneyInputScreen({super.key});
@@ -139,69 +140,27 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              // Header
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      AppTheme.primaryTeal,
-                      AppTheme.lightTeal,
-                    ],
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        // App Logo
-                        Container(
-                          width: 50,
-                          height: 50,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                          child: const Center(
-                            child: Icon(
-                              Icons.directions_bus,
-                              color: Colors.white,
-                              size: 28,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                l10n.planJourney,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              Text(
-                                l10n.findBestOptions,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white.withValues(alpha: 0.85),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+              AppHeader(
+                title: l10n.planJourney,
+                subtitle: l10n.findBestOptions,
+                leading: Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
                     ),
-                  ],
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.directions_bus,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
                 ),
               ),
               // Content
@@ -373,27 +332,12 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                               _arrivalController.text,
                             );
 
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation,
-                                        secondaryAnimation) =>
-                                    JourneyResultsScreen(
-                                      departure: _departureController.text,
-                                      arrival: _arrivalController.text,
-                                    ),
-                                transitionsBuilder: (context, animation,
-                                    secondaryAnimation, child) {
-                                  return SlideTransition(
-                                    position: Tween<Offset>(
-                                      begin: const Offset(1, 0),
-                                      end: Offset.zero,
-                                    ).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                                transitionDuration:
-                                    const Duration(milliseconds: 600),
-                              ),
+                            context.push(
+                              '/home/journey-results',
+                              extra: {
+                                'departure': _departureController.text,
+                                'arrival': _arrivalController.text,
+                              },
                             );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(

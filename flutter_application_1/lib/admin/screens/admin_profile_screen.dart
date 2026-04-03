@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/admin/controllers/admin_auth_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
-import 'package:tuni_transport/screens/auth_screen.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
@@ -150,16 +150,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         return;
       }
 
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (_) => AuthScreen(
-            settingsService: widget.settingsService,
-            onThemeChanged: widget.onThemeChanged,
-            onLanguageChanged: widget.onLanguageChanged,
-          ),
-        ),
-        (route) => false,
-      );
+      context.go('/auth');
     } catch (_) {
       if (!mounted) {
         return;

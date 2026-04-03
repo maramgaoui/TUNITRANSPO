@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^2.2.2
   avatar_plus: ^0.0.5
   geolocator: ^12.0.0
+  go_router: ^14.0.0
 
 dev_dependencies:
   flutter_test:

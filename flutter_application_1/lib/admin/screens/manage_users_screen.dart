@@ -1,6 +1,7 @@
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tuni_transport/services/admin_user_service.dart';
 import '../../l10n/app_localizations.dart';
 
 /// Filter options shown in the chip bar above the list.
@@ -15,6 +16,7 @@ class ManageUsersScreen extends StatefulWidget {
 
 class _ManageUsersScreenState extends State<ManageUsersScreen> {
   static const String _usersCollection = 'users';
+  final AdminUserService _adminUserService = AdminUserService();
 
   _UserFilter _activeFilter = _UserFilter.all;
   final TextEditingController _searchController = TextEditingController();
@@ -337,12 +339,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
     required int days,
   }) async {
     try {
-      final until = DateTime.now().add(Duration(days: days));
-      // Ban logic: user remains banned until `banUntil`, then app logic auto-reactivates.
-      await FirebaseFirestore.instance
-          .collection(_usersCollection)
-          .doc(userId)
-          .update({'status': 'banned', 'banUntil': Timestamp.fromDate(until)});
+      await _adminUserService.banUser(userId, days: days);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -364,10 +361,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
   Future<void> _blockUser(BuildContext context, String userId) async {
     try {
-      await FirebaseFirestore.instance
-          .collection(_usersCollection)
-          .doc(userId)
-          .update({'status': 'blocked', 'banUntil': null});
+      await _adminUserService.blockUser(userId);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -389,10 +383,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
 
   Future<void> _unblockUser(BuildContext context, String userId) async {
     try {
-      await FirebaseFirestore.instance
-          .collection(_usersCollection)
-          .doc(userId)
-          .update({'status': 'active', 'banUntil': null});
+      await _adminUserService.unblockUser(userId);
 
       if (!context.mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
