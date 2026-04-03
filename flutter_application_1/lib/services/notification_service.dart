@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 import '../controllers/notification_controller.dart';
 import '../firebase_options.dart';
@@ -22,8 +24,23 @@ class NotificationService {
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   bool _initialized = false;
 
+  bool get _isMessagingSupported {
+    if (kIsWeb) return false;
+
+    // Firebase Messaging token APIs are not available on Windows/Linux.
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS;
+  }
+
   Future<void> initialize() async {
     if (_initialized) return;
+
+    if (!_isMessagingSupported) {
+      debugPrint('Firebase Messaging is not supported on this platform. Skipping init.');
+      _initialized = true;
+      return;
+    }
 
     await _requestPermissions();
     await _printToken();
@@ -46,8 +63,13 @@ class NotificationService {
   }
 
   Future<void> _printToken() async {
-    final token = await _messaging.getToken();
-    print('FCM token: $token');
+    try {
+      final token = await _messaging.getToken();
+      print('FCM token: $token');
+    } on MissingPluginException {
+      // Defensive fallback for desktop targets where channel impl is absent.
+      debugPrint('FCM getToken is not implemented on this platform.');
+    }
   }
 
   void _registerForegroundHandler() {

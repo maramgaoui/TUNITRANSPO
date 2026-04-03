@@ -199,6 +199,12 @@ abstract class AppLocalizations {
   /// **'Matricule'**
   String get matricule;
 
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
+  String get role;
+
   /// No description provided for @backToUserLogin.
   ///
   /// In en, this message translates to:

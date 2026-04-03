@@ -2,10 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/admin/controllers/admin_auth_controller.dart';
 import 'package:tuni_transport/admin/screens/admin_dashboard.dart';
+import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
 class AdminLoginScreen extends StatefulWidget {
-  const AdminLoginScreen({super.key});
+  const AdminLoginScreen({
+    super.key,
+    this.settingsService,
+    this.onThemeChanged,
+    this.onLanguageChanged,
+  });
+
+  final SettingsService? settingsService;
+  final Function(ThemeMode)? onThemeChanged;
+  final ValueChanged<String>? onLanguageChanged;
 
   @override
   State<AdminLoginScreen> createState() => _AdminLoginScreenState();
@@ -55,7 +65,14 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       // Replace the login page with dashboard once credentials are valid.
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => AdminDashboard(role: result.role),
+          builder: (_) => AdminDashboard(
+            role: result.role,
+            matricule: result.matricule,
+            adminName: result.name,
+            settingsService: widget.settingsService,
+            onThemeChanged: widget.onThemeChanged,
+            onLanguageChanged: widget.onLanguageChanged,
+          ),
         ),
       );
     } else {
@@ -97,10 +114,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                 children: [
                   Text(
                     l10n.administratorAccess,
-                    style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w700),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 24),

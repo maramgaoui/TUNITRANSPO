@@ -1,0 +1,14 @@
+{
+  "name": "tuni-transport-scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for TuniTranspo Firebase setup",
+  "scripts": {
+    "create-admins": "node create_admin_accounts.js"
+  },
+  "keywords": ["firebase", "admin", "batch"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^11.0.0"
+  }
+}

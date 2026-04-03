@@ -4,12 +4,22 @@ import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/admin/screens/admin_login_screen.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
+import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/utils/validation_utils.dart';
 import '../theme/app_theme.dart';
 import '../widgets/validated_text_field.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+  const AuthScreen({
+    super.key,
+    this.settingsService,
+    this.onThemeChanged,
+    this.onLanguageChanged,
+  });
+
+  final SettingsService? settingsService;
+  final Function(ThemeMode)? onThemeChanged;
+  final ValueChanged<String>? onLanguageChanged;
 
   @override
   State<AuthScreen> createState() => _AuthScreenState();
@@ -43,7 +53,7 @@ class _AuthScreenState extends State<AuthScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     // Listen to password field changes to trigger confirm password revalidation
     _signupPasswordController.addListener(() {
       setState(() {
@@ -97,9 +107,8 @@ class _AuthScreenState extends State<AuthScreen>
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
-                  validator: (value) => ValidationUtils.validateEmail(
-                    value?.trim(),
-                  ),
+                  validator: (value) =>
+                      ValidationUtils.validateEmail(value?.trim()),
                 ),
               ],
             ),
@@ -136,7 +145,9 @@ class _AuthScreenState extends State<AuthScreen>
 
                     messenger.showSnackBar(
                       const SnackBar(
-                        content: Text('Vérifiez votre email pour le lien de réinitialisation'),
+                        content: Text(
+                          'Vérifiez votre email pour le lien de réinitialisation',
+                        ),
                         backgroundColor: Colors.green,
                         duration: Duration(seconds: 3),
                       ),
@@ -173,7 +184,7 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _handleLogin() async {
     // Validate form first - triggers all validators
     final isFormValid = _loginFormKey.currentState!.validate();
-    
+
     setState(() {
       _isLoading = isFormValid;
       if (!isFormValid) {
@@ -236,7 +247,7 @@ class _AuthScreenState extends State<AuthScreen>
   Future<void> _handleSignUp() async {
     // Validate form first - triggers all validators
     final isFormValid = _signupFormKey.currentState!.validate();
-    
+
     setState(() {
       _isLoading = isFormValid;
       if (!isFormValid) {
@@ -355,10 +366,7 @@ class _AuthScreenState extends State<AuthScreen>
               padding: const EdgeInsets.fromLTRB(20, 20, 80, 20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [
-                    AppTheme.primaryTeal,
-                    AppTheme.lightTeal,
-                  ],
+                  colors: [AppTheme.primaryTeal, AppTheme.lightTeal],
                 ),
               ),
               child: Column(
@@ -373,10 +381,7 @@ class _AuthScreenState extends State<AuthScreen>
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                            color: Colors.white,
-                            width: 2,
-                          ),
+                          border: Border.all(color: Colors.white, width: 2),
                         ),
                         child: const Center(
                           child: Icon(
@@ -438,10 +443,7 @@ class _AuthScreenState extends State<AuthScreen>
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: [
-                  _buildLoginTab(),
-                  _buildSignupTab(),
-                ],
+                children: [_buildLoginTab(), _buildSignupTab()],
               ),
             ),
           ],
@@ -472,10 +474,7 @@ class _AuthScreenState extends State<AuthScreen>
             const SizedBox(height: 8),
             Text(
               'Connectez-vous pour continuer',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppTheme.mediumGrey,
-              ),
+              style: TextStyle(fontSize: 14, color: AppTheme.mediumGrey),
             ),
             const SizedBox(height: 28),
             // Email field with real-time validation
@@ -518,9 +517,7 @@ class _AuthScreenState extends State<AuthScreen>
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(l10n.login),
               ),
@@ -530,10 +527,7 @@ class _AuthScreenState extends State<AuthScreen>
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 1,
-                    color: AppTheme.lightGrey,
-                  ),
+                  child: Container(height: 1, color: AppTheme.lightGrey),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -543,10 +537,7 @@ class _AuthScreenState extends State<AuthScreen>
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    height: 1,
-                    color: AppTheme.lightGrey,
-                  ),
+                  child: Container(height: 1, color: AppTheme.lightGrey),
                 ),
               ],
             ),
@@ -569,7 +560,11 @@ class _AuthScreenState extends State<AuthScreen>
                     : () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => const AdminLoginScreen(),
+                            builder: (_) => AdminLoginScreen(
+                              settingsService: widget.settingsService,
+                              onThemeChanged: widget.onThemeChanged,
+                              onLanguageChanged: widget.onLanguageChanged,
+                            ),
                           ),
                         );
                       },
@@ -605,10 +600,7 @@ class _AuthScreenState extends State<AuthScreen>
             const SizedBox(height: 8),
             Text(
               'Rejoignez TuniTranspo',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppTheme.mediumGrey,
-              ),
+              style: TextStyle(fontSize: 14, color: AppTheme.mediumGrey),
             ),
             const SizedBox(height: 28),
             // Nom field with real-time validation (letters only)
@@ -659,7 +651,9 @@ class _AuthScreenState extends State<AuthScreen>
               obscureText: _obscureSignupPassword,
               isPasswordField: true,
               onVisibilityToggle: () {
-                setState(() => _obscureSignupPassword = !_obscureSignupPassword);
+                setState(
+                  () => _obscureSignupPassword = !_obscureSignupPassword,
+                );
               },
             ),
             const SizedBox(height: 16),
@@ -674,7 +668,9 @@ class _AuthScreenState extends State<AuthScreen>
               obscureText: _obscureConfirmPassword,
               isPasswordField: true,
               onVisibilityToggle: () {
-                setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
+                setState(
+                  () => _obscureConfirmPassword = !_obscureConfirmPassword,
+                );
               },
             ),
             const SizedBox(height: 20),
@@ -732,14 +728,12 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-              onPressed: _isLoading ? null : _handleSignUp,
+                onPressed: _isLoading ? null : _handleSignUp,
                 child: _isLoading
                     ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                        ),
+                        child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : Text(l10n.register),
               ),
@@ -749,10 +743,7 @@ class _AuthScreenState extends State<AuthScreen>
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    height: 1,
-                    color: AppTheme.lightGrey,
-                  ),
+                  child: Container(height: 1, color: AppTheme.lightGrey),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -762,10 +753,7 @@ class _AuthScreenState extends State<AuthScreen>
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    height: 1,
-                    color: AppTheme.lightGrey,
-                  ),
+                  child: Container(height: 1, color: AppTheme.lightGrey),
                 ),
               ],
             ),

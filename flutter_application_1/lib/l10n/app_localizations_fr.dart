@@ -60,6 +60,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get matricule => 'Matricule';
 
   @override
+  String get role => 'Rôle';
+
+  @override
   String get backToUserLogin => 'Retour à la connexion utilisateur';
 
   @override

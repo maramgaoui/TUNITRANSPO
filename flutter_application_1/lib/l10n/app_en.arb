@@ -16,6 +16,7 @@
   "adminDashboard": "Admin Dashboard",
   "administratorAccess": "Administrator Access",
   "matricule": "Matricule",
+  "role": "Role",
   "backToUserLogin": "Back to User Login",
   "manageUsers": "Manage Users",
   "manageJourneys": "Manage Journeys",

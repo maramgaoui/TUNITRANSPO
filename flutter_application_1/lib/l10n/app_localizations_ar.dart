@@ -60,6 +60,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get matricule => 'الرقم الوظيفي';
 
   @override
+  String get role => 'الدور';
+
+  @override
   String get backToUserLogin => 'العودة لتسجيل دخول المستخدم';
 
   @override

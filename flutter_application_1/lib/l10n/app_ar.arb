@@ -16,6 +16,7 @@
   "adminDashboard": "لوحة تحكم المسؤول",
   "administratorAccess": "وصول المسؤول",
   "matricule": "الرقم الوظيفي",
+  "role": "الدور",
   "backToUserLogin": "العودة لتسجيل دخول المستخدم",
   "manageUsers": "إدارة المستخدمين",
   "manageJourneys": "إدارة الرحلات",

@@ -9,7 +9,18 @@ import '../controllers/notification_controller.dart';
 import '../theme/app_theme.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  const ChatScreen({
+    super.key,
+    this.isAdminMode = false,
+    this.adminMatricule,
+    this.adminName,
+    this.adminRole,
+  });
+
+  final bool isAdminMode;
+  final String? adminMatricule;
+  final String? adminName;
+  final String? adminRole;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -26,6 +37,27 @@ class _ChatScreenState extends State<ChatScreen> {
   Map<String, dynamic>? _replyingTo;
   int _lastMessageCount = -1;
   bool _isSending = false;
+
+  String? get _chatSessionUid {
+    return _authController.currentUser?.uid;
+  }
+
+  String get _adminUid {
+    return _chatSessionUid ?? 'admin_unknown';
+  }
+
+  String get _adminDisplayName {
+    final fallback = (widget.adminRole?.trim().isNotEmpty ?? false)
+        ? 'Admin (${widget.adminRole!.trim()})'
+        : 'Admin';
+    final name = widget.adminName?.trim();
+    if (name == null || name.isEmpty) return fallback;
+    return name;
+  }
+
+  bool get _canParticipateInChat {
+    return _chatSessionUid != null;
+  }
 
   @override
   void dispose() {
@@ -77,25 +109,34 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentUser = _authController.currentUser;
     final text = _messageController.text.trim();
 
-    if (currentUser == null || text.isEmpty || _isSending) return;
+    if (!_canParticipateInChat || text.isEmpty || _isSending) return;
 
     setState(() => _isSending = true);
 
     try {
-      final fullName =
-        '${currentUser.firstName ?? ''} ${currentUser.lastName ?? ''}'.trim();
-      final username = (currentUser.username != null &&
-          currentUser.username!.trim().isNotEmpty)
-        ? currentUser.username!.trim()
-        : fullName.isNotEmpty
+      final fullName = currentUser == null
+          ? ''
+          : '${currentUser.firstName ?? ''} ${currentUser.lastName ?? ''}'
+                .trim();
+      final username = widget.isAdminMode
+          ? _adminDisplayName
+          : (currentUser?.username != null &&
+                currentUser!.username!.trim().isNotEmpty)
+          ? currentUser.username!.trim()
+          : fullName.isNotEmpty
           ? fullName
-          : _displayNameFromRaw(currentUser.email);
+          : _displayNameFromRaw(currentUser?.email ?? '');
+      final senderUid = widget.isAdminMode
+          ? _adminUid
+          : (currentUser?.uid ?? '');
 
       final payload = <String, dynamic>{
-        'uid': currentUser.uid,
+        'uid': senderUid,
         'username': username,
-        'avatarId': (currentUser.avatarId != null &&
-                currentUser.avatarId!.trim().isNotEmpty)
+        'avatarId': widget.isAdminMode
+            ? 'avatar-02'
+            : (currentUser?.avatarId != null &&
+                  currentUser!.avatarId!.trim().isNotEmpty)
             ? currentUser.avatarId!.trim()
             : 'avatar-01',
         'text': text,
@@ -112,11 +153,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
       await _messagesRef.add(payload);
 
-      NotificationController.instance.addExampleChatNotification(
-        username,
-        _previewText(text),
-      );
-
       if (!mounted) return;
       setState(() {
         _messageController.clear();
@@ -126,11 +162,9 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (_) {
       if (!mounted) return;
       final l10n = AppLocalizations.of(context)!;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(l10n.unableSendMessage),
-        ),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(l10n.unableSendMessage)));
     } finally {
       if (mounted) {
         setState(() => _isSending = false);
@@ -157,10 +191,7 @@ class _ChatScreenState extends State<ChatScreen> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryTeal,
-            AppTheme.lightTeal,
-          ],
+          colors: [AppTheme.primaryTeal, AppTheme.lightTeal],
         ),
       ),
       child: SafeArea(
@@ -254,7 +285,8 @@ class _ChatScreenState extends State<ChatScreen> {
     final currentUser = _authController.currentUser;
 
     final uid = (data['uid'] ?? '').toString();
-    final isMine = currentUser != null && uid == currentUser.uid;
+    final myUid = widget.isAdminMode ? _adminUid : currentUser?.uid;
+    final isMine = myUid != null && uid == myUid;
 
     final usernameRaw = (data['username'] ?? '').toString().trim();
     final username = _displayNameFromRaw(usernameRaw);
@@ -268,8 +300,9 @@ class _ChatScreenState extends State<ChatScreen> {
         : null;
 
     final hasReply = data['replyTo'] is Map<String, dynamic>;
-    final replyTo =
-        hasReply ? data['replyTo'] as Map<String, dynamic> : <String, dynamic>{};
+    final replyTo = hasReply
+        ? data['replyTo'] as Map<String, dynamic>
+        : <String, dynamic>{};
 
     final bubbleColor = isMine
         ? AppTheme.primaryTeal
@@ -281,17 +314,13 @@ class _ChatScreenState extends State<ChatScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       child: Row(
-        mainAxisAlignment:
-            isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+        mainAxisAlignment: isMine
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMine) ...[
-            AvatarPlus(
-              avatarId,
-              width: 36,
-              height: 36,
-              fit: BoxFit.cover,
-            ),
+            AvatarPlus(avatarId, width: 36, height: 36, fit: BoxFit.cover),
             const SizedBox(width: 8),
           ],
           ConstrainedBox(
@@ -301,8 +330,9 @@ class _ChatScreenState extends State<ChatScreen> {
             child: GestureDetector(
               onLongPress: () => _startReply(doc.id, username, text),
               child: Column(
-                crossAxisAlignment:
-                    isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                crossAxisAlignment: isMine
+                    ? CrossAxisAlignment.end
+                    : CrossAxisAlignment.start,
                 children: [
                   if (!isMine)
                     Padding(
@@ -390,11 +420,7 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Row(
           children: [
-            Icon(
-              Icons.info_outline,
-              color: AppTheme.mediumGrey,
-              size: 18,
-            ),
+            Icon(Icons.info_outline, color: AppTheme.mediumGrey, size: 18),
             const SizedBox(width: 8),
             Expanded(
               child: Text(
@@ -430,16 +456,14 @@ class _ChatScreenState extends State<ChatScreen> {
               margin: const EdgeInsets.only(bottom: 10),
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
               decoration: BoxDecoration(
-                color: Theme.of(context)
-                    .colorScheme
-                    .primary
-                    .withValues(alpha: 0.1),
+                color: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withValues(alpha: 0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.2),
                 ),
               ),
               child: Row(
@@ -468,10 +492,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                             fontSize: 12,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.8),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.8),
                           ),
                         ),
                       ],
@@ -483,10 +506,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     icon: Icon(
                       Icons.close,
                       size: 18,
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.7),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
                   ),
                 ],
@@ -502,9 +524,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   maxLines: 4,
                   textInputAction: TextInputAction.newline,
                   // Pull message input text from localization for live language switching.
-                  decoration: InputDecoration(
-                    hintText: l10n.writeMessageHint,
-                  ),
+                  decoration: InputDecoration(hintText: l10n.writeMessageHint),
                   onChanged: (_) => setState(() {}),
                 ),
               ),
@@ -538,7 +558,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final isAuthenticated = _authController.currentUser != null;
+    final isAuthenticated = _canParticipateInChat;
 
     return Scaffold(
       body: Column(
@@ -546,7 +566,9 @@ class _ChatScreenState extends State<ChatScreen> {
           _buildHeader(context),
           Expanded(
             child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _messagesRef.orderBy('timestamp', descending: false).snapshots(),
+              stream: _messagesRef
+                  .orderBy('timestamp', descending: false)
+                  .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());

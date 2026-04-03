@@ -16,6 +16,7 @@
   "adminDashboard": "Tableau de bord Admin",
   "administratorAccess": "Accès administrateur",
   "matricule": "Matricule",
+  "role": "Rôle",
   "backToUserLogin": "Retour à la connexion utilisateur",
   "manageUsers": "Gérer les utilisateurs",
   "manageJourneys": "Gérer les trajets",

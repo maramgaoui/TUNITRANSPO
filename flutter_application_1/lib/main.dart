@@ -16,28 +16,23 @@ import 'services/settings_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await NotificationService.instance.initialize();
   await NotificationController.instance.initialize();
-  
+
   // Initialize settings service to load saved preferences
   final settingsService = SettingsService();
   await settingsService.init();
-  
+
   runApp(MyApp(settingsService: settingsService));
 }
 
 class MyApp extends StatefulWidget {
   final SettingsService settingsService;
-  
-  const MyApp({
-    super.key,
-    required this.settingsService,
-  });
+
+  const MyApp({super.key, required this.settingsService});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -112,7 +107,7 @@ class AuthGuard extends StatefulWidget {
   final SettingsService settingsService;
   final Function(ThemeMode) onThemeChanged;
   final ValueChanged<String> onLanguageChanged;
-  
+
   const AuthGuard({
     super.key,
     required this.settingsService,
@@ -153,7 +148,11 @@ class _AuthGuardState extends State<AuthGuard> {
         }
 
         // User is logged out
-        return const AuthScreen();
+        return AuthScreen(
+          settingsService: widget.settingsService,
+          onThemeChanged: widget.onThemeChanged,
+          onLanguageChanged: widget.onLanguageChanged,
+        );
       },
     );
   }

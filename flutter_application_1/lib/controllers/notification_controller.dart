@@ -30,6 +30,13 @@ class NotificationController extends ChangeNotifier {
   int get unreadCount =>
       _notifications.where((notification) => !notification.isRead).length;
 
+  int get unreadChatCount => _notifications
+      .where(
+        (notification) =>
+            notification.type == NotificationType.chat && !notification.isRead,
+      )
+      .length;
+
   String _l10nToken(String key) => '$_l10nPrefix$key';
 
   void addNotification(NotificationModel notification) {
@@ -40,15 +47,19 @@ class NotificationController extends ChangeNotifier {
 
   void addFromRemoteMessage(RemoteMessage message) {
     final data = message.data;
-    final title = message.notification?.title ??
-      (data['title']?.toString() ?? _l10nToken('newNotificationTitle'));
-    final body = message.notification?.body ??
-      (data['body']?.toString() ?? _l10nToken('receivedNotificationBody'));
+    final title =
+        message.notification?.title ??
+        (data['title']?.toString() ?? _l10nToken('newNotificationTitle'));
+    final body =
+        message.notification?.body ??
+        (data['body']?.toString() ?? _l10nToken('receivedNotificationBody'));
     final type = _typeFromString(data['type']?.toString());
 
     addNotification(
       NotificationModel(
-        id: message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            message.messageId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         title: title,
         body: body,
         type: type,
@@ -99,7 +110,9 @@ class NotificationController extends ChangeNotifier {
   }
 
   void markAsRead(String id) {
-    final index = _notifications.indexWhere((notification) => notification.id == id);
+    final index = _notifications.indexWhere(
+      (notification) => notification.id == id,
+    );
     if (index == -1) return;
 
     _notifications[index] = _notifications[index].copyWith(isRead: true);
@@ -110,6 +123,17 @@ class NotificationController extends ChangeNotifier {
   void markAllAsRead() {
     for (var i = 0; i < _notifications.length; i++) {
       _notifications[i] = _notifications[i].copyWith(isRead: true);
+    }
+    notifyListeners();
+    _persistToStorage();
+  }
+
+  void markAllChatAsRead() {
+    for (var i = 0; i < _notifications.length; i++) {
+      if (_notifications[i].type == NotificationType.chat &&
+          !_notifications[i].isRead) {
+        _notifications[i] = _notifications[i].copyWith(isRead: true);
+      }
     }
     notifyListeners();
     _persistToStorage();
@@ -127,9 +151,9 @@ class NotificationController extends ChangeNotifier {
       _notifications
         ..clear()
         ..addAll(
-          decoded
-              .whereType<Map<String, dynamic>>()
-              .map(NotificationModel.fromJson),
+          decoded.whereType<Map<String, dynamic>>().map(
+            NotificationModel.fromJson,
+          ),
         );
       notifyListeners();
     } catch (_) {

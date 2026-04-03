@@ -60,6 +60,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get matricule => 'Matricule';
 
   @override
+  String get role => 'Role';
+
+  @override
   String get backToUserLogin => 'Back to User Login';
 
   @override

@@ -1,10 +1,10 @@
 # Project-level configuration.
 cmake_minimum_required(VERSION 3.14)
 
-# CMake 4 removed compatibility with projects requesting <3.5.
-# Firebase C++ SDK shipped with FlutterFire still declares 3.1 in its extracted
-# CMakeLists, so we set this minimum policy version globally for subprojects.
-set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
+# Newer CMake versions warn for subprojects requesting compatibility <3.10.
+# Firebase C++ SDK shipped with FlutterFire can still declare a low minimum,
+# so we raise the global compatibility floor for subprojects.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 
 project(tuni_transport LANGUAGES CXX)
 
@@ -71,9 +71,10 @@ include(flutter/generated_plugins.cmake)
 set(BUILD_BUNDLE_DIR "$<TARGET_FILE_DIR:${BINARY_NAME}>")
 # Make the "install" step default, as it's required to run.
 set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-  set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
-endif()
+# Always install to the app's local build bundle directory.
+# Some environments cache CMAKE_INSTALL_PREFIX as Program Files, which causes
+# ACCESS DENIED errors during `flutter run` without admin privileges.
+set(CMAKE_INSTALL_PREFIX "${BUILD_BUNDLE_DIR}" CACHE PATH "..." FORCE)
 
 set(INSTALL_BUNDLE_DATA_DIR "${CMAKE_INSTALL_PREFIX}/data")
 set(INSTALL_BUNDLE_LIB_DIR "${CMAKE_INSTALL_PREFIX}")
