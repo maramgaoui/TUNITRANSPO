@@ -3,7 +3,7 @@ import 'package:avatar_plus/avatar_plus.dart';
 import 'package:tuni_transport/constants/avatar_options.dart';
 import 'package:tuni_transport/controllers/profile_controller.dart';
 import 'package:tuni_transport/controllers/auth_controller.dart';
-import 'package:tuni_transport/models/profile_model.dart';
+import 'package:tuni_transport/models/user_model.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/utils/validation_utils.dart';
 import '../theme/app_theme.dart';
@@ -66,14 +66,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  void _loadProfileData(Profile profile) {
+  void _loadProfileData(User profile) {
     _firstNameController.text = profile.firstName ?? '';
     _lastNameController.text = profile.lastName ?? '';
     _usernameController.text = profile.username ?? '';
     _cityController.text = profile.city ?? '';
   }
 
-  String _profileFingerprint(Profile profile) {
+  String _profileFingerprint(User profile) {
     return [
       profile.uid,
       profile.email,
@@ -85,7 +85,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     ].join('|');
   }
 
-  Future<void> _saveProfile(Profile profile) async {
+  Future<void> _saveProfile(User profile) async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
@@ -148,7 +148,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  Future<void> _showAvatarPicker(Profile profile) async {
+  Future<void> _showAvatarPicker(User profile) async {
     String selectedAvatarId = profile.avatarId ?? avatarOptions.first;
     final saved = await showDialog<bool>(
       context: context,
@@ -569,7 +569,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ],
       ),
-      body: StreamBuilder<Profile?>(
+      body: StreamBuilder<User?>(
         stream: _profileController.profileStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -719,7 +719,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildProfileDetails(Profile profile) {
+  Widget _buildProfileDetails(User profile) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

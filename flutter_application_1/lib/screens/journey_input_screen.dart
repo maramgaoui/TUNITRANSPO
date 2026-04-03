@@ -18,6 +18,32 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
   bool _isLocatingCurrentPosition = false;
   String _manualDepartureBackup = '';
 
+  bool _isCurrentLocationText(String value) {
+    return value.startsWith('Position actuelle');
+  }
+
+  void _swapLocations() {
+    final departureText = _departureController.text;
+    final arrivalText = _arrivalController.text;
+
+    // Keep GPS departure pinned when current location is enabled.
+    if (_useCurrentLocation && _isCurrentLocationText(departureText)) {
+      _arrivalController.text = _manualDepartureBackup;
+      _manualDepartureBackup = arrivalText;
+      setState(() {});
+      return;
+    }
+
+    _departureController.text = arrivalText;
+    _arrivalController.text = departureText;
+
+    if (!_useCurrentLocation) {
+      _manualDepartureBackup = _departureController.text;
+    }
+
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -205,12 +231,18 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                                       icon: const Icon(Icons.close),
                                       onPressed: () {
                                         _departureController.clear();
+                                        if (!_useCurrentLocation) {
+                                          _manualDepartureBackup = '';
+                                        }
                                         setState(() {});
                                       },
                                     )
                                   : null,
                             ),
                             onChanged: (value) {
+                              if (!_useCurrentLocation) {
+                                _manualDepartureBackup = value;
+                              }
                               setState(() {});
                             },
                           ),
@@ -224,13 +256,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
                             child: IconButton(
                               icon: const Icon(Icons.swap_vert_rounded),
                               color: AppTheme.primaryTeal,
-                              onPressed: () {
-                                final temp = _departureController.text;
-                                _departureController.text =
-                                    _arrivalController.text;
-                                _arrivalController.text = temp;
-                                setState(() {});
-                              },
+                              onPressed: _swapLocations,
                             ),
                           ),
                           const SizedBox(height: 16),

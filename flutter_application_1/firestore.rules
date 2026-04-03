@@ -1,0 +1,50 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    match /community_messages/{messageId} {
+      allow read: if true;
+
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'uid',
+          'username',
+          'avatarId',
+          'text',
+          'timestamp',
+          'replyTo'
+        ])
+        && request.resource.data.username is string
+        && request.resource.data.username.size() > 0
+        && request.resource.data.username.size() <= 64
+        && request.resource.data.avatarId is string
+        && request.resource.data.avatarId.size() > 0
+        && request.resource.data.avatarId.size() <= 64
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 1000
+        && request.resource.data.timestamp is timestamp
+        && (
+          !('replyTo' in request.resource.data)
+          || (
+            request.resource.data.replyTo is map
+            && request.resource.data.replyTo.keys().hasOnly(['messageId', 'text', 'username'])
+            && request.resource.data.replyTo.messageId is string
+            && request.resource.data.replyTo.messageId.size() > 0
+            && request.resource.data.replyTo.text is string
+            && request.resource.data.replyTo.text.size() <= 120
+            && request.resource.data.replyTo.username is string
+            && request.resource.data.replyTo.username.size() > 0
+            && request.resource.data.replyTo.username.size() <= 64
+          )
+        );
+
+      allow update, delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+  }
+}

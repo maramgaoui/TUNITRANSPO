@@ -109,15 +109,7 @@ class AuthController {
       );
 
       // Save full account + profile data in one users document
-      final userData = {
-        ...user.toMap(),
-        'uid': firebaseUser.uid,
-        'email': email,
-        'username': username,
-        'avatarId': avatarId,
-        'firstName': firstName,
-        'lastName': lastName,
-      };
+      final userData = user.toMap();
       developer.log('Saving user data: $userData', name: 'AuthController');
       await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
@@ -208,15 +200,7 @@ class AuthController {
           avatarId: 'avatar-01',
         );
 
-        final userData = {
-          ...user.toMap(),
-          'uid': firebaseUser.uid,
-          'email': firebaseUser.email,
-          'username': null,
-          'avatarId': 'avatar-01',
-          'firstName': googleUser.displayName?.split(' ').first ?? '',
-          'lastName': googleUser.displayName?.split(' ').skip(1).join(' ') ?? '',
-        };
+        final userData = user.toMap();
         await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
         return user;

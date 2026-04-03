@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:developer' as developer;
-import '../models/profile_model.dart';
+import '../models/user_model.dart';
 
 class ProfileController {
   final firebase_auth.FirebaseAuth _firebaseAuth =
@@ -9,9 +9,9 @@ class ProfileController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Stream profile updates directly from Firestore to avoid retry delays.
-  Stream<Profile?> get profileStream {
+  Stream<User?> get profileStream {
     return _firebaseAuth.authStateChanges().asyncExpand((firebase_auth.User? user) {
-      if (user == null) return Stream<Profile?>.value(null);
+      if (user == null) return Stream<User?>.value(null);
 
       return _firestore.collection('users').doc(user.uid).snapshots().asyncMap((userDoc) async {
         try {
@@ -23,10 +23,10 @@ class ProfileController {
               ? userData['email']
               : (user.email ?? '');
 
-          return Profile.fromMap(userData);
+          return User.fromMap(userData);
         } catch (e) {
           developer.log('Error mapping profile stream: $e', name: 'ProfileController');
-          return Profile(
+          return User(
             uid: user.uid,
             email: user.email ?? '',
           );
@@ -36,7 +36,7 @@ class ProfileController {
   }
 
   // Read current profile once, with a short exponential backoff for transient delays.
-  Future<Profile?> getCurrentProfile() async {
+  Future<User?> getCurrentProfile() async {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return null;
 
@@ -56,7 +56,7 @@ class ProfileController {
               ? userData['email']
               : (firebaseUser.email ?? '');
 
-          return Profile.fromMap(userData);
+          return User.fromMap(userData);
         }
       } catch (e) {
         if (attempt == maxAttempts) {
@@ -69,14 +69,14 @@ class ProfileController {
       delayMs *= 2;
     }
 
-    return Profile(
+    return User(
       uid: firebaseUser.uid,
       email: firebaseUser.email ?? '',
     );
   }
 
   // Update profile
-  Future<bool> updateProfile(Profile profile) async {
+  Future<bool> updateProfile(User profile) async {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return false;
 
