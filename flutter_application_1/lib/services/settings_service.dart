@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsService {
   static const String _themeKey = 'app_theme_mode';
   static const String _languageKey = 'app_language';
+  static const String _lastRouteKey = 'app_last_route';
 
   late SharedPreferences _prefs;
   bool _initialized = false;
@@ -55,6 +56,18 @@ class SettingsService {
   Future<void> setLanguage(String language) async {
     _ensureInitialized();
     await _prefs.setString(_languageKey, language);
+  }
+
+  /// Get last persisted route for session restoration.
+  String? getLastRoute() {
+    _ensureInitialized();
+    return _prefs.getString(_lastRouteKey);
+  }
+
+  /// Persist the current route so the app can restore it on next launch.
+  Future<void> setLastRoute(String route) async {
+    _ensureInitialized();
+    await _prefs.setString(_lastRouteKey, route);
   }
 
   void _ensureInitialized() {

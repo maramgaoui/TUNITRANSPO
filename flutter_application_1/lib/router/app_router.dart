@@ -20,6 +20,18 @@ import '../services/settings_service.dart';
 class AppRouter {
   AppRouter._();
 
+  static bool _isRestorableRoute(String location) {
+    final path = Uri.tryParse(location)?.path ?? location;
+    return path == '/home/journey-input' ||
+        path == '/home/favorites' ||
+        path == '/home/notifications' ||
+        path == '/home/chat' ||
+        path == '/home/profile' ||
+        path == '/admin' ||
+        path == '/admin/manage-users' ||
+        path == '/admin/profile';
+  }
+
   static GoRouter create({
     required AuthController authController,
     required SettingsService settingsService,
@@ -40,9 +52,15 @@ class AppRouter {
       refreshListenable: refresh,
       redirect: (context, state) async {
         final path = state.uri.path;
+        final location = state.uri.toString();
         final user = authController.currentUser;
+        final savedRoute = settingsService.getLastRoute();
 
         final isPublic = path == '/auth' || path == '/admin/login' || path == '/splash';
+
+        if (_isRestorableRoute(location)) {
+          unawaited(settingsService.setLastRoute(location));
+        }
 
         if (user == null) {
           if (isPublic) {
@@ -57,6 +75,18 @@ class AppRouter {
         }
 
         if (session.isAdmin) {
+          if (path == '/splash') {
+            if (savedRoute != null && savedRoute.startsWith('/admin')) {
+              return savedRoute;
+            }
+            return adminLocation(session);
+          }
+
+          // Keep admin context intact when query params are missing.
+          if (path == '/admin/profile' && state.uri.queryParameters.isEmpty) {
+            return '/admin/profile?role=${Uri.encodeComponent(session.adminRole ?? '')}&matricule=${Uri.encodeComponent(session.adminMatricule ?? '')}&name=${Uri.encodeComponent(session.adminName ?? '')}';
+          }
+
           if (path == '/admin/login') {
             return adminLocation(session);
           }
@@ -70,7 +100,14 @@ class AppRouter {
           return '/home/journey-input';
         }
 
-        if (path == '/auth' || path == '/splash' || path == '/') {
+        if (path == '/splash') {
+          if (savedRoute != null && savedRoute.startsWith('/home')) {
+            return savedRoute;
+          }
+          return '/home/journey-input';
+        }
+
+        if (path == '/auth' || path == '/') {
           return '/home/journey-input';
         }
 
