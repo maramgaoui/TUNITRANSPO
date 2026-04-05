@@ -38,6 +38,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+
 class _MyAppState extends State<MyApp> {
   late final AuthController _authController;
   late final GoRouter _router;

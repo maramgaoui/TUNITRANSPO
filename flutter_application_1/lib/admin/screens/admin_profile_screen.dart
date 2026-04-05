@@ -41,6 +41,14 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   String? _role;
   bool _isChangingPassword = false;
 
+  void _goToAdminDashboard() {
+    if (!mounted) return;
+    final role = Uri.encodeComponent(_role ?? widget.role ?? '');
+    final matricule = Uri.encodeComponent(_matricule ?? widget.matricule ?? '');
+    final name = Uri.encodeComponent(_name ?? widget.adminName ?? '');
+    context.go('/admin?role=$role&matricule=$matricule&name=$name');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -193,8 +201,9 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 IconButton(
                   icon: const Icon(Icons.close),
                   onPressed: () {
-                    FocusScope.of(dialogContext).unfocus();
-                    Navigator.of(dialogContext).pop(false);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(dialogContext).pop(false);
+                    });
                   },
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(),
@@ -285,16 +294,18 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  FocusScope.of(dialogContext).unfocus();
-                  Navigator.of(dialogContext).pop(false);
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    Navigator.of(dialogContext).pop(false);
+                  });
                 },
                 child: const Text('Annuler'),
               ),
               ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState?.validate() ?? false) {
-                    FocusScope.of(dialogContext).unfocus();
-                    Navigator.of(dialogContext).pop(true);
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      Navigator.of(dialogContext).pop(true);
+                    });
                   }
                 },
                 child: const Text('Mettre à jour'),
@@ -357,15 +368,25 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.profile),
-        backgroundColor: AppTheme.primaryTeal,
-        foregroundColor: Colors.white,
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Center(
+    return WillPopScope(
+      onWillPop: () async {
+        _goToAdminDashboard();
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: _goToAdminDashboard,
+          ),
+          title: Text(l10n.profile),
+          automaticallyImplyLeading: false,
+          backgroundColor: AppTheme.primaryTeal,
+          foregroundColor: Colors.white,
+        ),
+        body: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(20),
                 child: ConstrainedBox(
@@ -459,6 +480,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                 ),
               ),
             ),
+      ),
     );
   }
 }

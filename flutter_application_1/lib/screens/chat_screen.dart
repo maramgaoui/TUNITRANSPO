@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/services/admin_user_service.dart';
 
 import '../controllers/auth_controller.dart';
 import '../theme/app_theme.dart';
@@ -28,12 +29,15 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _authController = AuthController();
+  final _adminUserService = AdminUserService();
   final _messageController = TextEditingController();
   final _messageFocusNode = FocusNode();
   final _scrollController = ScrollController();
 
   final CollectionReference<Map<String, dynamic>> _messagesRef =
       FirebaseFirestore.instance.collection('community_messages');
+    final CollectionReference<Map<String, dynamic>> _usersRef =
+      FirebaseFirestore.instance.collection('users');
 
   Map<String, dynamic>? _replyingTo;
   int _lastMessageCount = -1;
@@ -108,6 +112,234 @@ class _ChatScreenState extends State<ChatScreen> {
     final hh = dt.hour.toString().padLeft(2, '0');
     final mm = dt.minute.toString().padLeft(2, '0');
     return '$hh:$mm';
+  }
+
+  String _formatDateTime(DateTime value) {
+    final yyyy = value.year.toString().padLeft(4, '0');
+    final mm = value.month.toString().padLeft(2, '0');
+    final dd = value.day.toString().padLeft(2, '0');
+    final hh = value.hour.toString().padLeft(2, '0');
+    final min = value.minute.toString().padLeft(2, '0');
+    return '$yyyy-$mm-$dd $hh:$min';
+  }
+
+  String _statusLabel(BuildContext context, String status, DateTime? banUntil) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (status) {
+      case 'blocked':
+        return l10n.statusBlocked;
+      case 'banned':
+        if (banUntil == null) return l10n.statusBanned;
+        return l10n.statusBannedUntil(_formatDateTime(banUntil));
+      default:
+        return l10n.statusActive;
+    }
+  }
+
+  Color _statusColor(String status) {
+    switch (status) {
+      case 'blocked':
+        return Colors.red.shade700;
+      case 'banned':
+        return Colors.orange.shade700;
+      default:
+        return Colors.green.shade700;
+    }
+  }
+
+  Future<void> _banUser(BuildContext context, String userId, {required int days}) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await _adminUserService.banUser(userId, days: days);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.userBannedDays(days))),
+      );
+    } on FirebaseException catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? l10n.firestoreUpdateError),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _blockUser(BuildContext context, String userId) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await _adminUserService.blockUser(userId);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.userBlockedPermanently)),
+      );
+    } on FirebaseException catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? l10n.firestoreUpdateError),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _unblockUser(BuildContext context, String userId) async {
+    final l10n = AppLocalizations.of(context)!;
+    try {
+      await _adminUserService.unblockUser(userId);
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(l10n.userUnblocked)),
+      );
+    } on FirebaseException catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? l10n.firestoreUpdateError),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future<void> _showAdminUserProfile(
+    BuildContext context, {
+    required String userId,
+    required String fallbackUsername,
+    required String fallbackAvatarId,
+  }) async {
+    if (!widget.isAdminMode || userId.isEmpty) return;
+
+    final l10n = AppLocalizations.of(context)!;
+    final userDoc = await _usersRef.doc(userId).get();
+    if (!context.mounted) return;
+
+    final data = userDoc.data() ?? <String, dynamic>{};
+    final username = ((data['username'] ?? fallbackUsername).toString()).trim();
+    final email = (data['email'] ?? '').toString().trim();
+    final avatarRaw = ((data['avatar'] ?? data['avatarId']) ?? fallbackAvatarId)
+        .toString()
+        .trim();
+    final avatarId = avatarRaw.isEmpty ? 'avatar-01' : avatarRaw;
+    final status = (data['status'] ?? 'active').toString();
+    final banUntilRaw = data['banUntil'];
+    final banUntil = banUntilRaw is Timestamp
+        ? banUntilRaw.toDate()
+        : (banUntilRaw is DateTime ? banUntilRaw : null);
+    final canModerate = userDoc.exists;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      isScrollControlled: true,
+      builder: (sheetContext) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Row(
+                  children: [
+                    AvatarPlus(avatarId, width: 52, height: 52, fit: BoxFit.cover),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            username.isEmpty ? l10n.username : username,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          if (email.isNotEmpty)
+                            Text(
+                              email,
+                              style: TextStyle(
+                                color: Theme.of(sheetContext)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.7),
+                              ),
+                            ),
+                          const SizedBox(height: 4),
+                          Text(
+                            _statusLabel(sheetContext, status, banUntil),
+                            style: TextStyle(
+                              color: _statusColor(status),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (!canModerate) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    l10n.noUsersFound,
+                    style: TextStyle(color: Theme.of(sheetContext).colorScheme.error),
+                  ),
+                ],
+                const SizedBox(height: 14),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    FilledButton.tonal(
+                      onPressed: canModerate
+                          ? () async {
+                              Navigator.of(sheetContext).pop();
+                              await _banUser(context, userId, days: 3);
+                            }
+                          : null,
+                      child: Text(l10n.banFor3Days),
+                    ),
+                    FilledButton.tonal(
+                      onPressed: canModerate
+                          ? () async {
+                              Navigator.of(sheetContext).pop();
+                              await _banUser(context, userId, days: 7);
+                            }
+                          : null,
+                      child: Text(l10n.banFor7Days),
+                    ),
+                    FilledButton(
+                      onPressed: canModerate
+                          ? () async {
+                              Navigator.of(sheetContext).pop();
+                              await _blockUser(context, userId);
+                            }
+                          : null,
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                      child: Text(l10n.blockPermanently),
+                    ),
+                    OutlinedButton(
+                      onPressed: canModerate
+                          ? () async {
+                              Navigator.of(sheetContext).pop();
+                              await _unblockUser(context, userId);
+                            }
+                          : null,
+                      child: Text(l10n.unblockUser),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   String _previewText(String text) {
@@ -303,7 +535,17 @@ class _ChatScreenState extends State<ChatScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMine) ...[
-            AvatarPlus(avatarId, width: 36, height: 36, fit: BoxFit.cover),
+            GestureDetector(
+              onTap: widget.isAdminMode
+                  ? () => _showAdminUserProfile(
+                        context,
+                        userId: uid,
+                        fallbackUsername: username,
+                        fallbackAvatarId: avatarId,
+                      )
+                  : null,
+              child: AvatarPlus(avatarId, width: 36, height: 36, fit: BoxFit.cover),
+            ),
             const SizedBox(width: 8),
           ],
           ConstrainedBox(
