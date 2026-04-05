@@ -185,5 +185,57 @@
     }
   },
   "accountBannedBody": "Votre compte a été interdit par un administrateur.",
-  "firestoreUpdateError": "Impossible de mettre à jour l'utilisateur. Vérifiez les permissions Firestore."
+  "firestoreUpdateError": "Impossible de mettre à jour l'utilisateur. Vérifiez les permissions Firestore.",
+  "journeyDetails": "Détails du trajet",
+  "journeySteps": "Étapes du trajet",
+  "totalDuration": "Durée totale",
+  "fare": "Tarif",
+  "journeyType": "Type de trajet",
+  "transfers": "Correspondances",
+  "direct": "Direct",
+  "interactiveMap": "Carte interactive",
+  "settingsSaved": "Paramètres enregistrés",
+  "mode": "Mode",
+  "minimum6Characters": "Au moins 6 caractères",
+  "uppercaseLetter": "Lettre majuscule (A-Z)",
+  "lowercaseLetter": "Lettre minuscule (a-z)",
+  "digit": "Chiffre (0-9)",
+  "specialCharacter": "Caractère spécial (!@#...)",
+  "passwordTooWeak": "Le mot de passe est trop faible",
+  "passwordIsRequired": "Le mot de passe est requis",
+  "emailIsRequired": "Email est requis",
+  "invalidEmailFormat": "Format d'email invalide",
+  "fieldIsRequired": "{fieldName} est requis",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "fieldMinLength": "{fieldName} doit contenir au moins {length} caractères",
+  "@fieldMinLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldMaxLength": "{fieldName} doit contenir au maximum {length} caractères",
+  "@fieldMaxLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldCanOnlyContainLetters": "{fieldName} ne peut contenir que des lettres",
+  "@fieldCanOnlyContainLetters": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "usernameIsRequired": "Le nom d'utilisateur est requis",
+  "usernameMinLength": "Le nom d'utilisateur doit contenir au moins 3 caractères",
+  "usernameMaxLength": "Le nom d'utilisateur doit contenir au maximum 20 caractères"
 }

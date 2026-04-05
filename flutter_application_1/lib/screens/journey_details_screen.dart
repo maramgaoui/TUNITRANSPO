@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
+import '../controllers/favorites_controller.dart';
 import '../theme/app_theme.dart';
 import '../models/journey_model.dart';
 
@@ -15,6 +20,33 @@ class JourneyDetailsScreen extends StatefulWidget {
 }
 
 class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
+  late MapController _mapController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  // Map approximate coordinates for Tunisian stations
+  LatLng _getStationCoordinates(String stationName) {
+    final name = stationName.toLowerCase();
+    if (name.contains('marsa')) return const LatLng(36.8224, 10.3141);
+    if (name.contains('sfax')) return const LatLng(34.7405, 10.7603);
+    if (name.contains('sousse')) return const LatLng(35.8256, 10.6369);
+    if (name.contains('gafsa')) return const LatLng(34.4258, 8.7731);
+    if (name.contains('bizerte')) return const LatLng(37.2744, 9.8739);
+    if (name.contains('tozeur')) return const LatLng(33.9197, 8.1353);
+    if (name.contains('kairouan')) return const LatLng(35.6781, 10.0986);
+    return const LatLng(36.8065, 10.1962); // Default: Tunis center
+  }
+
   IconData _iconFor(String iconKey) {
     switch (iconKey) {
       case 'bus':
@@ -32,6 +64,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       body: SafeArea(
         child: Column(
@@ -62,9 +95,9 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Détails du trajet',
-                              style: TextStyle(
+                            Text(
+                              l10n.journeyDetails,
+                              style: const TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.w700,
                                 color: Colors.white,
@@ -90,46 +123,127 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
               flex: 2,
               child: Stack(
                 children: [
-                  // Placeholder for interactive map
-                  Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          AppTheme.lightTeal.withValues(alpha: 0.3),
-                          AppTheme.primaryTeal.withValues(alpha: 0.3),
-                        ],
-                      ),
+                  // Real map with departure and arrival markers
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
                     ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.map,
-                            size: 64,
-                            color: AppTheme.primaryTeal,
-                          ),
-                          const SizedBox(height: 12),
-                          const Text(
-                            'Carte interactive',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.primaryTeal,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            'Itinéraire intégré',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppTheme.mediumGrey,
-                            ),
-                          ),
-                        ],
+                    child: FlutterMap(
+                      mapController: _mapController,
+                      options: MapOptions(
+                        initialCenter: _getStationCoordinates(
+                          widget.journey.departureStation,
+                        ),
+                        initialZoom: 10.0,
+                        maxZoom: 18,
+                        minZoom: 5,
                       ),
+                      children: [
+                        TileLayer(
+                          urlTemplate:
+                              'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                          userAgentPackageName: 'com.example.tunitransport',
+                          maxNativeZoom: 19,
+                        ),
+                        MarkerLayer(
+                          markers: [
+                            Marker(
+                              point: _getStationCoordinates(
+                                widget.journey.departureStation,
+                              ),
+                              width: 80,
+                              height: 80,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(6),
+                                    child: const Icon(
+                                      Icons.play_arrow,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Départ',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Marker(
+                              point: _getStationCoordinates(
+                                widget.journey.arrivalStation,
+                              ),
+                              width: 80,
+                              height: 80,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 3,
+                                      ),
+                                    ),
+                                    padding: const EdgeInsets.all(6),
+                                    child: const Icon(
+                                      Icons.stop,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.red,
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: const Text(
+                                      'Arrivée',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ),
                   // Route info preview
@@ -243,25 +357,25 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                         children: [
                           _buildInfoCard(
                             icon: Icons.access_time,
-                            title: 'Durée totale',
+                            title: l10n.totalDuration,
                             value: widget.journey.duration,
                           ),
                           const SizedBox(height: 12),
                           _buildInfoCard(
                             icon: Icons.attach_money,
-                            title: 'Tarif',
+                            title: l10n.fare,
                             value: '${widget.journey.price} TND',
                           ),
                           const SizedBox(height: 12),
                           _buildInfoCard(
                             icon: Icons.train,
-                            title: 'Type de trajet',
+                            title: l10n.journeyType,
                             value: widget.journey.type,
                           ),
                           const SizedBox(height: 12),
                           _buildInfoCard(
                             icon: Icons.pin_drop,
-                            title: 'Correspondances',
+                            title: l10n.transfers,
                             value: widget.journey.transfers == 0
                                 ? 'Direct'
                                 : '${widget.journey.transfers} correspondance${widget.journey.transfers > 1 ? 's' : ''}',
@@ -276,13 +390,32 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Trajet commencé! ✓'),
-                                duration: Duration(seconds: 2),
+                          onPressed: () async {
+                            final confirmed = await showDialog<bool>(
+                              context: context,
+                              builder: (ctx) => AlertDialog(
+                                title: const Text('Commencer le trajet'),
+                                content: Text(
+                                  'Voulez-vous commencer le trajet "${widget.journey.departureStation} → ${widget.journey.arrivalStation}" ?',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.of(ctx).pop(false),
+                                    child: const Text('Annuler'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () =>
+                                        Navigator.of(ctx).pop(true),
+                                    child: const Text('Confirmer'),
+                                  ),
+                                ],
                               ),
                             );
+                            if (confirmed == true && context.mounted) {
+                              context.go('/home/active-journey',
+                                  extra: widget.journey);
+                            }
                           },
                           icon: const Icon(Icons.check_circle),
                           label: const Text('Commencer le trajet'),
@@ -294,17 +427,48 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: SizedBox(
                         width: double.infinity,
-                        child: OutlinedButton.icon(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Ajouté aux favoris! ♥'),
-                                duration: Duration(seconds: 2),
+                        child: ListenableBuilder(
+                          listenable: FavoritesController.instance,
+                          builder: (context, _) {
+                            final isFav = FavoritesController.instance
+                                .isFavorite(widget.journey.id);
+                            return OutlinedButton.icon(
+                              onPressed: () async {
+                                try {
+                                  await FavoritesController.instance
+                                      .toggleFavorite(widget.journey);
+                                  if (!context.mounted) return;
+                                  final nowFav = FavoritesController.instance
+                                      .isFavorite(widget.journey.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(nowFav
+                                          ? 'Ajouté aux favoris! ♥'
+                                          : 'Retiré des favoris'),
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+                                } catch (_) {
+                                  if (!context.mounted) return;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Erreur lors de la mise à jour des favoris'),
+                                      backgroundColor: Colors.red,
+                                      duration: Duration(seconds: 2),
+                                    ),
+                                  );
+                                }
+                              },
+                              icon: Icon(isFav
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                                color: isFav ? Colors.red : null,
                               ),
+                              label: Text(
+                                  isFav ? 'Retirer des favoris' : 'Ajouter au favoris'),
                             );
                           },
-                          icon: const Icon(Icons.favorite_border),
-                          label: const Text('Ajouter au favoris'),
                         ),
                       ),
                     ),

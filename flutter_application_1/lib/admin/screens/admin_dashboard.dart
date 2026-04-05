@@ -141,32 +141,17 @@ class _DashboardTab extends StatelessWidget {
       _AdminAction(
         labelKey: (l) => l.manageJourneys,
         icon: Icons.route_outlined,
-        onTap: (ctx) {
-          final label = l10n.manageJourneys;
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
-          );
-        },
+        onTap: (ctx) => ctx.push('/admin/manage-journeys'),
       ),
       _AdminAction(
         labelKey: (l) => l.manageStations,
         icon: Icons.train_outlined,
-        onTap: (ctx) {
-          final label = l10n.manageStations;
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
-          );
-        },
+        onTap: (ctx) => ctx.push('/admin/manage-stations'),
       ),
       _AdminAction(
         labelKey: (l) => l.sendNotifications,
         icon: Icons.notifications_active_outlined,
-        onTap: (ctx) {
-          final label = l10n.sendNotifications;
-          ScaffoldMessenger.of(ctx).showSnackBar(
-            SnackBar(content: Text(l10n.featureReadyToBeConnected(label))),
-          );
-        },
+        onTap: (ctx) => ctx.push('/admin/send-notifications'),
       ),
     ];
 

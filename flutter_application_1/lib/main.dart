@@ -48,7 +48,11 @@ class _MyAppState extends State<MyApp> {
     _authController = AuthController();
     // Load saved theme preference
     final themeSetting = widget.settingsService.getThemeMode();
-    _themeMode = themeSetting == 'dark' ? ThemeMode.dark : ThemeMode.light;
+    _themeMode = switch (themeSetting) {
+      'dark' => ThemeMode.dark,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.light,
+    };
 
     final languageSetting = widget.settingsService.getLanguage();
     _locale = _localeFromLanguage(languageSetting);

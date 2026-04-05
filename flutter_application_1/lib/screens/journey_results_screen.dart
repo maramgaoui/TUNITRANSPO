@@ -72,7 +72,7 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
                     const Icon(Icons.schedule, color: Colors.white, size: 16),
                     const SizedBox(width: 8),
                     Text(
-                      '4 options trouvées',
+                      '${journeys.length} options trouvées',
                       style: TextStyle(
                         fontSize: 12,
                         color: Colors.white.withValues(alpha: 0.9),

@@ -7,11 +7,15 @@ import '../admin/screens/admin_dashboard.dart';
 import '../admin/screens/admin_login_screen.dart';
 import '../admin/screens/admin_profile_screen.dart';
 import '../admin/screens/manage_users_screen.dart';
+import '../admin/screens/manage_journeys_screen.dart';
+import '../admin/screens/manage_stations_screen.dart';
+import '../admin/screens/send_notifications_screen.dart';
 import '../controllers/auth_controller.dart';
 import '../models/journey_model.dart';
 import '../models/session_result.dart';
 import '../screens/auth_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/active_journey_screen.dart';
 import '../screens/journey_details_screen.dart';
 import '../screens/journey_results_screen.dart';
 import '../screens/splash_screen.dart';
@@ -198,6 +202,16 @@ class AppRouter {
           },
         ),
         GoRoute(
+          path: '/home/active-journey',
+          builder: (context, state) {
+            final extra = state.extra;
+            if (extra is Journey) {
+              return ActiveJourneyScreen(journey: extra);
+            }
+            return const SplashScreen();
+          },
+        ),
+        GoRoute(
           path: '/admin',
           builder: (context, state) => AdminDashboard(
             role: state.uri.queryParameters['role'],
@@ -219,6 +233,18 @@ class AppRouter {
         GoRoute(
           path: '/admin/manage-users',
           builder: (context, state) => const ManageUsersScreen(),
+        ),
+        GoRoute(
+          path: '/admin/manage-journeys',
+          builder: (context, state) => const ManageJourneysScreen(),
+        ),
+        GoRoute(
+          path: '/admin/manage-stations',
+          builder: (context, state) => const ManageStationsScreen(),
+        ),
+        GoRoute(
+          path: '/admin/send-notifications',
+          builder: (context, state) => const SendNotificationsScreen(),
         ),
         GoRoute(
           path: '/admin/profile',

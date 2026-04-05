@@ -51,7 +51,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // Load saved preferences
     _selectedLanguage = widget.settingsService.getLanguage();
     final themeSetting = widget.settingsService.getThemeMode();
-    _themeMode = themeSetting == 'dark' ? ThemeMode.dark : ThemeMode.light;
+    _themeMode = switch (themeSetting) {
+      'dark' => ThemeMode.dark,
+      'system' => ThemeMode.system,
+      _ => ThemeMode.light,
+    };
     _firstNameController = TextEditingController();
     _lastNameController = TextEditingController();
     _usernameController = TextEditingController();
@@ -518,7 +522,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
-                        'Paramètres enregistrés - Mode: ${_themeMode.name}, Langue: $_selectedLanguage',
+                        '${l10n.settingsSaved} - ${l10n.mode}: ${_themeMode.name}, ${l10n.language}: $_selectedLanguage',
                       ),
                       backgroundColor: AppTheme.primaryTeal,
                     ),
