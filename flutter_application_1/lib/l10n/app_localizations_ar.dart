@@ -12,6 +12,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appTitle => 'توني ترانسبورت';
 
   @override
+  String get splashSubtitle => 'مساعدك الذكي للنقل';
+
+  @override
   String get login => 'تسجيل الدخول';
 
   @override
@@ -323,15 +326,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get resetPasswordTitle => 'إعادة تعيين كلمة المرور';
 
   @override
-  String get resetPasswordPrompt =>
-      'أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين';
+  String get resetPasswordPrompt => 'أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين';
 
   @override
   String get sendingResetLink => 'جارٍ إرسال رابط إعادة التعيين...';
 
   @override
-  String get resetLinkSent =>
-      'تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين';
+  String get resetLinkSent => 'تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين';
 
   @override
   String errorPrefix(Object message) {
@@ -372,7 +373,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get favoriteUpdateFailed => 'فشل تحديث المفضلة.';
 
   @override
-  String get searchByNameOrEmail => 'البحث بالاسم أو البريد الإلكتروني...';
+  String get searchByNameOrEmail => 'البحث بالاسم أو البريد الإلكتروني…';
 
   @override
   String get filterAll => 'الكل';
@@ -453,6 +454,91 @@ class AppLocalizationsAr extends AppLocalizations {
   String get accountBannedBody => 'تم حظر حسابك بواسطة المسؤول.';
 
   @override
-  String get firestoreUpdateError =>
-      'تعذر تحديث المستخدم. تحقق من أذونات Firestore.';
+  String get firestoreUpdateError => 'تعذر تحديث المستخدم. تحقق من أذونات Firestore.';
+
+  @override
+  String get journeyDetails => 'تفاصيل الرحلة';
+
+  @override
+  String get journeySteps => 'مراحل الرحلة';
+
+  @override
+  String get totalDuration => 'المدة الإجمالية';
+
+  @override
+  String get fare => 'السعر';
+
+  @override
+  String get journeyType => 'نوع الرحلة';
+
+  @override
+  String get transfers => 'المحطات التحويلية';
+
+  @override
+  String get direct => 'مباشر';
+
+  @override
+  String get interactiveMap => 'خريطة تفاعلية';
+
+  @override
+  String get settingsSaved => 'تم حفظ الإعدادات';
+
+  @override
+  String get mode => 'الوضع';
+
+  @override
+  String get minimum6Characters => '6 أحرف على الأقل';
+
+  @override
+  String get uppercaseLetter => 'حرف كبير (A-Z)';
+
+  @override
+  String get lowercaseLetter => 'حرف صغير (a-z)';
+
+  @override
+  String get digit => 'رقم (0-9)';
+
+  @override
+  String get specialCharacter => 'رمز خاص (!@#...)';
+
+  @override
+  String get passwordTooWeak => 'كلمة المرور ضعيفة جدًا';
+
+  @override
+  String get passwordIsRequired => 'كلمة المرور مطلوبة';
+
+  @override
+  String get emailIsRequired => 'البريد الإلكتروني مطلوب';
+
+  @override
+  String get invalidEmailFormat => 'صيغة البريد الإلكتروني غير صالحة';
+
+  @override
+  String fieldIsRequired(Object fieldName) {
+    return 'الحقل $fieldName مطلوب';
+  }
+
+  @override
+  String fieldMinLength(Object fieldName, int length) {
+    return 'يجب أن يحتوي $fieldName على $length أحرف على الأقل';
+  }
+
+  @override
+  String fieldMaxLength(Object fieldName, int length) {
+    return 'يجب ألا يتجاوز $fieldName $length حرفًا';
+  }
+
+  @override
+  String fieldCanOnlyContainLetters(Object fieldName) {
+    return 'يمكن أن يحتوي $fieldName على أحرف فقط';
+  }
+
+  @override
+  String get usernameIsRequired => 'اسم المستخدم مطلوب';
+
+  @override
+  String get usernameMinLength => 'يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل';
+
+  @override
+  String get usernameMaxLength => 'يجب ألا يتجاوز اسم المستخدم 20 حرفًا';
 }

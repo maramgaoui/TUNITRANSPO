@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../theme/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -42,6 +43,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -96,7 +99,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Votre assistant de transport intelligent',
+                        l10n.splashSubtitle,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w400,

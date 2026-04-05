@@ -11,7 +11,9 @@ class AuthController {
   final firebase_auth.FirebaseAuth _firebaseAuth =
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
+  GoogleSignIn? _googleSignIn;
+
+  GoogleSignIn get _googleSignInClient => _googleSignIn ??= GoogleSignIn();
 
   static const String _blockedMessage =
       'Your account has been permanently blocked.';
@@ -25,13 +27,22 @@ class AuthController {
 
       // Ban logic on app open: if banUntil has expired, automatically reactivate user.
       // If user is still blocked/banned, sign out to prevent app access.
-      final accessError = await _validateAndNormalizeUserAccess(
-        uid: user.uid,
-        enforceRestriction: true,
-      );
-      if (accessError != null) {
-        await _firebaseAuth.signOut();
-        return null;
+      try {
+        final accessError = await _validateAndNormalizeUserAccess(
+          uid: user.uid,
+          enforceRestriction: true,
+        );
+        if (accessError != null) {
+          await _firebaseAuth.signOut();
+          return null;
+        }
+      } catch (e) {
+        // Offline/temporary Firestore failures should not break auth stream
+        // delivery or leave the app in a blank routing state.
+        developer.log(
+          'Skipping access normalization due to transient error: $e',
+          name: 'AuthController',
+        );
       }
 
       // Fetch user data from Firestore
@@ -53,11 +64,31 @@ class AuthController {
     });
   }
 
-  // Get current user
+  // Get current user (uid + email only — use fetchCurrentUser() when profile fields are needed)
   User? get currentUser {
     final firebaseUser = _firebaseAuth.currentUser;
     if (firebaseUser == null) return null;
 
+    return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
+  }
+
+  // Fetch full user profile from Firestore.
+  // Returns a minimal User on Firestore errors so callers are never blocked.
+  Future<User?> fetchCurrentUser() async {
+    final firebaseUser = _firebaseAuth.currentUser;
+    if (firebaseUser == null) return null;
+
+    try {
+      final userDoc = await _firestore
+          .collection('users')
+          .doc(firebaseUser.uid)
+          .get();
+      if (userDoc.exists) {
+        return User.fromMap(userDoc.data() ?? {});
+      }
+    } catch (e) {
+      developer.log('Error fetching current user: $e', name: 'AuthController');
+    }
     return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
   }
 
@@ -191,7 +222,7 @@ class AuthController {
   Future<User?> signInWithGoogle() async {
     try {
       // Trigger Google Sign-In flow
-      final googleUser = await _googleSignIn.signIn();
+      final googleUser = await _googleSignInClient.signIn();
       if (googleUser == null) {
         throw Exception('Google sign-in cancelled');
       }
@@ -271,83 +302,90 @@ class AuthController {
       return const SessionResult(role: SessionRole.guest);
     }
 
-    final email = current.email.trim();
-    QuerySnapshot<Map<String, dynamic>>? adminSnapshot;
+    try {
+      final email = current.email.trim();
+      QuerySnapshot<Map<String, dynamic>>? adminSnapshot;
 
-    // 1) Primary lookup by email.
-    if (email.isNotEmpty) {
-      adminSnapshot = await _firestore
-          .collection('admins')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
-    }
-
-    // 2) Fallback lookup by Firebase uid.
-    if (adminSnapshot == null || adminSnapshot.docs.isEmpty) {
-      adminSnapshot = await _firestore
-          .collection('admins')
-          .where('uid', isEqualTo: current.uid)
-          .limit(1)
-          .get();
-    }
-
-    // 3) Compatibility fallback for legacy synthetic admin emails: <matricule>@admin.local
-    if ((adminSnapshot == null || adminSnapshot.docs.isEmpty) &&
-        email.isNotEmpty &&
-        email.toLowerCase().endsWith('@admin.local')) {
-      final matricule = email.split('@').first.trim();
-      if (matricule.isNotEmpty) {
+      // 1) Primary lookup by email.
+      if (email.isNotEmpty) {
         adminSnapshot = await _firestore
             .collection('admins')
-            .where('matricule', isEqualTo: matricule)
+            .where('email', isEqualTo: email)
             .limit(1)
             .get();
       }
-    }
 
-    if (adminSnapshot != null && adminSnapshot.docs.isNotEmpty) {
-      final adminData = adminSnapshot.docs.first.data();
-      return SessionResult(
-        role: SessionRole.admin,
-        adminRole: adminData['role'] as String?,
-        adminMatricule: (adminData['matricule'] ?? '').toString(),
-        adminName: adminData['name'] as String?,
-      );
-    }
-
-    final userDoc = await _firestore.collection('users').doc(current.uid).get();
-
-    if (userDoc.exists) {
-      final data = userDoc.data() ?? {};
-      final status = (data['status'] ?? 'active').toString();
-      final banUntilRaw = data['banUntil'];
-      DateTime? banUntil;
-      if (banUntilRaw is Timestamp) {
-        banUntil = banUntilRaw.toDate();
+      // 2) Fallback lookup by Firebase uid.
+      if (adminSnapshot == null || adminSnapshot.docs.isEmpty) {
+        adminSnapshot = await _firestore
+            .collection('admins')
+            .where('uid', isEqualTo: current.uid)
+            .limit(1)
+            .get();
       }
 
-      if (status == 'banned' &&
-          banUntil != null &&
-          DateTime.now().isAfter(banUntil)) {
-        unawaited(
-          _firestore.collection('users').doc(current.uid).update({
-            'status': 'active',
-            'banUntil': null,
-          }).catchError((error) {
-            developer.log(
-              'Failed to auto-reactivate expired ban: $error',
-              name: 'AuthController',
-            );
-          }),
+      // 3) Compatibility fallback for legacy synthetic admin emails: <matricule>@admin.local
+      if ((adminSnapshot == null || adminSnapshot.docs.isEmpty) &&
+          email.isNotEmpty &&
+          email.toLowerCase().endsWith('@admin.local')) {
+        final matricule = email.split('@').first.trim();
+        if (matricule.isNotEmpty) {
+          adminSnapshot = await _firestore
+              .collection('admins')
+              .where('matricule', isEqualTo: matricule)
+              .limit(1)
+              .get();
+        }
+      }
+
+      if (adminSnapshot != null && adminSnapshot.docs.isNotEmpty) {
+        final adminData = adminSnapshot.docs.first.data();
+        return SessionResult(
+          role: SessionRole.admin,
+          adminRole: adminData['role'] as String?,
+          adminMatricule: (adminData['matricule'] ?? '').toString(),
+          adminName: adminData['name'] as String?,
         );
-      } else if (status == 'banned' || status == 'blocked') {
-        await signOut();
-        return const SessionResult(role: SessionRole.guest);
       }
-    }
 
-    return const SessionResult(role: SessionRole.user);
+      final userDoc = await _firestore.collection('users').doc(current.uid).get();
+
+      if (userDoc.exists) {
+        final data = userDoc.data() ?? {};
+        final status = (data['status'] ?? 'active').toString();
+        final banUntilRaw = data['banUntil'];
+        DateTime? banUntil;
+        if (banUntilRaw is Timestamp) {
+          banUntil = banUntilRaw.toDate();
+        }
+
+        if (status == 'banned' &&
+            banUntil != null &&
+            DateTime.now().isAfter(banUntil)) {
+          unawaited(
+            _firestore.collection('users').doc(current.uid).update({
+              'status': 'active',
+              'banUntil': null,
+            }).catchError((error) {
+              developer.log(
+                'Failed to auto-reactivate expired ban: $error',
+                name: 'AuthController',
+              );
+            }),
+          );
+        } else if (status == 'banned' || status == 'blocked') {
+          await signOut();
+          return const SessionResult(role: SessionRole.guest);
+        }
+      }
+
+      return const SessionResult(role: SessionRole.user);
+    } catch (e) {
+      // Failsafe for offline mode: keep already-authenticated users in user flow
+      // instead of failing navigation with a blank transition.
+      developer.log('resolveSession fallback to user due to error: $e', name: 'AuthController');
+      return const SessionResult(role: SessionRole.user);
+    }
   }
 
   // Sign out

@@ -12,6 +12,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get appTitle => 'TuniTransport';
 
   @override
+  String get splashSubtitle => 'Votre assistant de transport intelligent';
+
+  @override
   String get login => 'Connexion';
 
   @override
@@ -323,15 +326,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get resetPasswordTitle => 'Réinitialiser le mot de passe';
 
   @override
-  String get resetPasswordPrompt =>
-      'Entrez votre adresse email pour recevoir un lien de réinitialisation';
+  String get resetPasswordPrompt => 'Entrez votre adresse email pour recevoir un lien de réinitialisation';
 
   @override
   String get sendingResetLink => 'Envoi du lien de réinitialisation...';
 
   @override
-  String get resetLinkSent =>
-      'Vérifiez votre email pour le lien de réinitialisation';
+  String get resetLinkSent => 'Vérifiez votre email pour le lien de réinitialisation';
 
   @override
   String errorPrefix(Object message) {
@@ -342,8 +343,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fixFormErrors => 'Veuillez corriger les erreurs du formulaire';
 
   @override
-  String get fillAllFieldsCorrectly =>
-      'Veuillez remplir tous les champs correctement';
+  String get fillAllFieldsCorrectly => 'Veuillez remplir tous les champs correctement';
 
   @override
   String get loginSuccess => 'Connexion réussie!';
@@ -373,7 +373,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get favoriteUpdateFailed => 'Échec de la mise à jour des favoris.';
 
   @override
-  String get searchByNameOrEmail => 'Rechercher par nom ou email...';
+  String get searchByNameOrEmail => 'Rechercher par nom ou email…';
 
   @override
   String get filterAll => 'Tous';
@@ -391,8 +391,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get noUsersFound => 'Aucun utilisateur trouvé.';
 
   @override
-  String get noUsersMatchFilter =>
-      'Aucun utilisateur ne correspond au filtre actuel.';
+  String get noUsersMatchFilter => 'Aucun utilisateur ne correspond au filtre actuel.';
 
   @override
   String get statusActive => 'Statut : Actif';
@@ -412,8 +411,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get adminActions => 'Actions admin';
 
   @override
-  String get adminActionsPrompt =>
-      'Sélectionnez une action pour cet utilisateur.';
+  String get adminActionsPrompt => 'Sélectionnez une action pour cet utilisateur.';
 
   @override
   String get banFor3Days => 'Bannir 3 jours';
@@ -442,8 +440,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get accountBlockedTitle => 'Compte bloqué';
 
   @override
-  String get accountBlockedBody =>
-      'Votre compte a été bloqué définitivement par un administrateur.';
+  String get accountBlockedBody => 'Votre compte a été bloqué définitivement par un administrateur.';
 
   @override
   String get accountBannedTitle => 'Compte banni';
@@ -454,8 +451,94 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
-  String get accountBannedBody =>
-      'Votre compte a été banni par un administrateur.';
+  String get accountBannedBody => 'Votre compte a été interdit par un administrateur.';
+
   @override
-  String get firestoreUpdateError =>
-      'Impossible de mettre à jour l\'utilisateur. Vérifiez les permissions Firestore.';}
+  String get firestoreUpdateError => 'Impossible de mettre à jour l\'utilisateur. Vérifiez les permissions Firestore.';
+
+  @override
+  String get journeyDetails => 'Détails du trajet';
+
+  @override
+  String get journeySteps => 'Étapes du trajet';
+
+  @override
+  String get totalDuration => 'Durée totale';
+
+  @override
+  String get fare => 'Tarif';
+
+  @override
+  String get journeyType => 'Type de trajet';
+
+  @override
+  String get transfers => 'Correspondances';
+
+  @override
+  String get direct => 'Direct';
+
+  @override
+  String get interactiveMap => 'Carte interactive';
+
+  @override
+  String get settingsSaved => 'Paramètres enregistrés';
+
+  @override
+  String get mode => 'Mode';
+
+  @override
+  String get minimum6Characters => 'Au moins 6 caractères';
+
+  @override
+  String get uppercaseLetter => 'Lettre majuscule (A-Z)';
+
+  @override
+  String get lowercaseLetter => 'Lettre minuscule (a-z)';
+
+  @override
+  String get digit => 'Chiffre (0-9)';
+
+  @override
+  String get specialCharacter => 'Caractère spécial (!@#...)';
+
+  @override
+  String get passwordTooWeak => 'Le mot de passe est trop faible';
+
+  @override
+  String get passwordIsRequired => 'Le mot de passe est requis';
+
+  @override
+  String get emailIsRequired => 'Email est requis';
+
+  @override
+  String get invalidEmailFormat => 'Format d\'email invalide';
+
+  @override
+  String fieldIsRequired(Object fieldName) {
+    return '$fieldName est requis';
+  }
+
+  @override
+  String fieldMinLength(Object fieldName, int length) {
+    return '$fieldName doit contenir au moins $length caractères';
+  }
+
+  @override
+  String fieldMaxLength(Object fieldName, int length) {
+    return '$fieldName doit contenir au maximum $length caractères';
+  }
+
+  @override
+  String fieldCanOnlyContainLetters(Object fieldName) {
+    return '$fieldName ne peut contenir que des lettres';
+  }
+
+  @override
+  String get usernameIsRequired => 'Le nom d\'utilisateur est requis';
+
+  @override
+  String get usernameMinLength => 'Le nom d\'utilisateur doit contenir au moins 3 caractères';
+
+  @override
+  String get usernameMaxLength => 'Le nom d\'utilisateur doit contenir au maximum 20 caractères';
+}

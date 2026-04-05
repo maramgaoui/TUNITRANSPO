@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../controllers/favorites_controller.dart';
+import '../services/active_journey_service.dart';
 import '../theme/app_theme.dart';
 import '../models/journey_model.dart';
 
@@ -59,6 +61,35 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
         return Icons.train;
       default:
         return Icons.directions_transit;
+    }
+  }
+
+  Future<void> _shareJourney() async {
+    final transfersText = widget.journey.transfers == 0
+        ? 'Direct'
+        : '${widget.journey.transfers} correspondance${widget.journey.transfers > 1 ? 's' : ''}';
+
+    final shareText = StringBuffer()
+      ..writeln('Trajet ${widget.journey.departureStation} -> ${widget.journey.arrivalStation}')
+      ..writeln('Depart: ${widget.journey.departureTime}')
+      ..writeln('Arrivee: ${widget.journey.arrivalTime ?? widget.journey.arrival}')
+      ..writeln('Duree: ${widget.journey.duration}')
+      ..writeln('Prix: ${widget.journey.price} TND')
+      ..writeln('Type: ${widget.journey.type}')
+      ..writeln('Transferts: $transfersText')
+      ..writeln('Operateur: ${widget.journey.operator}')
+      ..writeln('Ligne: ${widget.journey.line}');
+
+    try {
+      await Share.share(shareText.toString());
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Impossible de partager ce trajet pour le moment.'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -413,6 +444,8 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                               ),
                             );
                             if (confirmed == true && context.mounted) {
+                              await ActiveJourneyService.instance
+                                  .setActiveJourney(widget.journey);
                               context.go('/home/active-journey',
                                   extra: widget.journey);
                             }
@@ -478,7 +511,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
-                          onPressed: () {},
+                          onPressed: _shareJourney,
                           icon: const Icon(Icons.share),
                           label: const Text('Partager'),
                         ),

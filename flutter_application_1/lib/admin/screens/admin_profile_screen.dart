@@ -224,8 +224,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
                           ),
                           const SizedBox(height: 10),
                           _InfoTile(
-                            // Fallback label to avoid stale l10n generation issues.
-                            label: 'Role',
+                            label: l10n.role,
                             value: _role?.isNotEmpty == true ? _role! : '-',
                             icon: Icons.workspace_premium_outlined,
                           ),

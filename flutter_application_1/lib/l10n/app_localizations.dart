@@ -103,6 +103,12 @@ abstract class AppLocalizations {
   /// **'TuniTransport'**
   String get appTitle;
 
+  /// No description provided for @splashSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your smart transport assistant'**
+  String get splashSubtitle;
+
   /// No description provided for @login.
   ///
   /// In en, this message translates to:
@@ -802,7 +808,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchByNameOrEmail.
   ///
   /// In en, this message translates to:
-  /// **'Search by name or email...'**
+  /// **'Search by name or email…'**
   String get searchByNameOrEmail;
 
   /// No description provided for @filterAll.
@@ -954,6 +960,162 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unable to update user. Check Firestore permissions.'**
   String get firestoreUpdateError;
+
+  /// No description provided for @journeyDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey details'**
+  String get journeyDetails;
+
+  /// No description provided for @journeySteps.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey steps'**
+  String get journeySteps;
+
+  /// No description provided for @totalDuration.
+  ///
+  /// In en, this message translates to:
+  /// **'Total duration'**
+  String get totalDuration;
+
+  /// No description provided for @fare.
+  ///
+  /// In en, this message translates to:
+  /// **'Fare'**
+  String get fare;
+
+  /// No description provided for @journeyType.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey type'**
+  String get journeyType;
+
+  /// No description provided for @transfers.
+  ///
+  /// In en, this message translates to:
+  /// **'Transfers'**
+  String get transfers;
+
+  /// No description provided for @direct.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct'**
+  String get direct;
+
+  /// No description provided for @interactiveMap.
+  ///
+  /// In en, this message translates to:
+  /// **'Interactive map'**
+  String get interactiveMap;
+
+  /// No description provided for @settingsSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings saved'**
+  String get settingsSaved;
+
+  /// No description provided for @mode.
+  ///
+  /// In en, this message translates to:
+  /// **'Mode'**
+  String get mode;
+
+  /// No description provided for @minimum6Characters.
+  ///
+  /// In en, this message translates to:
+  /// **'At least 6 characters'**
+  String get minimum6Characters;
+
+  /// No description provided for @uppercaseLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Uppercase letter (A-Z)'**
+  String get uppercaseLetter;
+
+  /// No description provided for @lowercaseLetter.
+  ///
+  /// In en, this message translates to:
+  /// **'Lowercase letter (a-z)'**
+  String get lowercaseLetter;
+
+  /// No description provided for @digit.
+  ///
+  /// In en, this message translates to:
+  /// **'Digit (0-9)'**
+  String get digit;
+
+  /// No description provided for @specialCharacter.
+  ///
+  /// In en, this message translates to:
+  /// **'Special character (!@#...)'**
+  String get specialCharacter;
+
+  /// No description provided for @passwordTooWeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is too weak'**
+  String get passwordTooWeak;
+
+  /// No description provided for @passwordIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Password is required'**
+  String get passwordIsRequired;
+
+  /// No description provided for @emailIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Email is required'**
+  String get emailIsRequired;
+
+  /// No description provided for @invalidEmailFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email format'**
+  String get invalidEmailFormat;
+
+  /// No description provided for @fieldIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} is required'**
+  String fieldIsRequired(Object fieldName);
+
+  /// No description provided for @fieldMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} must be at least {length} characters'**
+  String fieldMinLength(Object fieldName, int length);
+
+  /// No description provided for @fieldMaxLength.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} must be at most {length} characters'**
+  String fieldMaxLength(Object fieldName, int length);
+
+  /// No description provided for @fieldCanOnlyContainLetters.
+  ///
+  /// In en, this message translates to:
+  /// **'{fieldName} can only contain letters'**
+  String fieldCanOnlyContainLetters(Object fieldName);
+
+  /// No description provided for @usernameIsRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Username is required'**
+  String get usernameIsRequired;
+
+  /// No description provided for @usernameMinLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at least 3 characters'**
+  String get usernameMinLength;
+
+  /// No description provided for @usernameMaxLength.
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be at most 20 characters'**
+  String get usernameMaxLength;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

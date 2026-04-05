@@ -29,6 +29,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _authController = AuthController();
   final _messageController = TextEditingController();
+  final _messageFocusNode = FocusNode();
   final _scrollController = ScrollController();
 
   final CollectionReference<Map<String, dynamic>> _messagesRef =
@@ -37,6 +38,16 @@ class _ChatScreenState extends State<ChatScreen> {
   Map<String, dynamic>? _replyingTo;
   int _lastMessageCount = -1;
   bool _isSending = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _messageFocusNode.addListener(() {
+      if (_messageFocusNode.hasFocus) {
+        _ensureLatestMessageVisible();
+      }
+    });
+  }
 
   String? get _chatSessionUid {
     return _authController.currentUser?.uid;
@@ -62,6 +73,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     _messageController.dispose();
+    _messageFocusNode.dispose();
     _scrollController.dispose();
     super.dispose();
   }
@@ -69,11 +81,24 @@ class _ChatScreenState extends State<ChatScreen> {
   void _scheduleScrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrollController.hasClients) return;
+      final target = _scrollController.position.minScrollExtent;
+      if ((_scrollController.offset - target).abs() < 4) return;
       _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
+        target,
         duration: const Duration(milliseconds: 220),
         curve: Curves.easeOut,
       );
+    });
+  }
+
+  void _ensureLatestMessageVisible() {
+    _scheduleScrollToBottom();
+
+    // Keyboard animation changes viewport height after focus; scroll again
+    // once that resize has settled to keep the latest message visible.
+    Future.delayed(const Duration(milliseconds: 280), () {
+      if (!mounted) return;
+      _scheduleScrollToBottom();
     });
   }
 
@@ -106,10 +131,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<void> _sendMessage() async {
-    final currentUser = _authController.currentUser;
     final text = _messageController.text.trim();
 
     if (!_canParticipateInChat || text.isEmpty || _isSending) return;
+
+    // Fetch the full profile so username/avatarId are populated.
+    final currentUser = await _authController.fetchCurrentUser();
 
     setState(() => _isSending = true);
 
@@ -476,12 +503,17 @@ class _ChatScreenState extends State<ChatScreen> {
               Expanded(
                 child: TextField(
                   controller: _messageController,
+                  focusNode: _messageFocusNode,
                   minLines: 1,
                   maxLines: 4,
                   textInputAction: TextInputAction.newline,
                   // Pull message input text from localization for live language switching.
                   decoration: InputDecoration(hintText: l10n.writeMessageHint),
-                  onChanged: (_) => setState(() {}),
+                  onTap: _ensureLatestMessageVisible,
+                  onChanged: (_) {
+                    setState(() {});
+                    _ensureLatestMessageVisible();
+                  },
                 ),
               ),
               const SizedBox(width: 8),
@@ -517,6 +549,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final isAuthenticated = _canParticipateInChat;
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: Column(
         children: [
           AppHeader(
@@ -572,16 +605,23 @@ class _ChatScreenState extends State<ChatScreen> {
 
                 return ListView.builder(
                   controller: _scrollController,
-                  padding: const EdgeInsets.only(top: 10, bottom: 10),
+                  reverse: true,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.only(top: 10, bottom: 16),
                   itemCount: docs.length,
                   itemBuilder: (context, index) {
-                    return _buildMessageTile(context, docs[index]);
+                    final reverseIndex = docs.length - 1 - index;
+                    return _buildMessageTile(context, docs[reverseIndex]);
                   },
                 );
               },
             ),
           ),
-          _buildInputArea(context, isAuthenticated),
+          SafeArea(
+            top: false,
+            child: _buildInputArea(context, isAuthenticated),
+          ),
         ],
       ),
     );

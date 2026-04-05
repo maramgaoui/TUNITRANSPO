@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/theme/app_theme.dart';
 import '../services/settings_service.dart';
+import '../services/active_journey_service.dart';
 import 'journey_input_screen.dart';
 import 'favorites_screen.dart';
 import 'notification_screen.dart';
 import 'chat_screen.dart';
 import 'profile_screen.dart';
+import '../models/journey_model.dart';
 
 class HomeScreen extends StatefulWidget {
   final SettingsService settingsService;
@@ -75,6 +78,39 @@ class _HomeScreenState extends State<HomeScreen> {
       textDirection: Directionality.of(context),
       child: Scaffold(
         body: screens[selectedIndex],
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: ListenableBuilder(
+          listenable: ActiveJourneyService.instance,
+          builder: (context, _) {
+            final Journey? activeJourney =
+                ActiveJourneyService.instance.activeJourney;
+            if (activeJourney == null) {
+              return const SizedBox.shrink();
+            }
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: FloatingActionButton.extended(
+                heroTag: 'active-journey-shortcut',
+                onPressed: () => context.go(
+                  '/home/active-journey',
+                  extra: activeJourney,
+                ),
+                backgroundColor: AppTheme.primaryTeal,
+                foregroundColor: Colors.white,
+                icon: const Icon(Icons.navigation),
+                label: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 170),
+                  child: Text(
+                    '${activeJourney.departureStation} -> ${activeJourney.arrivalStation}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           currentIndex: selectedIndex,

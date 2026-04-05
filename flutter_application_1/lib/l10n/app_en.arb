@@ -1,5 +1,6 @@
 {
   "appTitle": "TuniTransport",
+  "splashSubtitle": "Your smart transport assistant",
   "login": "Login",
   "register": "Register",
   "email": "Email",
@@ -185,5 +186,57 @@
     }
   },
   "accountBannedBody": "Your account has been banned by an administrator.",
-  "firestoreUpdateError": "Unable to update user. Check Firestore permissions."
+  "firestoreUpdateError": "Unable to update user. Check Firestore permissions.",
+  "journeyDetails": "Journey details",
+  "journeySteps": "Journey steps",
+  "totalDuration": "Total duration",
+  "fare": "Fare",
+  "journeyType": "Journey type",
+  "transfers": "Transfers",
+  "direct": "Direct",
+  "interactiveMap": "Interactive map",
+  "settingsSaved": "Settings saved",
+  "mode": "Mode",
+  "minimum6Characters": "At least 6 characters",
+  "uppercaseLetter": "Uppercase letter (A-Z)",
+  "lowercaseLetter": "Lowercase letter (a-z)",
+  "digit": "Digit (0-9)",
+  "specialCharacter": "Special character (!@#...)",
+  "passwordTooWeak": "Password is too weak",
+  "passwordIsRequired": "Password is required",
+  "emailIsRequired": "Email is required",
+  "invalidEmailFormat": "Invalid email format",
+  "fieldIsRequired": "{fieldName} is required",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "fieldMinLength": "{fieldName} must be at least {length} characters",
+  "@fieldMinLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldMaxLength": "{fieldName} must be at most {length} characters",
+  "@fieldMaxLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldCanOnlyContainLetters": "{fieldName} can only contain letters",
+  "@fieldCanOnlyContainLetters": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "usernameIsRequired": "Username is required",
+  "usernameMinLength": "Username must be at least 3 characters",
+  "usernameMaxLength": "Username must be at most 20 characters"
 }

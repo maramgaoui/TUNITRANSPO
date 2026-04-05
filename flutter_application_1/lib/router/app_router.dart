@@ -67,20 +67,31 @@ class AppRouter {
         }
 
         if (user == null) {
+          if (path == '/splash') {
+            return '/auth';
+          }
           if (isPublic) {
             return null;
           }
           return '/auth';
         }
 
-        final session = await authController.resolveSession(user);
+        SessionResult session;
+        try {
+          session = await authController.resolveSession(user);
+        } catch (_) {
+          // Failsafe: if session resolution fails (network/rules/runtime),
+          // force a clean auth flow instead of leaving a blank screen.
+          await authController.signOut();
+          return '/auth';
+        }
         if (session.isGuest) {
           return '/auth';
         }
 
         if (session.isAdmin) {
           if (path == '/splash') {
-            if (savedRoute != null && savedRoute.startsWith('/admin')) {
+            if (savedRoute != null && _isRestorableRoute(savedRoute) && savedRoute.startsWith('/admin')) {
               return savedRoute;
             }
             return adminLocation(session);
@@ -105,7 +116,7 @@ class AppRouter {
         }
 
         if (path == '/splash') {
-          if (savedRoute != null && savedRoute.startsWith('/home')) {
+          if (savedRoute != null && _isRestorableRoute(savedRoute) && savedRoute.startsWith('/home')) {
             return savedRoute;
           }
           return '/home/journey-input';
@@ -188,7 +199,11 @@ class AppRouter {
                 arrival: (extra['arrival'] ?? '').toString(),
               );
             }
-            return const SplashScreen();
+            return HomeScreen(
+              settingsService: settingsService,
+              onThemeChanged: onThemeChanged,
+              onLanguageChanged: onLanguageChanged,
+            );
           },
         ),
         GoRoute(
@@ -198,7 +213,11 @@ class AppRouter {
             if (extra is Journey) {
               return JourneyDetailsScreen(journey: extra);
             }
-            return const SplashScreen();
+            return HomeScreen(
+              settingsService: settingsService,
+              onThemeChanged: onThemeChanged,
+              onLanguageChanged: onLanguageChanged,
+            );
           },
         ),
         GoRoute(
@@ -208,7 +227,11 @@ class AppRouter {
             if (extra is Journey) {
               return ActiveJourneyScreen(journey: extra);
             }
-            return const SplashScreen();
+            return HomeScreen(
+              settingsService: settingsService,
+              onThemeChanged: onThemeChanged,
+              onLanguageChanged: onLanguageChanged,
+            );
           },
         ),
         GoRoute(

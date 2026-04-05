@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import '../models/journey_model.dart';
+import '../services/active_journey_service.dart';
 import '../theme/app_theme.dart';
 
 class ActiveJourneyScreen extends StatelessWidget {
@@ -250,6 +251,8 @@ class ActiveJourneyScreen extends StatelessWidget {
                             ),
                           );
                           if (confirmed == true && context.mounted) {
+                            await ActiveJourneyService.instance
+                                .clearActiveJourney();
                             context.go('/home/journey-input');
                           }
                         },

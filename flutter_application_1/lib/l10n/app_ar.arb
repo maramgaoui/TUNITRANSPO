@@ -1,5 +1,6 @@
 {
   "appTitle": "توني ترانسبورت",
+  "splashSubtitle": "مساعدك الذكي للنقل",
   "login": "تسجيل الدخول",
   "register": "إنشاء حساب",
   "email": "البريد الإلكتروني",
@@ -185,5 +186,57 @@
     }
   },
   "accountBannedBody": "تم حظر حسابك بواسطة المسؤول.",
-  "firestoreUpdateError": "تعذر تحديث المستخدم. تحقق من أذونات Firestore."
+  "firestoreUpdateError": "تعذر تحديث المستخدم. تحقق من أذونات Firestore.",
+  "journeyDetails": "تفاصيل الرحلة",
+  "journeySteps": "مراحل الرحلة",
+  "totalDuration": "المدة الإجمالية",
+  "fare": "السعر",
+  "journeyType": "نوع الرحلة",
+  "transfers": "المحطات التحويلية",
+  "direct": "مباشر",
+  "interactiveMap": "خريطة تفاعلية",
+  "settingsSaved": "تم حفظ الإعدادات",
+  "mode": "الوضع",
+  "minimum6Characters": "6 أحرف على الأقل",
+  "uppercaseLetter": "حرف كبير (A-Z)",
+  "lowercaseLetter": "حرف صغير (a-z)",
+  "digit": "رقم (0-9)",
+  "specialCharacter": "رمز خاص (!@#...)",
+  "passwordTooWeak": "كلمة المرور ضعيفة جدًا",
+  "passwordIsRequired": "كلمة المرور مطلوبة",
+  "emailIsRequired": "البريد الإلكتروني مطلوب",
+  "invalidEmailFormat": "صيغة البريد الإلكتروني غير صالحة",
+  "fieldIsRequired": "الحقل {fieldName} مطلوب",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "fieldMinLength": "يجب أن يحتوي {fieldName} على {length} أحرف على الأقل",
+  "@fieldMinLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldMaxLength": "يجب ألا يتجاوز {fieldName} {length} حرفًا",
+  "@fieldMaxLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldCanOnlyContainLetters": "يمكن أن يحتوي {fieldName} على أحرف فقط",
+  "@fieldCanOnlyContainLetters": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "usernameIsRequired": "اسم المستخدم مطلوب",
+  "usernameMinLength": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل",
+  "usernameMaxLength": "يجب ألا يتجاوز اسم المستخدم 20 حرفًا"
 }

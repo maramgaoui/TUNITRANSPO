@@ -70,11 +70,11 @@ service cloud.firestore {
         && resource.data.uid == request.auth.uid;
     }
 
-    // Admin credentials are read during admin login (before Firebase Auth sign-in),
-    // so reads must be allowed without requiring authentication.
+    // Admin login now authenticates with Firebase Auth before reading this
+    // collection, so reads can be restricted to signed-in users.
     // Write access is permanently disabled to prevent unauthorized admin creation.
     match /admins/{adminId} {
-      allow read: if true;
+      allow read: if isSignedIn();
       allow write: if false;
     }
   }

@@ -9,6 +9,7 @@ import 'controllers/auth_controller.dart';
 import 'controllers/notification_controller.dart';
 import 'router/app_router.dart';
 import 'services/notification_service.dart';
+import 'services/active_journey_service.dart';
 import 'theme/app_theme.dart';
 import 'services/settings_service.dart';
 
@@ -19,6 +20,7 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   await NotificationService.instance.initialize();
   await NotificationController.instance.initialize();
+  await ActiveJourneyService.instance.init();
 
   // Initialize settings service to load saved preferences
   final settingsService = SettingsService();
