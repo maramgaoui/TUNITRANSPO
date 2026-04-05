@@ -53,28 +53,30 @@ class _AdminDashboardState extends State<AdminDashboard> {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(switch (_selectedIndex) {
-          0 => l10n.adminDashboard,
-          1 => l10n.messages,
-          2 => l10n.notifications,
-          _ => l10n.settings,
-        }),
-        automaticallyImplyLeading: false,
-        backgroundColor: AppTheme.primaryTeal,
-        foregroundColor: Colors.white,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              final role = Uri.encodeComponent(widget.role ?? '');
-              final matricule = Uri.encodeComponent(widget.matricule ?? '');
-              final name = Uri.encodeComponent(widget.adminName ?? '');
-              context.push('/admin/profile?role=$role&matricule=$matricule&name=$name');
-            },
-          ),
-        ],
-      ),
+      appBar: _selectedIndex == 1
+          ? null
+          : AppBar(
+              title: Text(switch (_selectedIndex) {
+                0 => l10n.adminDashboard,
+                1 => l10n.messages,
+                2 => l10n.notifications,
+                _ => l10n.settings,
+              }),
+              automaticallyImplyLeading: false,
+              backgroundColor: AppTheme.primaryTeal,
+              foregroundColor: Colors.white,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.person),
+                  onPressed: () {
+                    final role = Uri.encodeComponent(widget.role ?? '');
+                    final matricule = Uri.encodeComponent(widget.matricule ?? '');
+                    final name = Uri.encodeComponent(widget.adminName ?? '');
+                    context.push('/admin/profile?role=$role&matricule=$matricule&name=$name');
+                  },
+                ),
+              ],
+            ),
       body: IndexedStack(index: _selectedIndex, children: pages),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,

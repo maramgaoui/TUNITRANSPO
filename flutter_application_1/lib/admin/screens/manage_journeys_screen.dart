@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
@@ -121,7 +120,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                   ),
                   onPressed: () {
                     if (isEdit) {
-                      journey!.departure = departureCtrl.text;
+                      journey.departure = departureCtrl.text;
                       journey.arrival = arrivalCtrl.text;
                       journey.type = typeCtrl.text;
                       journey.departureTime = timeCtrl.text;

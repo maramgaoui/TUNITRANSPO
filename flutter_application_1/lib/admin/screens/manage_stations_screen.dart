@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
@@ -112,7 +111,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
                   ),
                   onPressed: () {
                     if (isEdit) {
-                      station!.name = nameCtrl.text;
+                      station.name = nameCtrl.text;
                       station.type = typeCtrl.text;
                       station.city = cityCtrl.text;
                     } else {

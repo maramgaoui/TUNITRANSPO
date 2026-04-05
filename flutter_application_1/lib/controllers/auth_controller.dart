@@ -304,7 +304,7 @@ class AuthController {
 
     try {
       final email = current.email.trim();
-      QuerySnapshot<Map<String, dynamic>>? adminSnapshot;
+      QuerySnapshot<Map<String, dynamic>> adminSnapshot;
 
       // 1) Primary lookup by email.
       if (email.isNotEmpty) {
@@ -313,10 +313,16 @@ class AuthController {
             .where('email', isEqualTo: email)
             .limit(1)
             .get();
+      } else {
+        adminSnapshot = await _firestore
+        .collection('admins')
+        .where('uid', isEqualTo: current.uid)
+        .limit(1)
+        .get();
       }
 
       // 2) Fallback lookup by Firebase uid.
-      if (adminSnapshot == null || adminSnapshot.docs.isEmpty) {
+      if (adminSnapshot.docs.isEmpty) {
         adminSnapshot = await _firestore
             .collection('admins')
             .where('uid', isEqualTo: current.uid)
@@ -325,7 +331,7 @@ class AuthController {
       }
 
       // 3) Compatibility fallback for legacy synthetic admin emails: <matricule>@admin.local
-      if ((adminSnapshot == null || adminSnapshot.docs.isEmpty) &&
+      if (adminSnapshot.docs.isEmpty &&
           email.isNotEmpty &&
           email.toLowerCase().endsWith('@admin.local')) {
         final matricule = email.split('@').first.trim();
@@ -338,7 +344,7 @@ class AuthController {
         }
       }
 
-      if (adminSnapshot != null && adminSnapshot.docs.isNotEmpty) {
+      if (adminSnapshot.docs.isNotEmpty) {
         final adminData = adminSnapshot.docs.first.data();
         return SessionResult(
           role: SessionRole.admin,
