@@ -8,15 +8,33 @@ import '../models/session_result.dart';
 import '../utils/validation_utils.dart';
 
 class AuthController {
+  static final AuthController instance = AuthController();
+  static const Duration _sessionTtl = Duration(minutes: 5);
+
   final firebase_auth.FirebaseAuth _firebaseAuth =
       firebase_auth.FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   GoogleSignIn? _googleSignIn;
+  SessionResult? _cachedSession;
+  DateTime? _sessionCachedAt;
+  String? _cachedSessionUid;
 
   GoogleSignIn get _googleSignInClient => _googleSignIn ??= GoogleSignIn();
 
   static const String _blockedMessage =
       'Your account has been permanently blocked.';
+
+  void _invalidateSessionCache() {
+    _cachedSession = null;
+    _sessionCachedAt = null;
+    _cachedSessionUid = null;
+  }
+
+  void _cacheSession(String uid, SessionResult session) {
+    _cachedSession = session;
+    _sessionCachedAt = DateTime.now();
+    _cachedSessionUid = uid;
+  }
 
   // Get current user stream
   Stream<User?> get authStateChanges {
@@ -161,6 +179,7 @@ class AuthController {
       developer.log('Saving user data: $userData', name: 'AuthController');
       await _firestore.collection('users').doc(firebaseUser.uid).set(userData);
 
+      _invalidateSessionCache();
       return user;
     } on firebase_auth.FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
@@ -202,9 +221,11 @@ class AuthController {
           .get();
 
       if (userDoc.exists) {
+        _invalidateSessionCache();
         return User.fromMap(userDoc.data() ?? {});
       } else {
         // Return basic user if not in Firestore
+        _invalidateSessionCache();
         return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -261,6 +282,7 @@ class AuthController {
           await _firebaseAuth.signOut();
           throw Exception(accessError);
         }
+        _invalidateSessionCache();
         return User.fromMap(userDoc.data() ?? {});
       } else {
         // Create new user document
@@ -281,6 +303,7 @@ class AuthController {
             .doc(firebaseUser.uid)
             .set(userData);
 
+        _invalidateSessionCache();
         return user;
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -299,7 +322,15 @@ class AuthController {
   /// Returns whether the user should be treated as guest, user, or admin.
   Future<SessionResult> resolveSession(User current) async {
     if (current.uid.isEmpty) {
+      _invalidateSessionCache();
       return const SessionResult(role: SessionRole.guest);
+    }
+
+    if (_cachedSession != null &&
+        _sessionCachedAt != null &&
+        _cachedSessionUid == current.uid &&
+        DateTime.now().difference(_sessionCachedAt!) < _sessionTtl) {
+      return _cachedSession!;
     }
 
     try {
@@ -346,12 +377,14 @@ class AuthController {
 
       if (adminSnapshot.docs.isNotEmpty) {
         final adminData = adminSnapshot.docs.first.data();
-        return SessionResult(
+        final result = SessionResult(
           role: SessionRole.admin,
           adminRole: adminData['role'] as String?,
           adminMatricule: (adminData['matricule'] ?? '').toString(),
           adminName: adminData['name'] as String?,
         );
+        _cacheSession(current.uid, result);
+        return result;
       }
 
       final userDoc = await _firestore.collection('users').doc(current.uid).get();
@@ -385,18 +418,23 @@ class AuthController {
         }
       }
 
-      return const SessionResult(role: SessionRole.user);
+      const result = SessionResult(role: SessionRole.user);
+      _cacheSession(current.uid, result);
+      return result;
     } catch (e) {
       // Failsafe for offline mode: keep already-authenticated users in user flow
       // instead of failing navigation with a blank transition.
       developer.log('resolveSession fallback to user due to error: $e', name: 'AuthController');
-      return const SessionResult(role: SessionRole.user);
+      const result = SessionResult(role: SessionRole.user);
+      _cacheSession(current.uid, result);
+      return result;
     }
   }
 
   // Sign out
   Future<void> signOut() async {
     try {
+      _invalidateSessionCache();
       await _firebaseAuth.signOut();
     } catch (e) {
       developer.log('Sign out error: $e', name: 'AuthController');

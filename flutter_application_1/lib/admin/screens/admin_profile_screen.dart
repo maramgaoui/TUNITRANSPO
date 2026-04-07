@@ -368,10 +368,12 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
-    return WillPopScope(
-      onWillPop: () async {
-        _goToAdminDashboard();
-        return false;
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) {
+          _goToAdminDashboard();
+        }
       },
       child: Scaffold(
         appBar: AppBar(

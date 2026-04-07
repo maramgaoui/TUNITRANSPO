@@ -28,6 +28,22 @@ service cloud.firestore {
       allow read, write: if isSignedIn() && request.auth.uid == userId;
     }
 
+    // Transport data collections
+    match /journeys/{journeyId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /stations/{stationId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
     match /community_messages/{messageId} {
       allow read: if true;
 
@@ -67,14 +83,13 @@ service cloud.firestore {
         );
 
       allow update, delete: if request.auth != null
-        && resource.data.uid == request.auth.uid;
+        && (resource.data.uid == request.auth.uid || isAdmin());
     }
 
-    // Admin login now authenticates with Firebase Auth before reading this
-    // collection, so reads can be restricted to signed-in users.
+    // Admin profiles are sensitive and must only be visible to admins.
     // Write access is permanently disabled to prevent unauthorized admin creation.
     match /admins/{adminId} {
-      allow read: if isSignedIn();
+      allow read: if isAdmin();
       allow write: if false;
     }
   }

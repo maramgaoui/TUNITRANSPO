@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authController = AuthController();
+    _authController = AuthController.instance;
     // Load saved theme preference
     final themeSetting = widget.settingsService.getThemeMode();
     _themeMode = switch (themeSetting) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
@@ -12,28 +13,28 @@ class SendNotificationsScreen extends StatefulWidget {
 }
 
 class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
-  final List<_Notification> sentNotifications = [
-    _Notification(
-      id: '1',
-      title: 'Maintenance Metro',
-      message: 'Fermeture du métro samedi pour maintenance',
-      sentAt: DateTime.now().subtract(const Duration(days: 2)),
-      recipients: 1250,
-    ),
-    _Notification(
-      id: '2',
-      title: 'Nouvelle ligne',
-      message: 'Lancement de la nouvelle ligne express Tunis-Sfax',
-      sentAt: DateTime.now().subtract(const Duration(days: 5)),
-      recipients: 3400,
-    ),
-  ];
+  final CollectionReference<Map<String, dynamic>> _notificationsRef =
+      FirebaseFirestore.instance.collection('notifications');
+  final CollectionReference<Map<String, dynamic>> _usersRef =
+      FirebaseFirestore.instance.collection('users');
 
   final titleCtrl = TextEditingController();
   final messageCtrl = TextEditingController();
+  bool _isSending = false;
   String selectedTarget = 'all'; // all, app_users, drivers
 
-  void _sendNotification() {
+  Future<int> _estimateRecipients(String target) async {
+    AggregateQuery query;
+    if (target == 'drivers') {
+      query = _usersRef.where('role', isEqualTo: 'driver').count();
+    } else {
+      query = _usersRef.count();
+    }
+    final snapshot = await query.get();
+    return snapshot.count ?? 0;
+  }
+
+  Future<void> _sendNotification() async {
     if (titleCtrl.text.isEmpty || messageCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Remplissez tous les champs')),
@@ -41,32 +42,38 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
       return;
     }
 
-    final newNotif = _Notification(
-      id: DateTime.now().toString(),
-      title: titleCtrl.text,
-      message: messageCtrl.text,
-      sentAt: DateTime.now(),
-      recipients: selectedTarget == 'all'
-          ? 5600
-          : selectedTarget == 'app_users'
-              ? 2100
-              : 1500,
-    );
+    setState(() => _isSending = true);
+    try {
+      final recipients = await _estimateRecipients(selectedTarget);
+      await _notificationsRef.add({
+        'title': titleCtrl.text.trim(),
+        'message': messageCtrl.text.trim(),
+        'target': selectedTarget,
+        'recipientsCount': recipients,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
 
-    setState(() {
-      sentNotifications.insert(0, newNotif);
-    });
+      if (!mounted) return;
+      titleCtrl.clear();
+      messageCtrl.clear();
 
-    titleCtrl.clear();
-    messageCtrl.clear();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          'Notification envoyée à ${newNotif.recipients} utilisateurs',
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Notification enregistree pour $recipients destinataires',
+          ),
         ),
-      ),
-    );
+      );
+    } on FirebaseException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isSending = false);
+      }
+    }
   }
 
   @override
@@ -146,7 +153,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.people,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Tous les utilisateurs (5600)'),
+                              const Text('Tous les utilisateurs'),
                             ],
                           ),
                         ),
@@ -157,7 +164,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.smartphone,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Utilisateurs app (2100)'),
+                              const Text('Utilisateurs app'),
                             ],
                           ),
                         ),
@@ -168,7 +175,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.directions_car,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Conducteurs (1500)'),
+                              const Text('Conducteurs'),
                             ],
                           ),
                         ),
@@ -186,9 +193,20 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        onPressed: _sendNotification,
-                        icon: const Icon(Icons.send),
-                        label: const Text('Envoyer la notification'),
+                        onPressed: _isSending ? null : _sendNotification,
+                        icon: _isSending
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Icon(Icons.send),
+                        label: Text(_isSending
+                            ? 'Envoi en cours...'
+                            : 'Envoyer la notification'),
                       ),
                     ),
                   ],
@@ -206,62 +224,91 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
               ),
             ),
             const SizedBox(height: 12),
-            ...sentNotifications.map((notif) {
-              return Card(
-                margin: const EdgeInsets.only(bottom: 12),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              notif.title,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+            StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: _notificationsRef
+                  .orderBy('createdAt', descending: true)
+                  .limit(50)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return const Text('Erreur de chargement des notifications');
+                }
+
+                final docs = snapshot.data?.docs ?? [];
+                if (docs.isEmpty) {
+                  return const Text('Aucune notification envoyee');
+                }
+
+                return Column(
+                  children: docs.map((doc) {
+                    final data = doc.data();
+                    final title = (data['title'] ?? '').toString();
+                    final message = (data['message'] ?? '').toString();
+                    final recipients = (data['recipientsCount'] ?? 0) as int;
+                    final ts = data['createdAt'];
+                    final sentAt =
+                        ts is Timestamp ? ts.toDate() : DateTime.now();
+
+                    return Card(
+                      margin: const EdgeInsets.only(bottom: 12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    title,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  _formatDate(sentAt),
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.darkGrey,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          Text(
-                            _formatDate(notif.sentAt),
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppTheme.darkGrey,
+                            const SizedBox(height: 6),
+                            Text(
+                              message,
+                              style: const TextStyle(fontSize: 13),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        notif.message,
-                        style: const TextStyle(fontSize: 13),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Icon(Icons.person,
-                              size: 16, color: AppTheme.mediumGrey),
-                          const SizedBox(width: 4),
-                          Text(
-                            '${notif.recipients} destinataires',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppTheme.mediumGrey,
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                const Icon(Icons.person, size: 16, color: AppTheme.mediumGrey),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '$recipients destinataires',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.mediumGrey,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              );
-            }),
+                    );
+                  }).toList(),
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -286,20 +333,4 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
     messageCtrl.dispose();
     super.dispose();
   }
-}
-
-class _Notification {
-  final String id;
-  final String title;
-  final String message;
-  final DateTime sentAt;
-  final int recipients;
-
-  _Notification({
-    required this.id,
-    required this.title,
-    required this.message,
-    required this.sentAt,
-    required this.recipients,
-  });
 }

@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _profileController = ProfileController();
-    _authController = AuthController();
+    _authController = AuthController.instance;
     
     // Load saved preferences
     _selectedLanguage = widget.settingsService.getLanguage();
@@ -108,6 +108,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
 
       final success = await _profileController.updateProfile(updatedProfile);
+
+  if (!mounted) return;
 
       setState(() => _isLoading = false);
 
@@ -222,7 +224,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
 
-    if (saved == true && mounted) {
+    if (saved == true) {
       final success = await _profileController.updateProfileFields({
         'avatarId': selectedAvatarId,
       });
@@ -313,6 +315,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () async {
+                final rootMessenger = ScaffoldMessenger.of(this.context);
                 if (currentPasswordController.text.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(l10n.enterCurrentPassword)),
@@ -349,23 +352,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   newPasswordController.text,
                 );
 
-                if (mounted) {
-                  if (errorMessage == null) {
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(l10n.passwordChangedSuccessfully),
-                        backgroundColor: AppTheme.primaryTeal,
-                      ),
-                    );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(errorMessage),
-                        backgroundColor: Colors.red,
-                      ),
-                    );
-                  }
+                if (!context.mounted) return;
+                if (errorMessage == null) {
+                  Navigator.pop(context);
+                  if (!mounted) return;
+                  rootMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.passwordChangedSuccessfully),
+                      backgroundColor: AppTheme.primaryTeal,
+                    ),
+                  );
+                } else {
+                  if (!mounted) return;
+                  rootMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text(errorMessage),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
                 }
               },
               child: Text(l10n.changePassword),
@@ -381,8 +385,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => AlertDialog(
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
           title: Text(l10n.settings),
           content: SingleChildScrollView(
             child: Column(
@@ -403,41 +407,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(color: AppTheme.lightGrey),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    children: [
-                      RadioListTile<ThemeMode>(
-                        title: Text(l10n.lightMode),
-                        value: ThemeMode.light,
-                        groupValue: _themeMode,
-                        onChanged: (value) {
-                          setState(() {
-                            _themeMode = value ?? ThemeMode.light;
-                          });
-                        },
-                      ),
-                      const Divider(height: 0),
-                      RadioListTile<ThemeMode>(
-                        title: Text(l10n.darkMode),
-                        value: ThemeMode.dark,
-                        groupValue: _themeMode,
-                        onChanged: (value) {
-                          setState(() {
-                            _themeMode = value ?? ThemeMode.dark;
-                          });
-                        },
-                      ),
-                      const Divider(height: 0),
-                      RadioListTile<ThemeMode>(
-                        title: Text(l10n.systemDefault),
-                        value: ThemeMode.system,
-                        groupValue: _themeMode,
-                        onChanged: (value) {
-                          setState(() {
-                            _themeMode = value ?? ThemeMode.system;
-                          });
-                        },
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: Text(l10n.lightMode),
+                          selected: _themeMode == ThemeMode.light,
+                          onSelected: (_) =>
+                              setDialogState(() => _themeMode = ThemeMode.light),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.darkMode),
+                          selected: _themeMode == ThemeMode.dark,
+                          onSelected: (_) =>
+                              setDialogState(() => _themeMode = ThemeMode.dark),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.systemDefault),
+                          selected: _themeMode == ThemeMode.system,
+                          onSelected: (_) =>
+                              setDialogState(() => _themeMode = ThemeMode.system),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -455,41 +450,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     border: Border.all(color: AppTheme.lightGrey),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Column(
-                    children: [
-                      RadioListTile<String>(
-                        title: Text(l10n.french),
-                        value: 'fr',
-                        groupValue: _selectedLanguage,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedLanguage = value ?? 'fr';
-                          });
-                        },
-                      ),
-                      const Divider(height: 0),
-                      RadioListTile<String>(
-                        title: Text(l10n.english),
-                        value: 'en',
-                        groupValue: _selectedLanguage,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedLanguage = value ?? 'en';
-                          });
-                        },
-                      ),
-                      const Divider(height: 0),
-                      RadioListTile<String>(
-                        title: Text(l10n.arabic),
-                        value: 'ar',
-                        groupValue: _selectedLanguage,
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedLanguage = value ?? 'ar';
-                          });
-                        },
-                      ),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        ChoiceChip(
+                          label: Text(l10n.french),
+                          selected: _selectedLanguage == 'fr',
+                          onSelected: (_) =>
+                              setDialogState(() => _selectedLanguage = 'fr'),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.english),
+                          selected: _selectedLanguage == 'en',
+                          onSelected: (_) =>
+                              setDialogState(() => _selectedLanguage = 'en'),
+                        ),
+                        ChoiceChip(
+                          label: Text(l10n.arabic),
+                          selected: _selectedLanguage == 'ar',
+                          onSelected: (_) =>
+                              setDialogState(() => _selectedLanguage = 'ar'),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -497,7 +483,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(l10n.cancel),
             ),
             ElevatedButton(
@@ -517,9 +503,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 widget.onThemeChanged(_themeMode);
                 widget.onLanguageChanged(_selectedLanguage);
                 
-                if (mounted) {
-                  Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(
+                if (!dialogContext.mounted) return;
+                Navigator.pop(dialogContext);
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(
                         '${l10n.settingsSaved} - ${l10n.mode}: ${_themeMode.name}, ${l10n.language}: $_selectedLanguage',
@@ -527,7 +514,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       backgroundColor: AppTheme.primaryTeal,
                     ),
                   );
-                }
               },
               child: Text(
                 l10n.save,

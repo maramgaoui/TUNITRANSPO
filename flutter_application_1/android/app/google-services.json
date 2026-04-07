@@ -40,6 +40,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:102410511518:android:fbf375f49efdc1f8e5078f",
+        "android_client_info": {
+          "package_name": "com.tunitranspo.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "102410511518-s81gdpn3a0odn8is8q9ag56c1mkraf41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPYKsXUlCsddWjBABpPyZJyqdXvAYM4_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "102410511518-s81gdpn3a0odn8is8q9ag56c1mkraf41.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "102410511518-qqquua0t20jsrojmrrb5td12h8otnotp.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterApplication1"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

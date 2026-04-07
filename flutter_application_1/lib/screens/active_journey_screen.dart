@@ -250,11 +250,11 @@ class ActiveJourneyScreen extends StatelessWidget {
                               ],
                             ),
                           );
-                          if (confirmed == true && context.mounted) {
-                            await ActiveJourneyService.instance
-                                .clearActiveJourney();
-                            context.go('/home/journey-input');
-                          }
+                          if (confirmed != true) return;
+                          await ActiveJourneyService.instance
+                              .clearActiveJourney();
+                          if (!context.mounted) return;
+                          context.go('/home/journey-input');
                         },
                         icon: const Icon(Icons.stop_circle_outlined),
                         label: const Text(
@@ -602,7 +602,7 @@ class _StepTile extends StatelessWidget {
         Column(
           children: [
             if (!isFirst)
-              Container(width: 2, height: 0), // spacing handled by connector
+              const SizedBox.shrink(), // spacing handled by connector
             Container(
               width: 36,
               height: 36,

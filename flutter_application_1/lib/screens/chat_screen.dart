@@ -1,9 +1,12 @@
 // Firestore rule: allow read: if true; allow write: if request.auth != null;
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_plus/avatar_plus.dart';
+import 'package:tuni_transport/admin/mixins/admin_moderation_mixin.dart';
+import 'package:tuni_transport/admin/mixins/admin_user_status_mixin.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
-import 'package:tuni_transport/services/admin_user_service.dart';
 
 import '../controllers/auth_controller.dart';
 import '../theme/app_theme.dart';
@@ -27,25 +30,56 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
-  final _authController = AuthController();
-  final _adminUserService = AdminUserService();
+class _ChatScreenState extends State<ChatScreen>
+  with AdminModerationMixin, AdminUserStatusMixin {
+  static const int _kInitialMessagesLimit = 50;
+  static const int _kMessagesPageSize = 30;
+
+  final _authController = AuthController.instance;
   final _messageController = TextEditingController();
   final _messageFocusNode = FocusNode();
   final _scrollController = ScrollController();
+  StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messagesSubscription;
 
   final CollectionReference<Map<String, dynamic>> _messagesRef =
       FirebaseFirestore.instance.collection('community_messages');
-    final CollectionReference<Map<String, dynamic>> _usersRef =
+  final CollectionReference<Map<String, dynamic>> _usersRef =
       FirebaseFirestore.instance.collection('users');
 
   Map<String, dynamic>? _replyingTo;
-  int _lastMessageCount = -1;
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> _liveMessages =
+      const [];
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> _olderMessages =
+      const [];
+  DocumentSnapshot<Map<String, dynamic>>? _oldestLoadedDoc;
+  String? _lastNewestMessageId;
+  Object? _messagesError;
+  bool _isMessagesLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasMoreMessages = true;
   bool _isSending = false;
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> get _visibleMessages {
+    final seen = <String>{};
+    final merged = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+    for (final doc in _liveMessages) {
+      if (seen.add(doc.id)) {
+        merged.add(doc);
+      }
+    }
+    for (final doc in _olderMessages) {
+      if (seen.add(doc.id)) {
+        merged.add(doc);
+      }
+    }
+    return merged;
+  }
 
   @override
   void initState() {
     super.initState();
+    _startMessagesListener();
+    _scrollController.addListener(_handleScrollForPagination);
     _messageFocusNode.addListener(() {
       if (_messageFocusNode.hasFocus) {
         _ensureLatestMessageVisible();
@@ -76,10 +110,128 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   void dispose() {
+    _messagesSubscription?.cancel();
+    _scrollController.removeListener(_handleScrollForPagination);
     _messageController.dispose();
     _messageFocusNode.dispose();
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void _startMessagesListener() {
+    _messagesSubscription?.cancel();
+    _messagesSubscription = _messagesRef
+        .orderBy('timestamp', descending: true)
+        .limit(_kInitialMessagesLimit)
+        .snapshots()
+        .listen(
+          (snapshot) {
+            if (!mounted) return;
+
+            final liveDocs = snapshot.docs;
+            final liveIds = liveDocs.map((d) => d.id).toSet();
+            final filteredOlder =
+                _olderMessages.where((d) => !liveIds.contains(d.id)).toList();
+            final mergedDocs = [...liveDocs, ...filteredOlder];
+            final newestId = mergedDocs.isNotEmpty ? mergedDocs.first.id : null;
+
+            setState(() {
+              _isMessagesLoading = false;
+              _messagesError = null;
+              _liveMessages = liveDocs;
+              _olderMessages = filteredOlder;
+              _oldestLoadedDoc =
+                  mergedDocs.isNotEmpty ? mergedDocs.last : null;
+              if (_olderMessages.isEmpty) {
+                _hasMoreMessages = liveDocs.length == _kInitialMessagesLimit;
+              }
+            });
+
+            if (newestId != null && newestId != _lastNewestMessageId) {
+              _lastNewestMessageId = newestId;
+              _scheduleScrollToBottom();
+            }
+          },
+          onError: (error) {
+            if (!mounted) return;
+            setState(() {
+              _isMessagesLoading = false;
+              _messagesError = error;
+            });
+          },
+        );
+  }
+
+  void _handleScrollForPagination() {
+    if (!_scrollController.hasClients ||
+        _isLoadingMore ||
+        !_hasMoreMessages ||
+        _oldestLoadedDoc == null) {
+      return;
+    }
+
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 180) {
+      _loadMoreMessages();
+    }
+  }
+
+  Future<void> _loadMoreMessages() async {
+    if (_isLoadingMore || !_hasMoreMessages || _oldestLoadedDoc == null) {
+      return;
+    }
+
+    setState(() {
+      _isLoadingMore = true;
+    });
+
+    try {
+      final page = await _messagesRef
+          .orderBy('timestamp', descending: true)
+          .startAfterDocument(_oldestLoadedDoc!)
+          .limit(_kMessagesPageSize)
+          .get();
+
+      if (!mounted) return;
+
+      if (page.docs.isEmpty) {
+        setState(() {
+          _hasMoreMessages = false;
+        });
+        return;
+      }
+
+      final liveIds = _liveMessages.map((d) => d.id).toSet();
+      final olderIds = _olderMessages.map((d) => d.id).toSet();
+      final toAppend = <QueryDocumentSnapshot<Map<String, dynamic>>>[];
+
+      for (final doc in page.docs) {
+        if (!liveIds.contains(doc.id) && !olderIds.contains(doc.id)) {
+          toAppend.add(doc);
+        }
+      }
+
+      setState(() {
+        _olderMessages = [..._olderMessages, ...toAppend];
+        final mergedDocs = [..._liveMessages, ..._olderMessages];
+        _oldestLoadedDoc =
+            mergedDocs.isNotEmpty ? mergedDocs.last : _oldestLoadedDoc;
+        if (page.docs.length < _kMessagesPageSize) {
+          _hasMoreMessages = false;
+        }
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _messagesError = error;
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
+    }
   }
 
   void _scheduleScrollToBottom() {
@@ -112,96 +264,6 @@ class _ChatScreenState extends State<ChatScreen> {
     final hh = dt.hour.toString().padLeft(2, '0');
     final mm = dt.minute.toString().padLeft(2, '0');
     return '$hh:$mm';
-  }
-
-  String _formatDateTime(DateTime value) {
-    final yyyy = value.year.toString().padLeft(4, '0');
-    final mm = value.month.toString().padLeft(2, '0');
-    final dd = value.day.toString().padLeft(2, '0');
-    final hh = value.hour.toString().padLeft(2, '0');
-    final min = value.minute.toString().padLeft(2, '0');
-    return '$yyyy-$mm-$dd $hh:$min';
-  }
-
-  String _statusLabel(BuildContext context, String status, DateTime? banUntil) {
-    final l10n = AppLocalizations.of(context)!;
-    switch (status) {
-      case 'blocked':
-        return l10n.statusBlocked;
-      case 'banned':
-        if (banUntil == null) return l10n.statusBanned;
-        return l10n.statusBannedUntil(_formatDateTime(banUntil));
-      default:
-        return l10n.statusActive;
-    }
-  }
-
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'blocked':
-        return Colors.red.shade700;
-      case 'banned':
-        return Colors.orange.shade700;
-      default:
-        return Colors.green.shade700;
-    }
-  }
-
-  Future<void> _banUser(BuildContext context, String userId, {required int days}) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await _adminUserService.banUser(userId, days: days);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.userBannedDays(days))),
-      );
-    } on FirebaseException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? l10n.firestoreUpdateError),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _blockUser(BuildContext context, String userId) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await _adminUserService.blockUser(userId);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.userBlockedPermanently)),
-      );
-    } on FirebaseException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? l10n.firestoreUpdateError),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
-  }
-
-  Future<void> _unblockUser(BuildContext context, String userId) async {
-    final l10n = AppLocalizations.of(context)!;
-    try {
-      await _adminUserService.unblockUser(userId);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(l10n.userUnblocked)),
-      );
-    } on FirebaseException catch (e) {
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(e.message ?? l10n.firestoreUpdateError),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
   }
 
   Future<void> _showAdminUserProfile(
@@ -269,9 +331,9 @@ class _ChatScreenState extends State<ChatScreen> {
                             ),
                           const SizedBox(height: 4),
                           Text(
-                            _statusLabel(sheetContext, status, banUntil),
+                            adminStatusLabel(sheetContext, status, banUntil),
                             style: TextStyle(
-                              color: _statusColor(status),
+                              color: adminStatusColor(status),
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -296,7 +358,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: canModerate
                           ? () async {
                               Navigator.of(sheetContext).pop();
-                              await _banUser(context, userId, days: 3);
+                              await banUserWithFeedback(context, userId, days: 3);
                             }
                           : null,
                       child: Text(l10n.banFor3Days),
@@ -305,7 +367,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: canModerate
                           ? () async {
                               Navigator.of(sheetContext).pop();
-                              await _banUser(context, userId, days: 7);
+                              await banUserWithFeedback(context, userId, days: 7);
                             }
                           : null,
                       child: Text(l10n.banFor7Days),
@@ -314,7 +376,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: canModerate
                           ? () async {
                               Navigator.of(sheetContext).pop();
-                              await _blockUser(context, userId);
+                              await blockUserWithFeedback(context, userId);
                             }
                           : null,
                       style: FilledButton.styleFrom(
@@ -327,7 +389,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       onPressed: canModerate
                           ? () async {
                               Navigator.of(sheetContext).pop();
-                              await _unblockUser(context, userId);
+                              await unblockUserWithFeedback(context, userId);
                             }
                           : null,
                       child: Text(l10n.unblockUser),
@@ -804,16 +866,13 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: _messagesRef
-                  .orderBy('timestamp', descending: false)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+            child: Builder(
+              builder: (context) {
+                if (_isMessagesLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (snapshot.hasError) {
+                if (_messagesError != null && _visibleMessages.isEmpty) {
                   return Center(
                     child: Text(
                       l10n.messagesLoadError,
@@ -825,13 +884,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   );
                 }
 
-                final docs = snapshot.data?.docs ?? [];
-
-                if (docs.length != _lastMessageCount) {
-                  _lastMessageCount = docs.length;
-                  _scheduleScrollToBottom();
-                }
-
+                final docs = _visibleMessages;
                 if (docs.isEmpty) {
                   return Center(
                     child: Text(
@@ -851,10 +904,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   keyboardDismissBehavior:
                       ScrollViewKeyboardDismissBehavior.onDrag,
                   padding: const EdgeInsets.only(top: 10, bottom: 16),
-                  itemCount: docs.length,
+                  itemCount: docs.length + (_isLoadingMore ? 1 : 0),
                   itemBuilder: (context, index) {
-                    final reverseIndex = docs.length - 1 - index;
-                    return _buildMessageTile(context, docs[reverseIndex]);
+                    if (index == docs.length) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        child: Center(
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
+                      );
+                    }
+                    return _buildMessageTile(context, docs[index]);
                   },
                 );
               },

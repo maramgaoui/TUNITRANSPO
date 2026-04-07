@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
@@ -11,37 +12,22 @@ class ManageJourneysScreen extends StatefulWidget {
 }
 
 class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
-  final List<_Journey> journeys = [
-    _Journey(
-      id: '1',
-      departure: 'Tunis Gare',
-      arrival: 'La Marsa',
-      type: 'Metro',
-      departureTime: '08:00',
-    ),
-    _Journey(
-      id: '2',
-      departure: 'La Marsa',
-      arrival: 'Tunis Gare',
-      type: 'Metro',
-      departureTime: '09:30',
-    ),
-    _Journey(
-      id: '3',
-      departure: 'Sfax',
-      arrival: 'Tunis',
-      type: 'Train',
-      departureTime: '10:15',
-    ),
-  ];
+  final CollectionReference<Map<String, dynamic>> _journeysRef =
+      FirebaseFirestore.instance.collection('journeys');
 
-  void _showJourneyForm(BuildContext context, [_Journey? journey]) {
-    final isEdit = journey != null;
+  Future<void> _showJourneyForm(
+    BuildContext context, [
+    QueryDocumentSnapshot<Map<String, dynamic>>? journeyDoc,
+  ]) async {
+    final data = journeyDoc?.data() ?? <String, dynamic>{};
+    final isEdit = journeyDoc != null;
     final departureCtrl =
-        TextEditingController(text: journey?.departure ?? '');
-    final arrivalCtrl = TextEditingController(text: journey?.arrival ?? '');
-    final typeCtrl = TextEditingController(text: journey?.type ?? '');
-    final timeCtrl = TextEditingController(text: journey?.departureTime ?? '');
+        TextEditingController(text: (data['departure'] ?? '').toString());
+    final arrivalCtrl =
+        TextEditingController(text: (data['arrival'] ?? '').toString());
+    final typeCtrl = TextEditingController(text: (data['type'] ?? '').toString());
+    final timeCtrl =
+        TextEditingController(text: (data['departureTime'] ?? '').toString());
 
     showModalBottomSheet(
       context: context,
@@ -119,34 +105,60 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  onPressed: () {
-                    if (isEdit) {
-                      journey.departure = departureCtrl.text;
-                      journey.arrival = arrivalCtrl.text;
-                      journey.type = typeCtrl.text;
-                      journey.departureTime = timeCtrl.text;
-                    } else {
-                      journeys.add(
-                        _Journey(
-                          id: DateTime.now().toString(),
-                          departure: departureCtrl.text,
-                          arrival: arrivalCtrl.text,
-                          type: typeCtrl.text,
-                          departureTime: timeCtrl.text,
+                  onPressed: () async {
+                    final departure = departureCtrl.text.trim();
+                    final arrival = arrivalCtrl.text.trim();
+                    final type = typeCtrl.text.trim();
+                    final departureTime = timeCtrl.text.trim();
+
+                    if (departure.isEmpty ||
+                        arrival.isEmpty ||
+                        type.isEmpty ||
+                        departureTime.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Remplissez tous les champs')),
+                      );
+                      return;
+                    }
+
+                    final payload = {
+                      'departure': departure,
+                      'arrival': arrival,
+                      'type': type,
+                      'departureTime': departureTime,
+                      'updatedAt': FieldValue.serverTimestamp(),
+                    };
+
+                    try {
+                      if (isEdit) {
+                        await _journeysRef.doc(journeyDoc.id).update(payload);
+                      } else {
+                        await _journeysRef.add({
+                          ...payload,
+                          'createdAt': FieldValue.serverTimestamp(),
+                        });
+                      }
+                      if (!context.mounted) return;
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/admin/manage-journeys');
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            isEdit
+                                ? 'Trajet modifie avec succes'
+                                : 'Trajet ajoute avec succes',
+                          ),
                         ),
                       );
+                    } on FirebaseException catch (e) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+                      );
                     }
-                    setState(() {});
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          isEdit
-                              ? 'Trajet modifié avec succès'
-                              : 'Trajet ajouté avec succès',
-                        ),
-                      ),
-                    );
                   },
                   child: Text(isEdit ? 'Modifier' : 'Ajouter'),
                 ),
@@ -171,8 +183,19 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
           onPressed: () => context.go('/admin'),
         ),
       ),
-      body: journeys.isEmpty
-          ? Center(
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: _journeysRef.orderBy('createdAt', descending: true).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('Erreur de chargement des trajets'));
+          }
+
+          final docs = snapshot.data?.docs ?? [];
+          if (docs.isEmpty) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -181,41 +204,48 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                   const Text('Aucun trajet'),
                 ],
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: journeys.length,
-              itemBuilder: (_, i) {
-                final j = journeys[i];
-                return Card(
-                  child: ListTile(
-                    title: Text('${j.departure} → ${j.arrival}'),
-                    subtitle:
-                        Text('${j.type} • ${j.departureTime}'),
-                    trailing: SizedBox(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, size: 18),
-                            onPressed: () =>
-                                _showJourneyForm(context, j),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete,
-                                size: 18, color: Colors.red),
-                            onPressed: () {
-                              setState(() => journeys.removeAt(i));
-                            },
-                          ),
-                        ],
-                      ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (_, i) {
+              final doc = docs[i];
+              final data = doc.data();
+              final departure = (data['departure'] ?? '').toString();
+              final arrival = (data['arrival'] ?? '').toString();
+              final type = (data['type'] ?? '').toString();
+              final departureTime = (data['departureTime'] ?? '').toString();
+
+              return Card(
+                child: ListTile(
+                  title: Text('$departure → $arrival'),
+                  subtitle: Text('$type • $departureTime'),
+                  trailing: SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 18),
+                          onPressed: () => _showJourneyForm(context, doc),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+                          onPressed: () async {
+                            await _journeysRef.doc(doc.id).delete();
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryTeal,
         onPressed: () => _showJourneyForm(context),
@@ -223,20 +253,4 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
       ),
     );
   }
-}
-
-class _Journey {
-  final String id;
-  String departure;
-  String arrival;
-  String type;
-  String departureTime;
-
-  _Journey({
-    required this.id,
-    required this.departure,
-    required this.arrival,
-    required this.type,
-    required this.departureTime,
-  });
 }

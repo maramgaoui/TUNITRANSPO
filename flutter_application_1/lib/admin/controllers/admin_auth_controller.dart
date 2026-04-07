@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
-import 'package:tuni_transport/firebase_options.dart';
 
 class AdminAuthResult {
   final bool isAuthenticated;
@@ -194,76 +191,18 @@ class AdminAuthController {
     }
 
     try {
-      final apiKey = DefaultFirebaseOptions.currentPlatform.apiKey;
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: sanitizedCurrent,
+      );
 
-      final signInResponse = await http
-          .post(
-            Uri.parse(
-              'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey',
-            ),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'email': email,
-              'password': sanitizedCurrent,
-              'returnSecureToken': true,
-            }),
-          )
+      await user
+          .reauthenticateWithCredential(credential)
           .timeout(const Duration(seconds: 10));
 
-      final signInData = jsonDecode(signInResponse.body) as Map<String, dynamic>;
-
-      if (signInResponse.statusCode != 200) {
-        final errorCode =
-            ((signInData['error'] as Map<String, dynamic>?)?['message'] ?? '')
-                .toString();
-        if (errorCode.contains('INVALID_PASSWORD') ||
-            errorCode.contains('INVALID_LOGIN_CREDENTIALS') ||
-            errorCode.contains('EMAIL_NOT_FOUND')) {
-          throw Exception('Le mot de passe actuel est incorrect.');
-        }
-        if (errorCode.contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-          throw Exception('Too many attempts. Please try again later.');
-        }
-        throw Exception('Authentication error while changing password.');
-      }
-
-      final localId = (signInData['localId'] ?? '').toString();
-      if (localId.isEmpty || localId != user.uid) {
-        throw Exception('Le mot de passe actuel est incorrect.');
-      }
-
-      final idToken = (signInData['idToken'] ?? '').toString();
-      if (idToken.isEmpty) {
-        throw Exception('Authentication error while changing password.');
-      }
-
-      final updateResponse = await http
-          .post(
-            Uri.parse(
-              'https://identitytoolkit.googleapis.com/v1/accounts:update?key=$apiKey',
-            ),
-            headers: {'Content-Type': 'application/json'},
-            body: jsonEncode({
-              'idToken': idToken,
-              'password': sanitizedNew,
-              'returnSecureToken': false,
-            }),
-          )
+      await user
+          .updatePassword(sanitizedNew)
           .timeout(const Duration(seconds: 10));
-
-      if (updateResponse.statusCode != 200) {
-        final updateData = jsonDecode(updateResponse.body) as Map<String, dynamic>;
-        final errorCode =
-            ((updateData['error'] as Map<String, dynamic>?)?['message'] ?? '')
-                .toString();
-        if (errorCode.contains('WEAK_PASSWORD')) {
-          throw Exception('New password is too weak.');
-        }
-        if (errorCode.contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-          throw Exception('Too many attempts. Please try again later.');
-        }
-        throw Exception('Unable to update password. Please try again.');
-      }
 
       await user.reload();
     } on TimeoutException {

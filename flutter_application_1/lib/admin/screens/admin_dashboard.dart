@@ -358,7 +358,7 @@ class _AdminEditTabState extends State<_AdminEditTab> {
             ),
             const SizedBox(height: 18),
             DropdownButtonFormField<String>(
-              value: _themeValue,
+              initialValue: _themeValue,
               decoration: InputDecoration(
                 labelText: l10n.themeMode,
                 prefixIcon: const Icon(Icons.palette_outlined),
@@ -379,7 +379,7 @@ class _AdminEditTabState extends State<_AdminEditTab> {
             ),
             const SizedBox(height: 14),
             DropdownButtonFormField<String>(
-              value: _languageValue,
+              initialValue: _languageValue,
               decoration: InputDecoration(
                 labelText: l10n.language,
                 prefixIcon: const Icon(Icons.language_outlined),

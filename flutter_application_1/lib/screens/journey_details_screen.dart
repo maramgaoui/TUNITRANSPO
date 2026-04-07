@@ -443,12 +443,12 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                                 ],
                               ),
                             );
-                            if (confirmed == true && context.mounted) {
-                              await ActiveJourneyService.instance
-                                  .setActiveJourney(widget.journey);
-                              context.go('/home/active-journey',
-                                  extra: widget.journey);
-                            }
+                            if (confirmed != true) return;
+                            await ActiveJourneyService.instance
+                                .setActiveJourney(widget.journey);
+                            if (!context.mounted) return;
+                            context.go('/home/active-journey',
+                                extra: widget.journey);
                           },
                           icon: const Icon(Icons.check_circle),
                           label: const Text('Commencer le trajet'),

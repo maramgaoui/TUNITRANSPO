@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
@@ -11,38 +12,18 @@ class ManageStationsScreen extends StatefulWidget {
 }
 
 class _ManageStationsScreenState extends State<ManageStationsScreen> {
-  final List<_Station> stations = [
-    _Station(
-      id: '1',
-      name: 'Tunis Gare',
-      type: 'Metro',
-      city: 'Tunis',
-    ),
-    _Station(
-      id: '2',
-      name: 'La Marsa',
-      type: 'Metro',
-      city: 'La Marsa',
-    ),
-    _Station(
-      id: '3',
-      name: 'Sfax Gare',
-      type: 'Train',
-      city: 'Sfax',
-    ),
-    _Station(
-      id: '4',
-      name: 'Gare routière',
-      type: 'Bus',
-      city: 'Tunis',
-    ),
-  ];
+  final CollectionReference<Map<String, dynamic>> _stationsRef =
+      FirebaseFirestore.instance.collection('stations');
 
-  void _showStationForm(BuildContext context, [_Station? station]) {
-    final isEdit = station != null;
-    final nameCtrl = TextEditingController(text: station?.name ?? '');
-    final typeCtrl = TextEditingController(text: station?.type ?? '');
-    final cityCtrl = TextEditingController(text: station?.city ?? '');
+  Future<void> _showStationForm(
+    BuildContext context, [
+    QueryDocumentSnapshot<Map<String, dynamic>>? stationDoc,
+  ]) async {
+    final data = stationDoc?.data() ?? <String, dynamic>{};
+    final isEdit = stationDoc != null;
+    final nameCtrl = TextEditingController(text: (data['name'] ?? '').toString());
+    final typeCtrl = TextEditingController(text: (data['type'] ?? '').toString());
+    final cityCtrl = TextEditingController(text: (data['city'] ?? '').toString());
 
     showModalBottomSheet(
       context: context,
@@ -110,32 +91,55 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 14),
                   ),
-                  onPressed: () {
-                    if (isEdit) {
-                      station.name = nameCtrl.text;
-                      station.type = typeCtrl.text;
-                      station.city = cityCtrl.text;
-                    } else {
-                      stations.add(
-                        _Station(
-                          id: DateTime.now().toString(),
-                          name: nameCtrl.text,
-                          type: typeCtrl.text,
-                          city: cityCtrl.text,
+                  onPressed: () async {
+                    final name = nameCtrl.text.trim();
+                    final type = typeCtrl.text.trim();
+                    final city = cityCtrl.text.trim();
+
+                    if (name.isEmpty || type.isEmpty || city.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Remplissez tous les champs')),
+                      );
+                      return;
+                    }
+
+                    final payload = {
+                      'name': name,
+                      'type': type,
+                      'city': city,
+                      'updatedAt': FieldValue.serverTimestamp(),
+                    };
+
+                    try {
+                      if (isEdit) {
+                        await _stationsRef.doc(stationDoc.id).update(payload);
+                      } else {
+                        await _stationsRef.add({
+                          ...payload,
+                          'createdAt': FieldValue.serverTimestamp(),
+                        });
+                      }
+                      if (!context.mounted) return;
+                      if (context.canPop()) {
+                        context.pop();
+                      } else {
+                        context.go('/admin/manage-stations');
+                      }
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            isEdit
+                                ? 'Station modifiee avec succes'
+                                : 'Station ajoutee avec succes',
+                          ),
                         ),
                       );
+                    } on FirebaseException catch (e) {
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+                      );
                     }
-                    setState(() {});
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          isEdit
-                              ? 'Station modifiée avec succès'
-                              : 'Station ajoutée avec succès',
-                        ),
-                      ),
-                    );
                   },
                   child: Text(isEdit ? 'Modifier' : 'Ajouter'),
                 ),
@@ -160,59 +164,76 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
           onPressed: () => context.go('/admin'),
         ),
       ),
-      body: stations.isEmpty
-          ? Center(
+      body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+        stream: _stationsRef.orderBy('createdAt', descending: true).snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return const Center(child: Text('Erreur de chargement des stations'));
+          }
+
+          final docs = snapshot.data?.docs ?? [];
+          if (docs.isEmpty) {
+            return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.train_outlined,
-                      size: 64, color: AppTheme.lightGrey),
+                  Icon(Icons.train_outlined, size: 64, color: AppTheme.lightGrey),
                   const SizedBox(height: 16),
                   const Text('Aucune station'),
                 ],
               ),
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: stations.length,
-              itemBuilder: (_, i) {
-                final s = stations[i];
-                return Card(
-                  child: ListTile(
-                    leading: Icon(
-                      s.type == 'Metro'
-                          ? Icons.directions_subway
-                          : s.type == 'Train'
-                              ? Icons.train
-                              : Icons.directions_bus,
-                      color: AppTheme.primaryTeal,
-                    ),
-                    title: Text(s.name),
-                    subtitle: Text('${s.type} • ${s.city}'),
-                    trailing: SizedBox(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit, size: 18),
-                            onPressed: () =>
-                                _showStationForm(context, s),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete,
-                                size: 18, color: Colors.red),
-                            onPressed: () {
-                              setState(() => stations.removeAt(i));
-                            },
-                          ),
-                        ],
-                      ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (_, i) {
+              final doc = docs[i];
+              final data = doc.data();
+              final type = (data['type'] ?? '').toString();
+              final name = (data['name'] ?? '').toString();
+              final city = (data['city'] ?? '').toString();
+
+              return Card(
+                child: ListTile(
+                  leading: Icon(
+                    type == 'Metro'
+                        ? Icons.directions_subway
+                        : type == 'Train'
+                            ? Icons.train
+                            : Icons.directions_bus,
+                    color: AppTheme.primaryTeal,
+                  ),
+                  title: Text(name),
+                  subtitle: Text('$type • $city'),
+                  trailing: SizedBox(
+                    width: 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, size: 18),
+                          onPressed: () => _showStationForm(context, doc),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, size: 18, color: Colors.red),
+                          onPressed: () async {
+                            await _stationsRef.doc(doc.id).delete();
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppTheme.primaryTeal,
         onPressed: () => _showStationForm(context),
@@ -220,18 +241,4 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
       ),
     );
   }
-}
-
-class _Station {
-  final String id;
-  String name;
-  String type;
-  String city;
-
-  _Station({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.city,
-  });
 }

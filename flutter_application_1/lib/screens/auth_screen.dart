@@ -46,7 +46,7 @@ class _AuthScreenState extends State<AuthScreen>
   final _signupPasswordController = TextEditingController();
   final _signupConfirmPasswordController = TextEditingController();
 
-  final _authController = AuthController();
+  final _authController = AuthController.instance;
   final _loginFormKey = GlobalKey<FormState>();
   final _signupFormKey = GlobalKey<FormState>();
 

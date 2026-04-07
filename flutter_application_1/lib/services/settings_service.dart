@@ -7,7 +7,7 @@ class SettingsService {
   static const String _languageKey = 'app_language';
   static const String _lastRouteKey = 'app_last_route';
 
-  late SharedPreferences _prefs;
+  SharedPreferences? _prefs;
   bool _initialized = false;
 
   /// Initialize SharedPreferences
@@ -20,21 +20,21 @@ class SettingsService {
   /// Get saved theme mode (light/dark)
   /// Default: light
   String getThemeMode() {
-    _ensureInitialized();
-    return _prefs.getString(_themeKey) ?? 'light';
+    if (!_initialized) return 'light';
+    return _prefs?.getString(_themeKey) ?? 'light';
   }
 
   /// Save theme mode preference
   Future<void> setThemeMode(String mode) async {
-    _ensureInitialized();
-    await _prefs.setString(_themeKey, mode);
+    await _ensureInitialized();
+    await _prefs!.setString(_themeKey, mode);
   }
 
   /// Get saved language preference
   /// Default: fr
   String getLanguage() {
-    _ensureInitialized();
-    final savedLanguage = _prefs.getString(_languageKey);
+    if (!_initialized) return 'fr';
+    final savedLanguage = _prefs?.getString(_languageKey);
     if (savedLanguage == null) {
       return 'fr';
     }
@@ -54,25 +54,26 @@ class SettingsService {
 
   /// Save language preference
   Future<void> setLanguage(String language) async {
-    _ensureInitialized();
-    await _prefs.setString(_languageKey, language);
+    await _ensureInitialized();
+    await _prefs!.setString(_languageKey, language);
   }
 
   /// Get last persisted route for session restoration.
   String? getLastRoute() {
-    _ensureInitialized();
-    return _prefs.getString(_lastRouteKey);
+    if (!_initialized) return null;
+    return _prefs?.getString(_lastRouteKey);
   }
 
   /// Persist the current route so the app can restore it on next launch.
   Future<void> setLastRoute(String route) async {
-    _ensureInitialized();
-    await _prefs.setString(_lastRouteKey, route);
+    await _ensureInitialized();
+    await _prefs!.setString(_lastRouteKey, route);
   }
 
-  void _ensureInitialized() {
+  Future<void> _ensureInitialized() async {
     if (!_initialized) {
-      throw StateError('SettingsService not initialized. Call init() first.');
+      _prefs = await SharedPreferences.getInstance();
+      _initialized = true;
     }
   }
 }
