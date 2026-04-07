@@ -141,10 +141,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         content: Text(l10n.confirmSignOut),
         actions: [
           TextButton(
+            key: const Key('profile_logout_cancel_button'),
             onPressed: () => Navigator.pop(context, false),
             child: Text(l10n.cancel),
           ),
           TextButton(
+            key: const Key('profile_logout_confirm_button'),
             onPressed: () => Navigator.pop(context, true),
             child: Text(l10n.logout),
           ),
@@ -700,6 +702,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton.icon(
+                    key: const Key('profile_logout_button'),
                     onPressed: _handleSignOut,
                     icon: const Icon(Icons.logout),
                     label: Text(l10n.logout),

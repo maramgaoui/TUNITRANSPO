@@ -19,6 +19,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
     BuildContext context, [
     QueryDocumentSnapshot<Map<String, dynamic>>? journeyDoc,
   ]) async {
+    final l10n = AppLocalizations.of(context)!;
     final data = journeyDoc?.data() ?? <String, dynamic>{};
     final isEdit = journeyDoc != null;
     final departureCtrl =
@@ -50,7 +51,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isEdit ? 'Modifier le trajet' : 'Ajouter un trajet',
+                isEdit ? l10n.editJourneyTitle : l10n.addJourneyTitle,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -60,7 +61,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
               TextField(
                 controller: departureCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Départ',
+                  labelText: l10n.departurePoint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -70,7 +71,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
               TextField(
                 controller: arrivalCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Arrivée',
+                  labelText: l10n.arrivalPoint,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -80,7 +81,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
               TextField(
                 controller: typeCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Type (Bus, Metro, Train)',
+                  labelText: l10n.journeyTypeField,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -90,7 +91,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
               TextField(
                 controller: timeCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Heure de départ',
+                  labelText: l10n.departureTime,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -116,7 +117,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                         type.isEmpty ||
                         departureTime.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Remplissez tous les champs')),
+                        SnackBar(content: Text(l10n.fillAllFields)),
                       );
                       return;
                     }
@@ -148,19 +149,19 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                         SnackBar(
                           content: Text(
                             isEdit
-                                ? 'Trajet modifie avec succes'
-                                : 'Trajet ajoute avec succes',
+                                ? l10n.journeyUpdatedSuccess
+                                : l10n.journeyAddedSuccess,
                           ),
                         ),
                       );
                     } on FirebaseException catch (e) {
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+                        SnackBar(content: Text(e.message ?? l10n.firestoreUpdateError)),
                       );
                     }
                   },
-                  child: Text(isEdit ? 'Modifier' : 'Ajouter'),
+                  child: Text(isEdit ? l10n.edit : l10n.add),
                 ),
               ),
             ],
@@ -190,7 +191,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Erreur de chargement des trajets'));
+            return Center(child: Text(l10n.journeysLoadError));
           }
 
           final docs = snapshot.data?.docs ?? [];
@@ -201,7 +202,7 @@ class _ManageJourneysScreenState extends State<ManageJourneysScreen> {
                 children: [
                   Icon(Icons.route, size: 64, color: AppTheme.lightGrey),
                   const SizedBox(height: 16),
-                  const Text('Aucun trajet'),
+                  Text(l10n.noJourneysFound),
                 ],
               ),
             );

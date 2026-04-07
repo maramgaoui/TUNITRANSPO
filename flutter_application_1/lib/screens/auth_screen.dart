@@ -361,6 +361,7 @@ class _AuthScreenState extends State<AuthScreen>
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const Key('auth_screen'),
       body: SafeArea(
         child: Column(
           children: [
@@ -387,6 +388,7 @@ class _AuthScreenState extends State<AuthScreen>
             ),
             // Tab bar
             TabBar(
+              key: const Key('auth_tab_bar'),
               controller: _tabController,
               labelColor: AppTheme.primaryTeal,
               unselectedLabelColor: AppTheme.mediumGrey,
@@ -394,12 +396,14 @@ class _AuthScreenState extends State<AuthScreen>
               indicatorWeight: 3,
               tabs: [
                 Tab(
+                  key: const Key('auth_login_tab'),
                   child: Text(
                     l10n.login,
                     style: TextStyle(fontWeight: FontWeight.w600),
                   ),
                 ),
                 Tab(
+                  key: const Key('auth_signup_tab'),
                   child: Text(
                     l10n.register,
                     style: TextStyle(fontWeight: FontWeight.w600),
@@ -448,6 +452,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Email field with real-time validation
             ValidatedTextField(
               controller: _loginEmailController,
+              textFieldKey: const Key('auth_login_email_field'),
               label: l10n.email,
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
@@ -457,6 +462,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Password field with real-time validation
             ValidatedTextField(
               controller: _loginPasswordController,
+              textFieldKey: const Key('auth_login_password_field'),
               label: l10n.password,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
@@ -471,6 +477,7 @@ class _AuthScreenState extends State<AuthScreen>
             Align(
               alignment: Alignment.centerRight,
               child: TextButton(
+                key: const Key('auth_forgot_password_button'),
                 onPressed: _handleForgotPassword,
                 child: Text(l10n.forgotPasswordShort),
               ),
@@ -480,6 +487,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                key: const Key('auth_login_submit_button'),
                 onPressed: _isLoading ? null : _handleLogin,
                 child: _isLoading
                     ? const SizedBox(
@@ -514,6 +522,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
+                key: const Key('auth_google_login_button'),
                 onPressed: _isLoading ? null : _handleGoogleSignIn,
                 icon: const Icon(Icons.g_mobiledata),
                 label: Text(l10n.signInWithGoogle),
@@ -523,6 +532,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
+                key: const Key('auth_admin_login_nav_button'),
                 onPressed: _isLoading
                     ? null
                     : () {
@@ -566,6 +576,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Nom field with real-time validation (letters only)
             ValidatedTextField(
               controller: _signupNomController,
+              textFieldKey: const Key('auth_signup_last_name_field'),
               label: l10n.lastName,
               hintText: l10n.lastName,
               prefixIcon: Icons.person_outline,
@@ -576,6 +587,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Prénom field with real-time validation (letters only)
             ValidatedTextField(
               controller: _signupPrenomController,
+              textFieldKey: const Key('auth_signup_first_name_field'),
               label: l10n.firstName,
               hintText: l10n.firstName,
               prefixIcon: Icons.person_outline,
@@ -586,6 +598,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Username field with real-time validation (letters and numbers)
             ValidatedTextField(
               controller: _signupUsernameController,
+              textFieldKey: const Key('auth_signup_username_field'),
               label: l10n.username,
               hintText: l10n.username,
               prefixIcon: Icons.person_add_outlined,
@@ -595,6 +608,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Email field with real-time validation
             ValidatedTextField(
               controller: _signupEmailController,
+              textFieldKey: const Key('auth_signup_email_field'),
               label: l10n.email,
               hintText: 'votre@email.com',
               prefixIcon: Icons.email_outlined,
@@ -604,6 +618,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Password field with real-time validation and strength indicator
             ValidatedTextField(
               controller: _signupPasswordController,
+              textFieldKey: const Key('auth_signup_password_field'),
               label: l10n.password,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
@@ -620,6 +635,7 @@ class _AuthScreenState extends State<AuthScreen>
             // Confirm password field with real-time validation
             ValidatedTextField(
               controller: _signupConfirmPasswordController,
+              textFieldKey: const Key('auth_signup_confirm_password_field'),
               label: l10n.confirmNewPassword,
               hintText: '••••••••',
               prefixIcon: Icons.lock_outline,
@@ -688,6 +704,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
+                key: const Key('auth_signup_submit_button'),
                 onPressed: _isLoading ? null : _handleSignUp,
                 child: _isLoading
                     ? const SizedBox(
@@ -722,6 +739,7 @@ class _AuthScreenState extends State<AuthScreen>
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
+                key: const Key('auth_google_signup_button'),
                 onPressed: _isLoading ? null : _handleGoogleSignIn,
                 icon: const Icon(Icons.g_mobiledata),
                 label: Text(l10n.signUpWithGoogle),

@@ -109,6 +109,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   ),
                   const SizedBox(height: 24),
                   TextFormField(
+                    key: const Key('admin_login_matricule_field'),
                     controller: _matriculeController,
                     decoration: InputDecoration(
                       labelText: l10n.matricule,
@@ -125,6 +126,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   ),
                   const SizedBox(height: 14),
                   TextFormField(
+                    key: const Key('admin_login_password_field'),
                     controller: _passwordController,
                     decoration: InputDecoration(
                       labelText: l10n.password,
@@ -153,6 +155,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   ),
                   const SizedBox(height: 22),
                   ElevatedButton(
+                    key: const Key('admin_login_submit_button'),
                     onPressed: _isLoading ? null : _handleAdminLogin,
                     child: _isLoading
                         ? const SizedBox(
@@ -164,6 +167,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
                   ),
                   const SizedBox(height: 10),
                   OutlinedButton.icon(
+                    key: const Key('admin_login_back_to_user_button'),
                     onPressed: () => context.go('/auth'),
                     icon: const Icon(Icons.arrow_back),
                     label: Text(l10n.backToUserLogin),

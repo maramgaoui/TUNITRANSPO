@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,16 @@ import '../../l10n/app_localizations.dart';
 enum _UserFilter { all, active, banned, blocked }
 
 class ManageUsersScreen extends StatefulWidget {
-  const ManageUsersScreen({super.key});
+  const ManageUsersScreen({
+    super.key,
+    this.firestore,
+    this.pageSize = 25,
+    this.initialLoadDelay,
+  });
+
+  final FirebaseFirestore? firestore;
+  final int pageSize;
+  final Duration? initialLoadDelay;
 
   @override
   State<ManageUsersScreen> createState() => _ManageUsersScreenState();
@@ -22,25 +33,169 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
 
   _UserFilter _activeFilter = _UserFilter.all;
   final TextEditingController _searchController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  final List<QueryDocumentSnapshot<Map<String, dynamic>>> _loadedDocs = [];
+  Timer? _searchDebounce;
+  DocumentSnapshot<Map<String, dynamic>>? _lastDocument;
+
+  bool _isInitialLoading = true;
+  bool _isLoadingMore = false;
+  bool _hasMore = true;
+  String? _loadError;
   String _searchQuery = '';
+
+  FirebaseFirestore get _firestore => widget.firestore ?? FirebaseFirestore.instance;
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(() {
-      setState(() => _searchQuery = _searchController.text.trim().toLowerCase());
+      final nextQuery = _searchController.text.trim();
+      if (nextQuery == _searchQuery) return;
+      setState(() => _searchQuery = nextQuery);
+      _searchDebounce?.cancel();
+      _searchDebounce = Timer(const Duration(milliseconds: 300), () {
+        unawaited(_loadInitialUsers());
+      });
     });
+    _scrollController.addListener(_onScroll);
+    _loadInitialUsers();
   }
 
   @override
   void dispose() {
+    _searchDebounce?.cancel();
     _searchController.dispose();
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  String? get _statusValueFilter {
+    return switch (_activeFilter) {
+      _UserFilter.active => 'active',
+      _UserFilter.banned => 'banned',
+      _UserFilter.blocked => 'blocked',
+      _UserFilter.all => null,
+    };
+  }
+
+  Query<Map<String, dynamic>> _buildQuery({
+    required bool forLoadMore,
+    bool preferServerPrefixSearch = true,
+  }) {
+    Query<Map<String, dynamic>> query = _firestore.collection(_usersCollection);
+
+    final statusFilter = _statusValueFilter;
+    if (statusFilter != null) {
+      query = query.where('status', isEqualTo: statusFilter);
+    }
+
+    final trimmedQuery = _searchQuery.trim();
+    final canUseServerPrefix = trimmedQuery.isNotEmpty && preferServerPrefixSearch;
+    if (canUseServerPrefix) {
+      // Prefix search stays Firestore-side to reduce scanned documents.
+      query = query
+          .orderBy('username')
+          .startAt([trimmedQuery])
+          .endAt(['$trimmedQuery\uf8ff']);
+    } else {
+      query = query.orderBy(FieldPath.documentId);
+    }
+
+    query = query.limit(widget.pageSize);
+    if (forLoadMore && _lastDocument != null) {
+      query = query.startAfterDocument(_lastDocument!);
+    }
+    return query;
+  }
+
+  Future<void> _loadInitialUsers() async {
+    setState(() {
+      _isInitialLoading = true;
+      _loadError = null;
+      _loadedDocs.clear();
+      _lastDocument = null;
+      _hasMore = true;
+    });
+
+    try {
+      if (widget.initialLoadDelay != null) {
+        await Future<void>.delayed(widget.initialLoadDelay!);
+      }
+      QuerySnapshot<Map<String, dynamic>> snapshot;
+      try {
+        snapshot = await _buildQuery(forLoadMore: false).get();
+      } on FirebaseException {
+        // Index/schema fallback: keep pagination with documentId ordering.
+        snapshot = await _buildQuery(
+          forLoadMore: false,
+          preferServerPrefixSearch: false,
+        ).get();
+      }
+      if (!mounted) return;
+      setState(() {
+        _loadedDocs.addAll(snapshot.docs);
+        _lastDocument = snapshot.docs.isNotEmpty ? snapshot.docs.last : null;
+        _hasMore = snapshot.docs.length == widget.pageSize;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _loadError = e.toString();
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isInitialLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _loadMoreUsers() async {
+    if (_isInitialLoading || _isLoadingMore || !_hasMore || _lastDocument == null) {
+      return;
+    }
+
+    setState(() => _isLoadingMore = true);
+    try {
+      QuerySnapshot<Map<String, dynamic>> snapshot;
+      try {
+        snapshot = await _buildQuery(forLoadMore: true).get();
+      } on FirebaseException {
+        snapshot = await _buildQuery(
+          forLoadMore: true,
+          preferServerPrefixSearch: false,
+        ).get();
+      }
+      if (!mounted) return;
+      setState(() {
+        _loadedDocs.addAll(snapshot.docs);
+        if (snapshot.docs.isNotEmpty) {
+          _lastDocument = snapshot.docs.last;
+        }
+        _hasMore = snapshot.docs.length == widget.pageSize;
+      });
+    } finally {
+      if (mounted) {
+        setState(() => _isLoadingMore = false);
+      }
+    }
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
+    final position = _scrollController.position;
+    if (position.pixels >= position.maxScrollExtent - 200) {
+      _loadMoreUsers();
+    }
   }
 
   /// Returns true when a document passes both the status filter and search query.
   bool _matchesFilters(Map<String, dynamic> data) {
     final status = (data['status'] ?? 'active').toString();
+    final normalizedQuery = _searchQuery.toLowerCase();
 
     // Status filter
     if (_activeFilter != _UserFilter.all) {
@@ -50,10 +205,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
     }
 
     // Search query — match username or email (case-insensitive)
-    if (_searchQuery.isNotEmpty) {
+    if (normalizedQuery.isNotEmpty) {
       final username = (data['username'] ?? '').toString().toLowerCase();
       final email = (data['email'] ?? '').toString().toLowerCase();
-      if (!username.contains(_searchQuery) && !email.contains(_searchQuery)) {
+      if (!username.contains(normalizedQuery) && !email.contains(normalizedQuery)) {
         return false;
       }
     }
@@ -128,8 +283,10 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                       fontWeight:
                           selected ? FontWeight.w700 : FontWeight.normal,
                     ),
-                    onSelected: (_) =>
-                        setState(() => _activeFilter = filter),
+                    onSelected: (_) {
+                      setState(() => _activeFilter = filter);
+                      unawaited(_loadInitialUsers());
+                    },
                   ),
                 );
               }).toList(),
@@ -140,33 +297,27 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
 
           // ── User list ───────────────────────────────────────────────
           Expanded(
-            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-              stream: FirebaseFirestore.instance
-                  .collection(_usersCollection)
-                  .snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
+            child: Builder(
+              builder: (context) {
+                if (_isInitialLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (snapshot.hasError) {
+                if (_loadError != null) {
                   return Center(
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        'Unable to load users. ${snapshot.error ?? ''}',
+                        'Unable to load users. $_loadError',
                         textAlign: TextAlign.center,
                       ),
                     ),
                   );
                 }
 
-                final allDocs = snapshot.data?.docs ?? [];
-                final docs = allDocs
-                    .where((d) => _matchesFilters(d.data()))
-                    .toList();
+                final docs = _loadedDocs.where((d) => _matchesFilters(d.data())).toList();
 
-                if (allDocs.isEmpty) {
+                if (_loadedDocs.isEmpty) {
                   return Center(child: Text(AppLocalizations.of(context)!.noUsersFound));
                 }
 
@@ -176,86 +327,97 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
                   );
                 }
 
-                return ListView.separated(
-                  padding: const EdgeInsets.all(12),
-                  itemCount: docs.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final doc = docs[index];
-                    final data = doc.data();
-                    final username =
-                        (data['username'] ?? 'Unknown user').toString();
-                    final email = (data['email'] ?? '').toString();
-                    final avatar =
-                        ((data['avatar'] ?? data['avatarId']) ?? 'avatar-01')
-                            .toString();
-                    final status = (data['status'] ?? 'active').toString();
-                    final banUntilRaw = data['banUntil'];
-                    final banUntil = banUntilRaw is Timestamp
-                        ? banUntilRaw.toDate()
-                        : (banUntilRaw is DateTime ? banUntilRaw : null);
+                return RefreshIndicator(
+                  onRefresh: _loadInitialUsers,
+                  child: ListView.separated(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.all(12),
+                    itemCount: docs.length + (_isLoadingMore ? 1 : 0),
+                    separatorBuilder: (_, _) => const SizedBox(height: 8),
+                    itemBuilder: (context, index) {
+                      if (index >= docs.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 8),
+                          child: Center(child: CircularProgressIndicator()),
+                        );
+                      }
 
-                    return Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                AvatarPlus(
-                                  avatar,
-                                  width: 42,
-                                  height: 42,
-                                  fit: BoxFit.cover,
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        username,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w700,
-                                          fontSize: 16,
+                      final doc = docs[index];
+                      final data = doc.data();
+                      final username =
+                          (data['username'] ?? 'Unknown user').toString();
+                      final email = (data['email'] ?? '').toString();
+                      final avatar =
+                          ((data['avatar'] ?? data['avatarId']) ?? 'avatar-01')
+                              .toString();
+                      final status = (data['status'] ?? 'active').toString();
+                      final banUntilRaw = data['banUntil'];
+                      final banUntil = banUntilRaw is Timestamp
+                          ? banUntilRaw.toDate()
+                          : (banUntilRaw is DateTime ? banUntilRaw : null);
+
+                      return Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  AvatarPlus(
+                                    avatar,
+                                    width: 42,
+                                    height: 42,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          username,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 2),
-                                      Text(email),
-                                      const SizedBox(height: 4),
-                                      Text(
-                                        adminStatusLabel(context, status, banUntil),
-                                        style: TextStyle(
-                                          color: adminStatusColor(status),
-                                          fontWeight: FontWeight.w600,
+                                        const SizedBox(height: 2),
+                                        Text(email),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          adminStatusLabel(context, status, banUntil),
+                                          style: TextStyle(
+                                            color: adminStatusColor(status),
+                                            fontWeight: FontWeight.w600,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: FilledButton.tonalIcon(
+                                  onPressed: () =>
+                                      _showAdminActions(context, doc.id),
+                                  icon: const Icon(
+                                    Icons.admin_panel_settings_outlined,
+                                  ),
+                                  label: Text(
+                                    AppLocalizations.of(context)!.adminActions,
                                   ),
                                 ),
-                              ],
-                            ),
-                            const SizedBox(height: 10),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: FilledButton.tonalIcon(
-                                onPressed: () =>
-                                    _showAdminActions(context, doc.id),
-                                icon: const Icon(
-                                  Icons.admin_panel_settings_outlined,
-                                ),
-                                label: Text(
-                                  AppLocalizations.of(context)!.adminActions,
-                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               },
             ),
@@ -278,6 +440,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
               onPressed: () async {
                 Navigator.of(ctx).pop();
                 await banUserWithFeedback(context, userId, days: 3);
+                await _loadInitialUsers();
               },
               child: Text(l10n.banFor3Days),
             ),
@@ -285,6 +448,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
               onPressed: () async {
                 Navigator.of(ctx).pop();
                 await banUserWithFeedback(context, userId, days: 7);
+                await _loadInitialUsers();
               },
               child: Text(l10n.banFor7Days),
             ),
@@ -292,6 +456,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
               onPressed: () async {
                 Navigator.of(ctx).pop();
                 await blockUserWithFeedback(context, userId);
+                await _loadInitialUsers();
               },
               child: Text(l10n.blockPermanently),
             ),
@@ -299,6 +464,7 @@ class _ManageUsersScreenState extends State<ManageUsersScreen>
               onPressed: () async {
                 Navigator.of(ctx).pop();
                 await unblockUserWithFeedback(context, userId);
+                await _loadInitialUsers();
               },
               child: Text(l10n.unblockUser),
             ),

@@ -238,5 +238,51 @@
   },
   "usernameIsRequired": "اسم المستخدم مطلوب",
   "usernameMinLength": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل",
-  "usernameMaxLength": "يجب ألا يتجاوز اسم المستخدم 20 حرفًا"
+  "usernameMaxLength": "يجب ألا يتجاوز اسم المستخدم 20 حرفًا",
+  "edit": "تعديل",
+  "add": "إضافة",
+  "editJourneyTitle": "تعديل الرحلة",
+  "addJourneyTitle": "إضافة رحلة",
+  "journeyTypeField": "النوع (حافلة، مترو، قطار)",
+  "departureTime": "وقت الانطلاق",
+  "journeyUpdatedSuccess": "تم تعديل الرحلة بنجاح",
+  "journeyAddedSuccess": "تمت إضافة الرحلة بنجاح",
+  "journeysLoadError": "تعذر تحميل الرحلات",
+  "noJourneysFound": "لا توجد رحلات",
+  "editStationTitle": "تعديل المحطة",
+  "addStationTitle": "إضافة محطة",
+  "stationName": "اسم المحطة",
+  "stationType": "النوع (مترو، حافلة، قطار)",
+  "stationUpdatedSuccess": "تم تعديل المحطة بنجاح",
+  "stationAddedSuccess": "تمت إضافة المحطة بنجاح",
+  "stationsLoadError": "تعذر تحميل المحطات",
+  "noStationsFound": "لا توجد محطات",
+  "composeNotification": "إنشاء إشعار",
+  "title": "العنوان",
+  "content": "المحتوى",
+  "recipients": "المستلمون",
+  "allUsers": "كل المستخدمين",
+  "appUsers": "مستخدمو التطبيق",
+  "drivers": "السائقون",
+  "sendingInProgress": "جار الإرسال...",
+  "sendNotificationAction": "إرسال الإشعار",
+  "notificationsHistory": "سجل الإشعارات",
+  "notificationsLoadError": "تعذر تحميل الإشعارات",
+  "noNotificationSentYet": "لم يتم إرسال أي إشعار بعد",
+  "notificationSavedForRecipients": "تم حفظ الإشعار لـ {count} مستلم",
+  "@notificationSavedForRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipientsCount": "{count} مستلم",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

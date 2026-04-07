@@ -10,16 +10,23 @@ class FavoritesController extends ChangeNotifier {
   static final FavoritesController instance = FavoritesController._();
 
   final FavoritesService _favoritesService = FavoritesService();
-  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
   final List<Journey> _favorites = [];
   bool _isLoading = false;
   String? _loadedForUid;
+
+  String? _currentUid() {
+    try {
+      return firebase_auth.FirebaseAuth.instance.currentUser?.uid;
+    } catch (_) {
+      return null;
+    }
+  }
 
   List<Journey> get favorites => List<Journey>.unmodifiable(_favorites);
   bool get isLoading => _isLoading;
 
   Future<void> ensureFavoritesLoaded() async {
-    final uid = _auth.currentUser?.uid;
+    final uid = _currentUid();
     if (uid == null) {
       if (_favorites.isNotEmpty || _loadedForUid != null) {
         _favorites.clear();
@@ -36,7 +43,7 @@ class FavoritesController extends ChangeNotifier {
   }
 
   Future<void> loadFavorites() async {
-    final uid = _auth.currentUser?.uid;
+    final uid = _currentUid();
     if (uid == null) {
       _favorites.clear();
       _loadedForUid = null;
@@ -53,6 +60,9 @@ class FavoritesController extends ChangeNotifier {
         ..clear()
         ..addAll(items.map((journey) => journey.copyWith(isFavorite: true)));
       _loadedForUid = uid;
+    } catch (_) {
+      _favorites.clear();
+      _loadedForUid = null;
     } finally {
       _isLoading = false;
       notifyListeners();

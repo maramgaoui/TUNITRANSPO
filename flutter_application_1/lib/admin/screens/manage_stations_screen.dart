@@ -19,6 +19,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
     BuildContext context, [
     QueryDocumentSnapshot<Map<String, dynamic>>? stationDoc,
   ]) async {
+    final l10n = AppLocalizations.of(context)!;
     final data = stationDoc?.data() ?? <String, dynamic>{};
     final isEdit = stationDoc != null;
     final nameCtrl = TextEditingController(text: (data['name'] ?? '').toString());
@@ -46,7 +47,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                isEdit ? 'Modifier la station' : 'Ajouter une station',
+                isEdit ? l10n.editStationTitle : l10n.addStationTitle,
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -56,7 +57,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
               TextField(
                 controller: nameCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Nom de la station',
+                  labelText: l10n.stationName,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -66,7 +67,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
               TextField(
                 controller: typeCtrl,
                 decoration: InputDecoration(
-                  labelText: 'Type (Metro, Bus, Train)',
+                  labelText: l10n.stationType,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -98,7 +99,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
 
                     if (name.isEmpty || type.isEmpty || city.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Remplissez tous les champs')),
+                        SnackBar(content: Text(l10n.fillAllFields)),
                       );
                       return;
                     }
@@ -129,19 +130,19 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
                         SnackBar(
                           content: Text(
                             isEdit
-                                ? 'Station modifiee avec succes'
-                                : 'Station ajoutee avec succes',
+                                ? l10n.stationUpdatedSuccess
+                                : l10n.stationAddedSuccess,
                           ),
                         ),
                       );
                     } on FirebaseException catch (e) {
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+                        SnackBar(content: Text(e.message ?? l10n.firestoreUpdateError)),
                       );
                     }
                   },
-                  child: Text(isEdit ? 'Modifier' : 'Ajouter'),
+                  child: Text(isEdit ? l10n.edit : l10n.add),
                 ),
               ),
             ],
@@ -171,7 +172,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Erreur de chargement des stations'));
+            return Center(child: Text(l10n.stationsLoadError));
           }
 
           final docs = snapshot.data?.docs ?? [];
@@ -182,7 +183,7 @@ class _ManageStationsScreenState extends State<ManageStationsScreen> {
                 children: [
                   Icon(Icons.train_outlined, size: 64, color: AppTheme.lightGrey),
                   const SizedBox(height: 16),
-                  const Text('Aucune station'),
+                  Text(l10n.noStationsFound),
                 ],
               ),
             );

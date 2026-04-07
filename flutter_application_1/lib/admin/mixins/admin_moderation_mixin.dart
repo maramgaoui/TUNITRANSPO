@@ -4,7 +4,7 @@ import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/services/admin_user_service.dart';
 
 mixin AdminModerationMixin<T extends StatefulWidget> on State<T> {
-  final AdminUserService _adminUserService = AdminUserService();
+  AdminUserService get _adminUserService => AdminUserService();
 
   Future<void> banUserWithFeedback(
     BuildContext context,

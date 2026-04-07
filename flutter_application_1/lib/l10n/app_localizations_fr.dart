@@ -541,4 +541,104 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get usernameMaxLength => 'Le nom d\'utilisateur doit contenir au maximum 20 caractères';
+
+  @override
+  String get edit => 'Modifier';
+
+  @override
+  String get add => 'Ajouter';
+
+  @override
+  String get editJourneyTitle => 'Modifier le trajet';
+
+  @override
+  String get addJourneyTitle => 'Ajouter un trajet';
+
+  @override
+  String get journeyTypeField => 'Type (Bus, Metro, Train)';
+
+  @override
+  String get departureTime => 'Heure de départ';
+
+  @override
+  String get journeyUpdatedSuccess => 'Trajet modifié avec succès';
+
+  @override
+  String get journeyAddedSuccess => 'Trajet ajouté avec succès';
+
+  @override
+  String get journeysLoadError => 'Erreur de chargement des trajets';
+
+  @override
+  String get noJourneysFound => 'Aucun trajet';
+
+  @override
+  String get editStationTitle => 'Modifier la station';
+
+  @override
+  String get addStationTitle => 'Ajouter une station';
+
+  @override
+  String get stationName => 'Nom de la station';
+
+  @override
+  String get stationType => 'Type (Metro, Bus, Train)';
+
+  @override
+  String get stationUpdatedSuccess => 'Station modifiée avec succès';
+
+  @override
+  String get stationAddedSuccess => 'Station ajoutée avec succès';
+
+  @override
+  String get stationsLoadError => 'Erreur de chargement des stations';
+
+  @override
+  String get noStationsFound => 'Aucune station';
+
+  @override
+  String get composeNotification => 'Composer une notification';
+
+  @override
+  String get title => 'Titre';
+
+  @override
+  String get content => 'Contenu';
+
+  @override
+  String get recipients => 'Destinataires';
+
+  @override
+  String get allUsers => 'Tous les utilisateurs';
+
+  @override
+  String get appUsers => 'Utilisateurs app';
+
+  @override
+  String get drivers => 'Conducteurs';
+
+  @override
+  String get sendingInProgress => 'Envoi en cours...';
+
+  @override
+  String get sendNotificationAction => 'Envoyer la notification';
+
+  @override
+  String get notificationsHistory => 'Historique des notifications';
+
+  @override
+  String get notificationsLoadError => 'Erreur de chargement des notifications';
+
+  @override
+  String get noNotificationSentYet => 'Aucune notification envoyée';
+
+  @override
+  String notificationSavedForRecipients(int count) {
+    return 'Notification enregistrée pour $count destinataires';
+  }
+
+  @override
+  String recipientsCount(int count) {
+    return '$count destinataires';
+  }
 }

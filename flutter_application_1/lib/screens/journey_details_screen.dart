@@ -119,7 +119,13 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          if (context.canPop()) {
+                            context.pop();
+                          } else {
+                            context.go('/home/journey-input');
+                          }
+                        },
                       ),
                       const SizedBox(width: 8),
                       Expanded(

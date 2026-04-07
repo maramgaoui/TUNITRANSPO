@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'firebase_options.dart';
+import 'firebase_runtime_options.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/notification_controller.dart';
 import 'router/app_router.dart';
@@ -15,11 +15,13 @@ import 'services/settings_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await Firebase.initializeApp(options: FirebaseRuntimeOptions.currentPlatform);
 
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-  await NotificationService.instance.initialize();
-  await NotificationController.instance.initialize();
+  if (!FirebaseRuntimeOptions.integrationTestMode) {
+    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+    await NotificationService.instance.initialize();
+    await NotificationController.instance.initialize();
+  }
   await ActiveJourneyService.instance.init();
 
   // Initialize settings service to load saved preferences

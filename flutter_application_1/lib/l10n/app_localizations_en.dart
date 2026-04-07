@@ -541,4 +541,104 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get usernameMaxLength => 'Username must be at most 20 characters';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get add => 'Add';
+
+  @override
+  String get editJourneyTitle => 'Edit journey';
+
+  @override
+  String get addJourneyTitle => 'Add journey';
+
+  @override
+  String get journeyTypeField => 'Type (Bus, Metro, Train)';
+
+  @override
+  String get departureTime => 'Departure time';
+
+  @override
+  String get journeyUpdatedSuccess => 'Journey updated successfully';
+
+  @override
+  String get journeyAddedSuccess => 'Journey added successfully';
+
+  @override
+  String get journeysLoadError => 'Unable to load journeys';
+
+  @override
+  String get noJourneysFound => 'No journeys found';
+
+  @override
+  String get editStationTitle => 'Edit station';
+
+  @override
+  String get addStationTitle => 'Add station';
+
+  @override
+  String get stationName => 'Station name';
+
+  @override
+  String get stationType => 'Type (Metro, Bus, Train)';
+
+  @override
+  String get stationUpdatedSuccess => 'Station updated successfully';
+
+  @override
+  String get stationAddedSuccess => 'Station added successfully';
+
+  @override
+  String get stationsLoadError => 'Unable to load stations';
+
+  @override
+  String get noStationsFound => 'No stations found';
+
+  @override
+  String get composeNotification => 'Compose a notification';
+
+  @override
+  String get title => 'Title';
+
+  @override
+  String get content => 'Content';
+
+  @override
+  String get recipients => 'Recipients';
+
+  @override
+  String get allUsers => 'All users';
+
+  @override
+  String get appUsers => 'App users';
+
+  @override
+  String get drivers => 'Drivers';
+
+  @override
+  String get sendingInProgress => 'Sending...';
+
+  @override
+  String get sendNotificationAction => 'Send notification';
+
+  @override
+  String get notificationsHistory => 'Notifications history';
+
+  @override
+  String get notificationsLoadError => 'Unable to load notifications';
+
+  @override
+  String get noNotificationSentYet => 'No notifications sent yet';
+
+  @override
+  String notificationSavedForRecipients(int count) {
+    return 'Notification saved for $count recipients';
+  }
+
+  @override
+  String recipientsCount(int count) {
+    return '$count recipients';
+  }
 }

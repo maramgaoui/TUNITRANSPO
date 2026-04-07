@@ -238,5 +238,51 @@
   },
   "usernameIsRequired": "Le nom d'utilisateur est requis",
   "usernameMinLength": "Le nom d'utilisateur doit contenir au moins 3 caractères",
-  "usernameMaxLength": "Le nom d'utilisateur doit contenir au maximum 20 caractères"
+  "usernameMaxLength": "Le nom d'utilisateur doit contenir au maximum 20 caractères",
+  "edit": "Modifier",
+  "add": "Ajouter",
+  "editJourneyTitle": "Modifier le trajet",
+  "addJourneyTitle": "Ajouter un trajet",
+  "journeyTypeField": "Type (Bus, Metro, Train)",
+  "departureTime": "Heure de départ",
+  "journeyUpdatedSuccess": "Trajet modifié avec succès",
+  "journeyAddedSuccess": "Trajet ajouté avec succès",
+  "journeysLoadError": "Erreur de chargement des trajets",
+  "noJourneysFound": "Aucun trajet",
+  "editStationTitle": "Modifier la station",
+  "addStationTitle": "Ajouter une station",
+  "stationName": "Nom de la station",
+  "stationType": "Type (Metro, Bus, Train)",
+  "stationUpdatedSuccess": "Station modifiée avec succès",
+  "stationAddedSuccess": "Station ajoutée avec succès",
+  "stationsLoadError": "Erreur de chargement des stations",
+  "noStationsFound": "Aucune station",
+  "composeNotification": "Composer une notification",
+  "title": "Titre",
+  "content": "Contenu",
+  "recipients": "Destinataires",
+  "allUsers": "Tous les utilisateurs",
+  "appUsers": "Utilisateurs app",
+  "drivers": "Conducteurs",
+  "sendingInProgress": "Envoi en cours...",
+  "sendNotificationAction": "Envoyer la notification",
+  "notificationsHistory": "Historique des notifications",
+  "notificationsLoadError": "Erreur de chargement des notifications",
+  "noNotificationSentYet": "Aucune notification envoyée",
+  "notificationSavedForRecipients": "Notification enregistrée pour {count} destinataires",
+  "@notificationSavedForRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipientsCount": "{count} destinataires",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }

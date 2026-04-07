@@ -53,6 +53,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     ];
 
     return Scaffold(
+      key: const Key('admin_dashboard_screen'),
       appBar: _selectedIndex == 1
           ? null
           : AppBar(

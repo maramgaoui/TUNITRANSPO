@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import '../models/journey_model.dart';
 
 class FavoritesService {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final firebase_auth.FirebaseAuth _auth = firebase_auth.FirebaseAuth.instance;
+  FirebaseFirestore get _firestore => FirebaseFirestore.instance;
+  firebase_auth.FirebaseAuth get _auth => firebase_auth.FirebaseAuth.instance;
 
   CollectionReference<Map<String, dynamic>> _favoritesRef(String uid) {
     return _firestore.collection('users').doc(uid).collection('favorites');

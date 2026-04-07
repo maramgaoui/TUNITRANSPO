@@ -1116,6 +1116,198 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Username must be at most 20 characters'**
   String get usernameMaxLength;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
+
+  /// No description provided for @editJourneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit journey'**
+  String get editJourneyTitle;
+
+  /// No description provided for @addJourneyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add journey'**
+  String get addJourneyTitle;
+
+  /// No description provided for @journeyTypeField.
+  ///
+  /// In en, this message translates to:
+  /// **'Type (Bus, Metro, Train)'**
+  String get journeyTypeField;
+
+  /// No description provided for @departureTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Departure time'**
+  String get departureTime;
+
+  /// No description provided for @journeyUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey updated successfully'**
+  String get journeyUpdatedSuccess;
+
+  /// No description provided for @journeyAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Journey added successfully'**
+  String get journeyAddedSuccess;
+
+  /// No description provided for @journeysLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load journeys'**
+  String get journeysLoadError;
+
+  /// No description provided for @noJourneysFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No journeys found'**
+  String get noJourneysFound;
+
+  /// No description provided for @editStationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit station'**
+  String get editStationTitle;
+
+  /// No description provided for @addStationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add station'**
+  String get addStationTitle;
+
+  /// No description provided for @stationName.
+  ///
+  /// In en, this message translates to:
+  /// **'Station name'**
+  String get stationName;
+
+  /// No description provided for @stationType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type (Metro, Bus, Train)'**
+  String get stationType;
+
+  /// No description provided for @stationUpdatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Station updated successfully'**
+  String get stationUpdatedSuccess;
+
+  /// No description provided for @stationAddedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Station added successfully'**
+  String get stationAddedSuccess;
+
+  /// No description provided for @stationsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load stations'**
+  String get stationsLoadError;
+
+  /// No description provided for @noStationsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No stations found'**
+  String get noStationsFound;
+
+  /// No description provided for @composeNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Compose a notification'**
+  String get composeNotification;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get title;
+
+  /// No description provided for @content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
+  String get content;
+
+  /// No description provided for @recipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Recipients'**
+  String get recipients;
+
+  /// No description provided for @allUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'All users'**
+  String get allUsers;
+
+  /// No description provided for @appUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'App users'**
+  String get appUsers;
+
+  /// No description provided for @drivers.
+  ///
+  /// In en, this message translates to:
+  /// **'Drivers'**
+  String get drivers;
+
+  /// No description provided for @sendingInProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending...'**
+  String get sendingInProgress;
+
+  /// No description provided for @sendNotificationAction.
+  ///
+  /// In en, this message translates to:
+  /// **'Send notification'**
+  String get sendNotificationAction;
+
+  /// No description provided for @notificationsHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications history'**
+  String get notificationsHistory;
+
+  /// No description provided for @notificationsLoadError.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load notifications'**
+  String get notificationsLoadError;
+
+  /// No description provided for @noNotificationSentYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications sent yet'**
+  String get noNotificationSentYet;
+
+  /// No description provided for @notificationSavedForRecipients.
+  ///
+  /// In en, this message translates to:
+  /// **'Notification saved for {count} recipients'**
+  String notificationSavedForRecipients(int count);
+
+  /// No description provided for @recipientsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} recipients'**
+  String recipientsCount(int count);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

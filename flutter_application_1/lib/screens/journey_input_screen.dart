@@ -136,6 +136,7 @@ class _JourneyInputScreenState extends State<JourneyInputScreen> {
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
+      key: const Key('journey_input_screen'),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

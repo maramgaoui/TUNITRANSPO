@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Utility scripts for TuniTranspo Firebase setup",
   "scripts": {
-    "create-admins": "node create_admin_accounts.js"
+    "create-admins": "node create_admin_accounts.js",
+    "seed-integration": "node seed_integration_test_data.js"
   },
   "keywords": ["firebase", "admin", "batch"],
   "author": "",

@@ -14,6 +14,7 @@ class ValidatedTextField extends StatefulWidget {
   final bool isPasswordField;
   final ValueChanged<bool>? onValidationChanged;
   final String? nameFieldType; // 'nom' or 'prenom'
+  final Key? textFieldKey;
 
   const ValidatedTextField({
     super.key,
@@ -28,6 +29,7 @@ class ValidatedTextField extends StatefulWidget {
     this.isPasswordField = false,
     this.onValidationChanged,
     this.nameFieldType,
+    this.textFieldKey,
   });
 
   @override
@@ -90,6 +92,7 @@ class _ValidatedTextFieldState extends State<ValidatedTextField> {
         ),
         const SizedBox(height: 8),
         TextFormField(
+          key: widget.textFieldKey,
           controller: widget.controller,
           obscureText: widget.obscureText,
           keyboardType: _getKeyboardType(),

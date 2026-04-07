@@ -8,21 +8,44 @@ import '../models/session_result.dart';
 import '../utils/validation_utils.dart';
 
 class AuthController {
+  AuthController({
+    firebase_auth.FirebaseAuth? firebaseAuth,
+    FirebaseFirestore? firestore,
+    GoogleSignIn? googleSignIn,
+  }) : _firebaseAuth = firebaseAuth ?? firebase_auth.FirebaseAuth.instance,
+       _firestore = firestore ?? FirebaseFirestore.instance,
+       _googleSignIn = googleSignIn;
+
   static final AuthController instance = AuthController();
+  static const Duration _authStreamTtl = Duration(minutes: 5);
   static const Duration _sessionTtl = Duration(minutes: 5);
 
-  final firebase_auth.FirebaseAuth _firebaseAuth =
-      firebase_auth.FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final firebase_auth.FirebaseAuth _firebaseAuth;
+  final FirebaseFirestore _firestore;
   GoogleSignIn? _googleSignIn;
   SessionResult? _cachedSession;
   DateTime? _sessionCachedAt;
   String? _cachedSessionUid;
+  User? _cachedAuthStreamUser;
+  DateTime? _authStreamCachedAt;
+  String? _cachedAuthStreamUid;
 
   GoogleSignIn get _googleSignInClient => _googleSignIn ??= GoogleSignIn();
 
   static const String _blockedMessage =
       'Your account has been permanently blocked.';
+
+  void _invalidateAuthStreamCache() {
+    _cachedAuthStreamUser = null;
+    _authStreamCachedAt = null;
+    _cachedAuthStreamUid = null;
+  }
+
+  void _cacheAuthStreamUser(String uid, User resolvedUser) {
+    _cachedAuthStreamUser = resolvedUser;
+    _authStreamCachedAt = DateTime.now();
+    _cachedAuthStreamUid = uid;
+  }
 
   void _invalidateSessionCache() {
     _cachedSession = null;
@@ -41,7 +64,17 @@ class AuthController {
     return _firebaseAuth.authStateChanges().asyncMap((
       firebase_auth.User? user,
     ) async {
-      if (user == null) return null;
+      if (user == null) {
+        _invalidateAuthStreamCache();
+        return null;
+      }
+
+      if (_cachedAuthStreamUser != null &&
+          _cachedAuthStreamUid == user.uid &&
+          _authStreamCachedAt != null &&
+          DateTime.now().difference(_authStreamCachedAt!) < _authStreamTtl) {
+        return _cachedAuthStreamUser;
+      }
 
       // Ban logic on app open: if banUntil has expired, automatically reactivate user.
       // If user is still blocked/banned, sign out to prevent app access.
@@ -51,6 +84,7 @@ class AuthController {
           enforceRestriction: true,
         );
         if (accessError != null) {
+          _invalidateAuthStreamCache();
           await _firebaseAuth.signOut();
           return null;
         }
@@ -70,14 +104,20 @@ class AuthController {
             .doc(user.uid)
             .get();
         if (userDoc.exists) {
-          return User.fromMap(userDoc.data() ?? {});
+          final resolvedUser = User.fromMap(userDoc.data() ?? {});
+          _cacheAuthStreamUser(user.uid, resolvedUser);
+          return resolvedUser;
         } else {
           // Create default user if not in Firestore
-          return User(uid: user.uid, email: user.email ?? '');
+          final resolvedUser = User(uid: user.uid, email: user.email ?? '');
+          _cacheAuthStreamUser(user.uid, resolvedUser);
+          return resolvedUser;
         }
       } catch (e) {
         developer.log('Error fetching user data: $e', name: 'AuthController');
-        return User(uid: user.uid, email: user.email ?? '');
+        final resolvedUser = User(uid: user.uid, email: user.email ?? '');
+        _cacheAuthStreamUser(user.uid, resolvedUser);
+        return resolvedUser;
       }
     });
   }
@@ -434,6 +474,7 @@ class AuthController {
   // Sign out
   Future<void> signOut() async {
     try {
+      _invalidateAuthStreamCache();
       _invalidateSessionCache();
       await _firebaseAuth.signOut();
     } catch (e) {

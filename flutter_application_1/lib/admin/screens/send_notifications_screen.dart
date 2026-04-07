@@ -35,9 +35,10 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
   }
 
   Future<void> _sendNotification() async {
+    final l10n = AppLocalizations.of(context)!;
     if (titleCtrl.text.isEmpty || messageCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Remplissez tous les champs')),
+        SnackBar(content: Text(l10n.fillAllFields)),
       );
       return;
     }
@@ -59,15 +60,13 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Notification enregistree pour $recipients destinataires',
-          ),
+          content: Text(l10n.notificationSavedForRecipients(recipients)),
         ),
       );
     } on FirebaseException catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Erreur Firestore')),
+        SnackBar(content: Text(e.message ?? l10n.firestoreUpdateError)),
       );
     } finally {
       if (mounted) {
@@ -106,8 +105,8 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Composer une notification',
+                    Text(
+                      l10n.composeNotification,
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -118,7 +117,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                       controller: titleCtrl,
                       maxLength: 100,
                       decoration: InputDecoration(
-                        labelText: 'Titre',
+                        labelText: l10n.title,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -130,15 +129,15 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                       maxLines: 4,
                       maxLength: 500,
                       decoration: InputDecoration(
-                        labelText: 'Contenu',
+                        labelText: l10n.content,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
-                    const Text(
-                      'Destinataires',
+                    Text(
+                      l10n.recipients,
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     const SizedBox(height: 8),
@@ -153,7 +152,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.people,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Tous les utilisateurs'),
+                              Text(l10n.allUsers),
                             ],
                           ),
                         ),
@@ -164,7 +163,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.smartphone,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Utilisateurs app'),
+                              Text(l10n.appUsers),
                             ],
                           ),
                         ),
@@ -175,7 +174,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               const Icon(Icons.directions_car,
                                   size: 18, color: AppTheme.primaryTeal),
                               const SizedBox(width: 8),
-                              const Text('Conducteurs'),
+                              Text(l10n.drivers),
                             ],
                           ),
                         ),
@@ -205,8 +204,8 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                               )
                             : const Icon(Icons.send),
                         label: Text(_isSending
-                            ? 'Envoi en cours...'
-                            : 'Envoyer la notification'),
+                            ? l10n.sendingInProgress
+                            : l10n.sendNotificationAction),
                       ),
                     ),
                   ],
@@ -216,8 +215,8 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
             const SizedBox(height: 32),
 
             // History section
-            const Text(
-              'Historique des notifications',
+            Text(
+              l10n.notificationsHistory,
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -234,12 +233,12 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 if (snapshot.hasError) {
-                  return const Text('Erreur de chargement des notifications');
+                  return Text(l10n.notificationsLoadError);
                 }
 
                 final docs = snapshot.data?.docs ?? [];
                 if (docs.isEmpty) {
-                  return const Text('Aucune notification envoyee');
+                  return Text(l10n.noNotificationSentYet);
                 }
 
                 return Column(
@@ -293,7 +292,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                                 const Icon(Icons.person, size: 16, color: AppTheme.mediumGrey),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '$recipients destinataires',
+                                  l10n.recipientsCount(recipients),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: AppTheme.mediumGrey,

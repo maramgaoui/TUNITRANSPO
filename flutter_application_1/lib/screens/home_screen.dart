@@ -28,6 +28,24 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      const JourneyInputScreen(),
+      const FavoritesScreen(),
+      const NotificationScreen(),
+      const ChatScreen(),
+      ProfileScreen(
+        settingsService: widget.settingsService,
+        onThemeChanged: widget.onThemeChanged,
+        onLanguageChanged: widget.onLanguageChanged,
+      ),
+    ];
+  }
+
   int _tabIndexFromLocation(String path) {
     if (path.startsWith('/home/favorites')) return 1;
     if (path.startsWith('/home/notifications')) return 2;
@@ -52,24 +70,9 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  List<Widget> _buildScreens() {
-    return [
-      const JourneyInputScreen(),
-      const FavoritesScreen(),
-      const NotificationScreen(),
-      const ChatScreen(),
-      ProfileScreen(
-        settingsService: widget.settingsService,
-        onThemeChanged: widget.onThemeChanged,
-        onLanguageChanged: widget.onLanguageChanged,
-      ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final screens = _buildScreens();
     final path = GoRouterState.of(context).uri.path;
     final selectedIndex = _tabIndexFromLocation(path);
 
@@ -77,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Directionality(
       textDirection: Directionality.of(context),
       child: Scaffold(
-        body: screens[selectedIndex],
+        key: const Key('home_screen'),
+        body: _screens[selectedIndex],
         floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         floatingActionButton: ListenableBuilder(
           listenable: ActiveJourneyService.instance,
@@ -127,8 +131,8 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.location_on_outlined),
-              activeIcon: Icon(Icons.location_on),
+              icon: Icon(Icons.location_on_outlined, key: const Key('home_nav_journeys_icon')),
+              activeIcon: Icon(Icons.location_on, key: const Key('home_nav_journeys_active_icon')),
               label: l10n.journeys,
             ),
             BottomNavigationBarItem(
@@ -147,8 +151,8 @@ class _HomeScreenState extends State<HomeScreen> {
               label: l10n.messages,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
+              icon: Icon(Icons.person_outline, key: const Key('home_nav_profile_icon')),
+              activeIcon: Icon(Icons.person, key: const Key('home_nav_profile_active_icon')),
               label: l10n.profile,
             ),
           ],

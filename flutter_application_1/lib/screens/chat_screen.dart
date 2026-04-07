@@ -19,12 +19,16 @@ class ChatScreen extends StatefulWidget {
     this.adminMatricule,
     this.adminName,
     this.adminRole,
+    this.firestore,
+    this.authController,
   });
 
   final bool isAdminMode;
   final String? adminMatricule;
   final String? adminName;
   final String? adminRole;
+  final FirebaseFirestore? firestore;
+  final AuthController? authController;
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
@@ -35,16 +39,14 @@ class _ChatScreenState extends State<ChatScreen>
   static const int _kInitialMessagesLimit = 50;
   static const int _kMessagesPageSize = 30;
 
-  final _authController = AuthController.instance;
+    late final AuthController _authController;
   final _messageController = TextEditingController();
   final _messageFocusNode = FocusNode();
   final _scrollController = ScrollController();
   StreamSubscription<QuerySnapshot<Map<String, dynamic>>>? _messagesSubscription;
 
-  final CollectionReference<Map<String, dynamic>> _messagesRef =
-      FirebaseFirestore.instance.collection('community_messages');
-  final CollectionReference<Map<String, dynamic>> _usersRef =
-      FirebaseFirestore.instance.collection('users');
+    late final CollectionReference<Map<String, dynamic>> _messagesRef;
+    late final CollectionReference<Map<String, dynamic>> _usersRef;
 
   Map<String, dynamic>? _replyingTo;
   List<QueryDocumentSnapshot<Map<String, dynamic>>> _liveMessages =
@@ -78,6 +80,10 @@ class _ChatScreenState extends State<ChatScreen>
   @override
   void initState() {
     super.initState();
+    final firestore = widget.firestore ?? FirebaseFirestore.instance;
+    _authController = widget.authController ?? AuthController.instance;
+    _messagesRef = firestore.collection('community_messages');
+    _usersRef = firestore.collection('users');
     _startMessagesListener();
     _scrollController.addListener(_handleScrollForPagination);
     _messageFocusNode.addListener(() {

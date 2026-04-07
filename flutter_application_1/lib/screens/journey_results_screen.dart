@@ -9,11 +9,13 @@ import '../widgets/journey_card.dart';
 class JourneyResultsScreen extends StatefulWidget {
   final String departure;
   final String arrival;
+  final bool preloadFavorites;
 
   const JourneyResultsScreen({
     super.key,
     required this.departure,
     required this.arrival,
+    this.preloadFavorites = true,
   });
 
   @override
@@ -27,7 +29,9 @@ class _JourneyResultsScreenState extends State<JourneyResultsScreen> {
   @override
   void initState() {
     super.initState();
-    FavoritesController.instance.loadFavorites();
+    if (widget.preloadFavorites) {
+      FavoritesController.instance.loadFavorites();
+    }
   }
 
   Future<void> _openJourneyDetails(BuildContext context, Journey journey) async {

@@ -541,4 +541,104 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get usernameMaxLength => 'يجب ألا يتجاوز اسم المستخدم 20 حرفًا';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get add => 'إضافة';
+
+  @override
+  String get editJourneyTitle => 'تعديل الرحلة';
+
+  @override
+  String get addJourneyTitle => 'إضافة رحلة';
+
+  @override
+  String get journeyTypeField => 'النوع (حافلة، مترو، قطار)';
+
+  @override
+  String get departureTime => 'وقت الانطلاق';
+
+  @override
+  String get journeyUpdatedSuccess => 'تم تعديل الرحلة بنجاح';
+
+  @override
+  String get journeyAddedSuccess => 'تمت إضافة الرحلة بنجاح';
+
+  @override
+  String get journeysLoadError => 'تعذر تحميل الرحلات';
+
+  @override
+  String get noJourneysFound => 'لا توجد رحلات';
+
+  @override
+  String get editStationTitle => 'تعديل المحطة';
+
+  @override
+  String get addStationTitle => 'إضافة محطة';
+
+  @override
+  String get stationName => 'اسم المحطة';
+
+  @override
+  String get stationType => 'النوع (مترو، حافلة، قطار)';
+
+  @override
+  String get stationUpdatedSuccess => 'تم تعديل المحطة بنجاح';
+
+  @override
+  String get stationAddedSuccess => 'تمت إضافة المحطة بنجاح';
+
+  @override
+  String get stationsLoadError => 'تعذر تحميل المحطات';
+
+  @override
+  String get noStationsFound => 'لا توجد محطات';
+
+  @override
+  String get composeNotification => 'إنشاء إشعار';
+
+  @override
+  String get title => 'العنوان';
+
+  @override
+  String get content => 'المحتوى';
+
+  @override
+  String get recipients => 'المستلمون';
+
+  @override
+  String get allUsers => 'كل المستخدمين';
+
+  @override
+  String get appUsers => 'مستخدمو التطبيق';
+
+  @override
+  String get drivers => 'السائقون';
+
+  @override
+  String get sendingInProgress => 'جار الإرسال...';
+
+  @override
+  String get sendNotificationAction => 'إرسال الإشعار';
+
+  @override
+  String get notificationsHistory => 'سجل الإشعارات';
+
+  @override
+  String get notificationsLoadError => 'تعذر تحميل الإشعارات';
+
+  @override
+  String get noNotificationSentYet => 'لم يتم إرسال أي إشعار بعد';
+
+  @override
+  String notificationSavedForRecipients(int count) {
+    return 'تم حفظ الإشعار لـ $count مستلم';
+  }
+
+  @override
+  String recipientsCount(int count) {
+    return '$count مستلم';
+  }
 }

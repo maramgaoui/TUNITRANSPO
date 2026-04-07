@@ -238,5 +238,51 @@
   },
   "usernameIsRequired": "Username is required",
   "usernameMinLength": "Username must be at least 3 characters",
-  "usernameMaxLength": "Username must be at most 20 characters"
+  "usernameMaxLength": "Username must be at most 20 characters",
+  "edit": "Edit",
+  "add": "Add",
+  "editJourneyTitle": "Edit journey",
+  "addJourneyTitle": "Add journey",
+  "journeyTypeField": "Type (Bus, Metro, Train)",
+  "departureTime": "Departure time",
+  "journeyUpdatedSuccess": "Journey updated successfully",
+  "journeyAddedSuccess": "Journey added successfully",
+  "journeysLoadError": "Unable to load journeys",
+  "noJourneysFound": "No journeys found",
+  "editStationTitle": "Edit station",
+  "addStationTitle": "Add station",
+  "stationName": "Station name",
+  "stationType": "Type (Metro, Bus, Train)",
+  "stationUpdatedSuccess": "Station updated successfully",
+  "stationAddedSuccess": "Station added successfully",
+  "stationsLoadError": "Unable to load stations",
+  "noStationsFound": "No stations found",
+  "composeNotification": "Compose a notification",
+  "title": "Title",
+  "content": "Content",
+  "recipients": "Recipients",
+  "allUsers": "All users",
+  "appUsers": "App users",
+  "drivers": "Drivers",
+  "sendingInProgress": "Sending...",
+  "sendNotificationAction": "Send notification",
+  "notificationsHistory": "Notifications history",
+  "notificationsLoadError": "Unable to load notifications",
+  "noNotificationSentYet": "No notifications sent yet",
+  "notificationSavedForRecipients": "Notification saved for {count} recipients",
+  "@notificationSavedForRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipientsCount": "{count} recipients",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  }
 }
