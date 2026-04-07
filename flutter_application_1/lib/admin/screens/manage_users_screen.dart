@@ -1,6 +1,7 @@
 import 'package:avatar_plus/avatar_plus.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/services/admin_user_service.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -62,7 +63,13 @@ class _ManageUsersScreenState extends State<ManageUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(AppLocalizations.of(context)!.manageUsers)),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.manageUsers),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/admin'),
+        ),
+      ),
       body: Column(
         children: [
           // ── Search bar ──────────────────────────────────────────────

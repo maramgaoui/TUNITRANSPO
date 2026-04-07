@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 
@@ -76,6 +77,10 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
         title: Text(l10n.sendNotifications),
         backgroundColor: AppTheme.primaryTeal,
         foregroundColor: Colors.white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/admin'),
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
