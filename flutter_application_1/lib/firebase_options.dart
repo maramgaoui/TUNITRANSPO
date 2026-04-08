@@ -41,45 +41,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCIFjZvsb1TOHXXLxrKRDL-XRiSdl3R2iY',
-    appId: '1:102410511518:web:a33fbe81caa8ae4ee5078f',
-    messagingSenderId: '102410511518',
-    projectId: 'tuni-transport-20eaf',
-    authDomain: 'tuni-transport-20eaf.firebaseapp.com',
-    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
-    measurementId: 'G-PPSEHLZS6C',
-  );
-
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDPYKsXUlCsddWjBABpPyZJyqdXvAYM4_k',
-    appId: '1:102410511518:android:13dd0186b21ba41de5078f',
-    messagingSenderId: '102410511518',
-    projectId: 'tuni-transport-20eaf',
-    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
-  );
-
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAMHONfz8DvfW_PjnSQyijIc_R0ebJxlfw',
-    appId: '1:102410511518:ios:46b27f52fa74440ae5078f',
-    messagingSenderId: '102410511518',
-    projectId: 'tuni-transport-20eaf',
-    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
-    iosClientId: '102410511518-qqquua0t20jsrojmrrb5td12h8otnotp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.flutterApplication1',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAMHONfz8DvfW_PjnSQyijIc_R0ebJxlfw',
-    appId: '1:102410511518:ios:46b27f52fa74440ae5078f',
-    messagingSenderId: '102410511518',
-    projectId: 'tuni-transport-20eaf',
-    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
-    iosClientId: '102410511518-qqquua0t20jsrojmrrb5td12h8otnotp.apps.googleusercontent.com',
-    iosBundleId: 'com.example.flutterApplication1',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCIFjZvsb1TOHXXLxrKRDL-XRiSdl3R2iY',
+    apiKey: 'AIzaSyD-jRxsCsPC1NIB7yRItXzaNAN5dSbaXoc',
     appId: '1:102410511518:web:394eebb9d965bf31e5078f',
     messagingSenderId: '102410511518',
     projectId: 'tuni-transport-20eaf',
@@ -87,4 +49,41 @@ class DefaultFirebaseOptions {
     storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
     measurementId: 'G-XPSTNX7HLX',
   );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyDWSsnc82ohqjjWkygMDPB_7zbOOzLzvuc',
+    appId: '1:102410511518:android:fbf375f49efdc1f8e5078f',
+    messagingSenderId: '102410511518',
+    projectId: 'tuni-transport-20eaf',
+    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
+  );
+
+  static const FirebaseOptions ios = FirebaseOptions(
+    apiKey: 'AIzaSyAKzikShbZzQTjajx98aSKwkPzlvw3Ue58',
+    appId: '1:102410511518:ios:46b27f52fa74440ae5078f',
+    messagingSenderId: '102410511518',
+    projectId: 'tuni-transport-20eaf',
+    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
+    iosBundleId: 'com.example.flutterApplication1',
+  );
+
+  static const FirebaseOptions macos = FirebaseOptions(
+    apiKey: 'AIzaSyAKzikShbZzQTjajx98aSKwkPzlvw3Ue58',
+    appId: '1:102410511518:ios:46b27f52fa74440ae5078f',
+    messagingSenderId: '102410511518',
+    projectId: 'tuni-transport-20eaf',
+    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
+    iosBundleId: 'com.example.flutterApplication1',
+  );
+
+  static const FirebaseOptions windows = FirebaseOptions(
+    apiKey: 'AIzaSyCIeSkAb8fpr5EuKFjfpwz--QIcfBHxWIw',
+    appId: '1:102410511518:web:7925c56b7da57c9be5078f',
+    messagingSenderId: '102410511518',
+    projectId: 'tuni-transport-20eaf',
+    authDomain: 'tuni-transport-20eaf.firebaseapp.com',
+    storageBucket: 'tuni-transport-20eaf.firebasestorage.app',
+    measurementId: 'G-4GQ87YWQ8X',
+  );
+
 }
