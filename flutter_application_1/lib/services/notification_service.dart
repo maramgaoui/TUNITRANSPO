@@ -4,13 +4,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../controllers/notification_controller.dart';
-import '../firebase_options.dart';
+import '../firebase_runtime_options.dart';
 
 @pragma('vm:entry-point')
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp(
+        options: FirebaseRuntimeOptions.currentPlatform,
+      );
+    } on FirebaseException catch (e) {
+      if (e.code != 'duplicate-app' && e.code != 'core/duplicate-app') {
+        rethrow;
+      }
+    }
+  }
 
   // Background isolate: keep lightweight work only.
   debugPrint('Background notification received: ${message.messageId}');
@@ -71,6 +79,10 @@ class NotificationService {
     } on MissingPluginException {
       // Defensive fallback for desktop targets where channel impl is absent.
       debugPrint('FCM getToken is not implemented on this platform.');
+    } catch (e) {
+      // Do not crash app startup if FCM token provisioning is temporarily
+      // unavailable (for example after key restriction changes).
+      debugPrint('FCM token initialization failed: $e');
     }
   }
 

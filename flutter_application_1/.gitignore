@@ -50,3 +50,9 @@ lib/firebase_options.dart
 android/app/google-services.json
 android/app/src/google-services.json
 ios/Runner/GoogleService-Info.plist
+
+# Service account keys and local secret env files
+scripts/firebase-key.json
+scripts/firebase-*.json
+.env
+.env.*

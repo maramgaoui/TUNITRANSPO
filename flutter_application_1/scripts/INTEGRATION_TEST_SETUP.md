@@ -5,6 +5,7 @@
 Set these before running the seed script:
 
 - `GOOGLE_APPLICATION_CREDENTIALS`
+- Optional: `FIREBASE_PROJECT_ID` (if your ADC context does not expose project automatically)
 - `TEST_USER_EMAIL`
 - `TEST_USER_PASSWORD`
 - `TEST_BANNED_EMAIL`
@@ -20,6 +21,7 @@ Set these before running the seed script:
 From `scripts/` dependencies already installed:
 
 ```powershell
+$env:GOOGLE_APPLICATION_CREDENTIALS = "C:\secure\firebase\service-account.json"
 node scripts/seed_integration_test_data.js
 ```
 

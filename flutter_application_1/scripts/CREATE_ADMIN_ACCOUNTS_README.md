@@ -5,18 +5,16 @@ This script automatically creates Firebase Auth accounts for all admins defined 
 ## Prerequisites
 
 1. **Node.js** installed on your machine
-2. **Firebase service account key** (JSON file from Firebase Console)
+2. **Firebase Admin credentials via ADC** (Application Default Credentials)
 3. Admin documents in Firestore with fields: `matricule`, `password`, and optionally `email`
 
 ## Setup
 
-### Step 1: Download Firebase Service Account Key
+### Step 1: Prepare Firebase Admin Credentials (ADC)
 
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Select your project
-3. Navigate to **Project Settings** → **Service Accounts**
-4. Click **Generate New Private Key**
-5. Save the JSON file to a secure location, e.g., `scripts/firebase-key.json`
+1. In CI/Cloud runtime, use the runtime service account with required IAM roles.
+2. For local runs, use a secure service account JSON outside the repository.
+3. Set `GOOGLE_APPLICATION_CREDENTIALS` to that external JSON path.
 
 ### Step 2: Install Dependencies
 
@@ -31,19 +29,19 @@ Set the `GOOGLE_APPLICATION_CREDENTIALS` environment variable and run:
 
 **On Windows (PowerShell):**
 ```powershell
-$env:GOOGLE_APPLICATION_CREDENTIALS = "$(Get-Location)\firebase-key.json"
+$env:GOOGLE_APPLICATION_CREDENTIALS = "C:\secure\firebase\service-account.json"
 node create_admin_accounts.js
 ```
 
 **On Windows (Command Prompt):**
 ```cmd
-set GOOGLE_APPLICATION_CREDENTIALS=%cd%\firebase-key.json
+set GOOGLE_APPLICATION_CREDENTIALS=C:\secure\firebase\service-account.json
 node create_admin_accounts.js
 ```
 
 **On macOS/Linux:**
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS="$(pwd)/firebase-key.json"
+export GOOGLE_APPLICATION_CREDENTIALS="/secure/firebase/service-account.json"
 node create_admin_accounts.js
 ```
 
@@ -97,15 +95,15 @@ admins/
 ## Security Notes
 
 ⚠️ **Important:**
-- Never commit `firebase-key.json` to version control
-- Keep your Firebase service account key secure
+- Never commit service account JSON files to version control
+- Keep your Firebase service account key outside this repository
 - The script reads passwords from Firestore — consider migrating to password hashing if not already done
-- Add `.gitignore` entry: `scripts/firebase-key.json`
+- Use environment-based ADC wherever possible
 
 ## Troubleshooting
 
-**Error: "GOOGLE_APPLICATION_CREDENTIALS environment variable not set"**
-- Ensure you've exported/set the environment variable with the correct path to your JSON key
+**Error: "Firebase Admin credentials not detected"**
+- Ensure `GOOGLE_APPLICATION_CREDENTIALS` points to a valid service account file, or run in a trusted Google runtime.
 
 **Error: "auth/invalid-password"**
 - The password must be at least 6 characters

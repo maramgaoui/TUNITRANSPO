@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
-import '../services/settings_service.dart';
 import '../services/active_journey_service.dart';
 import 'journey_input_screen.dart';
 import 'favorites_screen.dart';

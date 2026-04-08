@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/models/notification_model.dart';
 
 import '../controllers/notification_controller.dart';
-import '../models/notification_model.dart';
 import '../theme/app_theme.dart';
 import '../utils/notification_l10n.dart';
 import '../widgets/app_header.dart';

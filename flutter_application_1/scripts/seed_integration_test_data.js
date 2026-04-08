@@ -1,23 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const admin = require('firebase-admin');
-
-function resolveCredentialPath() {
-  if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-    return process.env.GOOGLE_APPLICATION_CREDENTIALS;
-  }
-
-  const fallback = path.join(__dirname, 'firebase-key.json');
-  if (fs.existsSync(fallback)) {
-    return fallback;
-  }
-
-  throw new Error(
-    'GOOGLE_APPLICATION_CREDENTIALS is not set and scripts/firebase-key.json was not found.'
-  );
-}
+const { admin, initializeFirebaseAdmin } = require('./firebase_admin_init');
 
 const required = [
   'TEST_USER_EMAIL',
@@ -34,13 +17,7 @@ for (const name of required) {
   }
 }
 
-const credentialPath = resolveCredentialPath();
-const serviceAccount = JSON.parse(fs.readFileSync(credentialPath, 'utf8'));
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  projectId: serviceAccount.project_id,
-});
+initializeFirebaseAdmin();
 
 const auth = admin.auth();
 const db = admin.firestore();

@@ -19,7 +19,7 @@ import '../screens/active_journey_screen.dart';
 import '../screens/journey_details_screen.dart';
 import '../screens/journey_results_screen.dart';
 import '../screens/splash_screen.dart';
-import '../services/settings_service.dart';
+import 'package:tuni_transport/services/settings_service.dart';
 
 class AppRouter {
   AppRouter._();

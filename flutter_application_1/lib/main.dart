@@ -1,21 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'firebase_runtime_options.dart';
+import 'firebase_options.dart';
 import 'controllers/auth_controller.dart';
 import 'controllers/notification_controller.dart';
 import 'router/app_router.dart';
 import 'services/notification_service.dart';
 import 'services/active_journey_service.dart';
+import 'package:tuni_transport/services/settings_service.dart';
 import 'theme/app_theme.dart';
-import 'services/settings_service.dart';
+
+String _maskApiKey(String key) {
+  if (key.length <= 8) return '***';
+  return '${key.substring(0, 6)}...${key.substring(key.length - 4)}';
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: FirebaseRuntimeOptions.currentPlatform);
+  final activeOptions = FirebaseRuntimeOptions.currentPlatform;
+  if (kDebugMode) {
+    final defaultOptions = DefaultFirebaseOptions.currentPlatform;
+    debugPrint(
+      'Firebase config => integrationTestMode=${FirebaseRuntimeOptions.integrationTestMode}, hasTestOverride=${FirebaseRuntimeOptions.hasTestOverride}',
+    );
+    debugPrint(
+      'Firebase default config => appId=${defaultOptions.appId}, apiKey=${_maskApiKey(defaultOptions.apiKey)}',
+    );
+    debugPrint(
+      'Firebase runtime config => appId=${activeOptions.appId}, apiKey=${_maskApiKey(activeOptions.apiKey)}',
+    );
+  }
+  if (Firebase.apps.isEmpty) {
+    try {
+      await Firebase.initializeApp(options: activeOptions);
+    } on FirebaseException catch (e) {
+      if (e.code != 'duplicate-app' && e.code != 'core/duplicate-app') {
+        rethrow;
+      }
+    }
+  }
 
   if (!FirebaseRuntimeOptions.integrationTestMode) {
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);

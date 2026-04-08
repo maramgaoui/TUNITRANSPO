@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../models/notification_model.dart';
+import 'package:tuni_transport/models/notification_model.dart';
 
 class NotificationController extends ChangeNotifier {
   NotificationController._();

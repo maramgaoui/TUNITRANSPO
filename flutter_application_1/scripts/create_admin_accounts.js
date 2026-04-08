@@ -12,23 +12,14 @@
  * Firebase Auth accounts using the email and password from each admin doc.
  */
 
-const admin = require('firebase-admin');
-const fs = require('fs');
-const path = require('path');
+const { admin, initializeFirebaseAdmin } = require('./firebase_admin_init');
 
-// Initialize Firebase Admin SDK
-// Ensure GOOGLE_APPLICATION_CREDENTIALS environment variable is set
-if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-  console.error(
-    'Error: GOOGLE_APPLICATION_CREDENTIALS environment variable not set.'
-  );
-  console.error('Please set it to the path of your Firebase service account key JSON file.');
+try {
+  initializeFirebaseAdmin();
+} catch (error) {
+  console.error(`Error: ${error.message}`);
   process.exit(1);
 }
-
-admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-});
 
 const auth = admin.auth();
 const db = admin.firestore();
