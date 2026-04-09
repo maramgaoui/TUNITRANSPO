@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminAuthResult {
   final bool isAuthenticated;
@@ -20,19 +21,66 @@ class AdminAuthResult {
 }
 
 class AdminAuthController {
-  AdminAuthController({FirebaseFirestore? firestore, FirebaseAuth? auth})
+  AdminAuthController({
+    FirebaseFirestore? firestore,
+    FirebaseAuth? auth,
+    SharedPreferences? sharedPreferences,
+  })
     : _firestore = firestore ?? FirebaseFirestore.instance,
-      _auth = auth ?? FirebaseAuth.instance;
+      _auth = auth ?? FirebaseAuth.instance,
+      _sharedPreferences = sharedPreferences;
 
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
+  final SharedPreferences? _sharedPreferences;
 
   // ── Client-side brute-force protection ──────────────────────────────────────
   // Firebase enforces server-side rate limiting, but a local counter gives
   // immediate feedback and cuts unnecessary Auth round-trips while under attack.
   static const int _kLockoutThreshold = 5;
+  static const String _failedAttemptsKey = 'admin_auth.failed_attempts';
+  static const String _lockedUntilEpochKey = 'admin_auth.locked_until_epoch';
   int _failedAttempts = 0;
   DateTime? _lockedUntil;
+  bool _lockoutStateLoaded = false;
+
+  Future<SharedPreferences> _prefs() async {
+    return _sharedPreferences ?? await SharedPreferences.getInstance();
+  }
+
+  Future<void> _restoreLockoutStateIfNeeded() async {
+    if (_lockoutStateLoaded) {
+      return;
+    }
+
+    final prefs = await _prefs();
+    _failedAttempts = prefs.getInt(_failedAttemptsKey) ?? 0;
+    final lockedUntilEpoch = prefs.getInt(_lockedUntilEpochKey);
+    _lockedUntil = lockedUntilEpoch == null
+        ? null
+        : DateTime.fromMillisecondsSinceEpoch(lockedUntilEpoch);
+    _lockoutStateLoaded = true;
+  }
+
+  Future<void> _persistLockoutState() async {
+    final prefs = await _prefs();
+    await prefs.setInt(_failedAttemptsKey, _failedAttempts);
+    final lockedUntil = _lockedUntil;
+    if (lockedUntil == null) {
+      await prefs.remove(_lockedUntilEpochKey);
+    } else {
+      await prefs.setInt(
+        _lockedUntilEpochKey,
+        lockedUntil.millisecondsSinceEpoch,
+      );
+    }
+  }
+
+  Future<void> _clearLockoutState() async {
+    _failedAttempts = 0;
+    _lockedUntil = null;
+    await _persistLockoutState();
+  }
 
   /// Exponential back-off: 30 s after the 5th failure, doubling every
   /// additional [_kLockoutThreshold] failures, capped at 15 minutes.
@@ -45,17 +93,20 @@ class AdminAuthController {
     return Duration(seconds: seconds.clamp(30, 900));
   }
 
-  void _recordFailure() {
+  Future<void> _recordFailure() async {
     _failedAttempts++;
     if (_failedAttempts % _kLockoutThreshold == 0) {
       _lockedUntil = DateTime.now().add(_nextLockoutDuration());
     }
+    await _persistLockoutState();
   }
 
   Future<AdminAuthResult> login({
     required String matricule,
     required String password,
   }) async {
+    await _restoreLockoutStateIfNeeded();
+
     final sanitizedMatricule = matricule.trim();
     final sanitizedPassword = password.trim();
 
@@ -113,8 +164,7 @@ class AdminAuthController {
       }
 
       // Successful login — reset the failure counter.
-      _failedAttempts = 0;
-      _lockedUntil = null;
+      await _clearLockoutState();
 
       final adminData = adminDoc.data()!;
       return AdminAuthResult(
@@ -133,7 +183,7 @@ class AdminAuthController {
         'wrong-password',
         'invalid-credential',
       }.contains(e.code)) {
-        _recordFailure();
+        await _recordFailure();
       }
       final message = switch (e.code) {
         'user-not-found' ||

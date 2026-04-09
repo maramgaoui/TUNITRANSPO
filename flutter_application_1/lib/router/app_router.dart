@@ -24,16 +24,23 @@ import 'package:tuni_transport/services/settings_service.dart';
 class AppRouter {
   AppRouter._();
 
+  static const Set<String> _restorableRoutes = {
+    '/home/journey-input',
+    '/home/favorites',
+    '/home/notifications',
+    '/home/chat',
+    '/home/profile',
+    '/admin',
+    '/admin/manage-users',
+    '/admin/manage-journeys',
+    '/admin/manage-stations',
+    '/admin/send-notifications',
+    '/admin/profile',
+  };
+
   static bool _isRestorableRoute(String location) {
     final path = Uri.tryParse(location)?.path ?? location;
-    return path == '/home/journey-input' ||
-        path == '/home/favorites' ||
-        path == '/home/notifications' ||
-        path == '/home/chat' ||
-        path == '/home/profile' ||
-        path == '/admin' ||
-        path == '/admin/manage-users' ||
-        path == '/admin/profile';
+    return _restorableRoutes.contains(path);
   }
 
   static GoRouter create({
@@ -80,9 +87,8 @@ class AppRouter {
         try {
           session = await authController.resolveSession(user);
         } catch (_) {
-          // Failsafe: if session resolution fails (network/rules/runtime),
-          // force a clean auth flow instead of leaving a blank screen.
-          await authController.signOut();
+          // Session policy (transient vs definitive failures) is centralized
+          // in AuthController.resolveSession.
           return '/auth';
         }
         if (session.isGuest) {

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tuni_transport/controllers/auth_controller.dart';
+import 'package:tuni_transport/models/session_result.dart';
 import 'package:tuni_transport/controllers/notification_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
 import 'package:tuni_transport/screens/chat_screen.dart';
@@ -31,10 +33,49 @@ class AdminDashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<AdminDashboard> {
   int _selectedIndex = 0;
+  SessionResult? _session;
+
+  @override
+  void initState() {
+    super.initState();
+    _resolveTrustedSession();
+  }
+
+  Future<void> _resolveTrustedSession() async {
+    final currentUser = AuthController.instance.currentUser;
+    if (currentUser == null) {
+      if (!mounted) return;
+      context.go('/admin/login');
+      return;
+    }
+
+    try {
+      final session = await AuthController.instance.resolveSession(currentUser);
+
+      if (!mounted) return;
+
+      if (session.isGuest) {
+        context.go('/admin/login');
+        return;
+      }
+
+      setState(() {
+        _session = session;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      context.go('/admin/login');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (_session == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
     final l10n = AppLocalizations.of(context)!;
+    final trustedRole = _session?.adminRole;
 
     final pages = <Widget>[
       _DashboardTab(role: widget.role),
@@ -42,7 +83,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
         isAdminMode: true,
         adminMatricule: widget.matricule,
         adminName: widget.adminName,
-        adminRole: widget.role,
+        adminRole: trustedRole,
       ),
       const _AdminNotificationsTab(),
       _AdminEditTab(

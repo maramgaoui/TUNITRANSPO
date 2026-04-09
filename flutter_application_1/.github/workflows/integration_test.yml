@@ -1,0 +1,35 @@
+name: Integration Test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  integration-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run auth integration test
+        run: |
+          flutter test integration_test/auth_flow_test.dart \
+            --dart-define=IT_RUN_AUTH_FLOW=true \
+            --dart-define=IT_USER_EMAIL=${{ secrets.IT_USER_EMAIL }} \
+            --dart-define=IT_USER_PASSWORD=${{ secrets.IT_USER_PASSWORD }} \
+            --dart-define=IT_BANNED_EMAIL=${{ secrets.IT_BANNED_EMAIL }} \
+            --dart-define=IT_BANNED_PASSWORD=${{ secrets.IT_BANNED_PASSWORD }} \
+            --dart-define=IT_ADMIN_MATRICULE=${{ secrets.IT_ADMIN_MATRICULE }} \
+            --dart-define=IT_ADMIN_PASSWORD=${{ secrets.IT_ADMIN_PASSWORD }} \
+            --dart-define=IT_SIGNUP_PASSWORD=${{ secrets.IT_SIGNUP_PASSWORD }} \
+            --dart-define=IT_SIGNUP_EMAIL_DOMAIN=${{ secrets.IT_SIGNUP_EMAIL_DOMAIN }}

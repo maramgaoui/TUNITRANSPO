@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:developer' as developer;
 import '../models/user_model.dart';
 import '../models/session_result.dart';
@@ -17,8 +19,9 @@ class AuthController {
        _googleSignIn = googleSignIn;
 
   static final AuthController instance = AuthController();
-  static const Duration _authStreamTtl = Duration(minutes: 5);
-  static const Duration _sessionTtl = Duration(minutes: 5);
+  static const Duration _authStreamTtl = Duration(seconds: 60);
+  static const Duration _sessionTtl = Duration(seconds: 60);
+  static const String _sessionCachePrefix = 'auth.session.';
 
   final firebase_auth.FirebaseAuth _firebaseAuth;
   final FirebaseFirestore _firestore;
@@ -29,6 +32,10 @@ class AuthController {
   User? _cachedAuthStreamUser;
   DateTime? _authStreamCachedAt;
   String? _cachedAuthStreamUid;
+  StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+      _userStatusSubscription;
+  String? _userStatusListenerUid;
+  String? _lastObservedUserStatus;
 
   GoogleSignIn get _googleSignInClient => _googleSignIn ??= GoogleSignIn();
 
@@ -47,16 +54,179 @@ class AuthController {
     _cachedAuthStreamUid = uid;
   }
 
-  void _invalidateSessionCache() {
+  void _invalidateSessionCache({String? uid, bool clearPersistent = true}) {
+    final targetUid = uid ?? _cachedSessionUid;
     _cachedSession = null;
     _sessionCachedAt = null;
     _cachedSessionUid = null;
+    if (clearPersistent && targetUid != null && targetUid.isNotEmpty) {
+      unawaited(_clearPersistedSession(targetUid));
+    }
   }
 
-  void _cacheSession(String uid, SessionResult session) {
+  void _cacheSession(
+    String uid,
+    SessionResult session, {
+    String accountStatus = 'active',
+  }) {
     _cachedSession = session;
     _sessionCachedAt = DateTime.now();
     _cachedSessionUid = uid;
+    unawaited(
+      _persistSession(
+        uid,
+        session,
+        accountStatus: accountStatus,
+      ),
+    );
+  }
+
+  String _sessionCacheKey(String uid) => '$_sessionCachePrefix$uid';
+
+  Future<void> _persistSession(
+    String uid,
+    SessionResult session, {
+    required String accountStatus,
+  }) async {
+    if (uid.isEmpty) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final payload = <String, dynamic>{
+        'role': session.role.name,
+        'adminRole': session.adminRole,
+        'adminMatricule': session.adminMatricule,
+        'adminName': session.adminName,
+        'accountStatus': accountStatus,
+        'cachedAt': DateTime.now().toIso8601String(),
+      };
+      await prefs.setString(_sessionCacheKey(uid), jsonEncode(payload));
+    } catch (e) {
+      developer.log(
+        'Failed to persist session cache: $e',
+        name: 'AuthController',
+      );
+    }
+  }
+
+  Future<void> _clearPersistedSession(String uid) async {
+    if (uid.isEmpty) return;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_sessionCacheKey(uid));
+    } catch (e) {
+      developer.log(
+        'Failed to clear persisted session cache: $e',
+        name: 'AuthController',
+      );
+    }
+  }
+
+  Future<SessionResult?> _loadPersistedSession(String uid) async {
+    if (uid.isEmpty) return null;
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final raw = prefs.getString(_sessionCacheKey(uid));
+      if (raw == null || raw.isEmpty) return null;
+
+      final decoded = jsonDecode(raw);
+      if (decoded is! Map<String, dynamic>) {
+        return null;
+      }
+
+      final roleName = (decoded['role'] ?? '').toString();
+      final role = SessionRole.values.firstWhere(
+        (candidate) => candidate.name == roleName,
+        orElse: () => SessionRole.guest,
+      );
+
+      return SessionResult(
+        role: role,
+        adminRole: decoded['adminRole'] as String?,
+        adminMatricule: decoded['adminMatricule'] as String?,
+        adminName: decoded['adminName'] as String?,
+      );
+    } catch (e) {
+      developer.log(
+        'Failed to load persisted session cache: $e',
+        name: 'AuthController',
+      );
+      return null;
+    }
+  }
+
+  bool _isDefinitiveSessionFailure(Object error) {
+    if (error is FirebaseException) {
+      return error.code == 'permission-denied' ||
+          error.code == 'unauthenticated';
+    }
+
+    if (error is firebase_auth.FirebaseAuthException) {
+      return error.code == 'user-disabled' ||
+          error.code == 'invalid-user-token' ||
+          error.code == 'user-token-expired';
+    }
+
+    return false;
+  }
+
+  Future<void> _cancelUserStatusListener() async {
+    await _userStatusSubscription?.cancel();
+    _userStatusSubscription = null;
+    _userStatusListenerUid = null;
+    _lastObservedUserStatus = null;
+  }
+
+  Future<void> _setUserStatusListener(String uid) async {
+    if (_userStatusSubscription != null && _userStatusListenerUid == uid) {
+      return;
+    }
+
+    await _cancelUserStatusListener();
+
+    _userStatusListenerUid = uid;
+    _userStatusSubscription = _firestore
+        .collection('users')
+        .doc(uid)
+        .snapshots()
+        .listen(
+          (snapshot) {
+            final data = snapshot.data();
+            final currentStatus = (data?['status'] ?? 'active').toString();
+
+            if (_lastObservedUserStatus == null) {
+              _lastObservedUserStatus = currentStatus;
+              return;
+            }
+
+            if (_lastObservedUserStatus != currentStatus) {
+              _lastObservedUserStatus = currentStatus;
+              _invalidateSessionCache(uid: uid);
+            }
+          },
+          onError: (error) {
+            developer.log(
+              'User status listener error: $error',
+              name: 'AuthController',
+            );
+          },
+        );
+  }
+
+  Future<void> _safeSignOut({bool clearSessionCache = true}) async {
+    final currentUid = _firebaseAuth.currentUser?.uid;
+
+    _invalidateAuthStreamCache();
+    _invalidateSessionCache(uid: currentUid, clearPersistent: clearSessionCache);
+    await _cancelUserStatusListener();
+
+    try {
+      await _firebaseAuth.signOut();
+    } catch (e) {
+      developer.log('Safe sign out error: $e', name: 'AuthController');
+    }
   }
 
   // Get current user stream
@@ -66,6 +236,7 @@ class AuthController {
     ) async {
       if (user == null) {
         _invalidateAuthStreamCache();
+        await _cancelUserStatusListener();
         return null;
       }
 
@@ -84,8 +255,7 @@ class AuthController {
           enforceRestriction: true,
         );
         if (accessError != null) {
-          _invalidateAuthStreamCache();
-          await _firebaseAuth.signOut();
+          await _safeSignOut();
           return null;
         }
       } catch (e) {
@@ -103,6 +273,7 @@ class AuthController {
             .collection('users')
             .doc(user.uid)
             .get();
+        await _setUserStatusListener(user.uid);
         if (userDoc.exists) {
           final resolvedUser = User.fromMap(userDoc.data() ?? {});
           _cacheAuthStreamUser(user.uid, resolvedUser);
@@ -261,11 +432,11 @@ class AuthController {
           .get();
 
       if (userDoc.exists) {
-        _invalidateSessionCache();
+        _invalidateSessionCache(uid: firebaseUser.uid);
         return User.fromMap(userDoc.data() ?? {});
       } else {
         // Return basic user if not in Firestore
-        _invalidateSessionCache();
+        _invalidateSessionCache(uid: firebaseUser.uid);
         return User(uid: firebaseUser.uid, email: firebaseUser.email ?? '');
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -322,9 +493,26 @@ class AuthController {
           await _firebaseAuth.signOut();
           throw Exception(accessError);
         }
-        _invalidateSessionCache();
+        _invalidateSessionCache(uid: firebaseUser.uid);
         return User.fromMap(userDoc.data() ?? {});
       } else {
+        if (firebaseUser.email != null && firebaseUser.email!.isNotEmpty) {
+          final existingByEmail = await _firestore
+              .collection('users')
+              .where('email', isEqualTo: firebaseUser.email)
+              .limit(1)
+              .get();
+
+          if (existingByEmail.docs.isNotEmpty) {
+            final existingData = existingByEmail.docs.first.data();
+            final status = (existingData['status'] ?? 'active').toString();
+            if (status == 'blocked') {
+              await _firebaseAuth.signOut();
+              throw Exception(_blockedMessage);
+            }
+          }
+        }
+
         // Create new user document
         final user = User(
           uid: firebaseUser.uid,
@@ -335,6 +523,8 @@ class AuthController {
           avatarId: 'avatar-01',
         );
 
+        // New accounts default to active status; the blocked-email lookup above
+        // is the only protection against re-registration abuse.
         final userData = user.toMap();
         userData['status'] = 'active';
         userData['banUntil'] = null;
@@ -343,7 +533,7 @@ class AuthController {
             .doc(firebaseUser.uid)
             .set(userData);
 
-        _invalidateSessionCache();
+        _invalidateSessionCache(uid: firebaseUser.uid);
         return user;
       }
     } on firebase_auth.FirebaseAuthException catch (e) {
@@ -453,8 +643,10 @@ class AuthController {
             }),
           );
         } else if (status == 'banned' || status == 'blocked') {
-          await signOut();
-          return const SessionResult(role: SessionRole.guest);
+          const bannedResult = SessionResult(role: SessionRole.guest);
+          _cacheSession(current.uid, bannedResult, accountStatus: status);
+          await _safeSignOut(clearSessionCache: false);
+          return bannedResult;
         }
       }
 
@@ -462,21 +654,37 @@ class AuthController {
       _cacheSession(current.uid, result);
       return result;
     } catch (e) {
-      // Failsafe for offline mode: keep already-authenticated users in user flow
-      // instead of failing navigation with a blank transition.
-      developer.log('resolveSession fallback to user due to error: $e', name: 'AuthController');
-      const result = SessionResult(role: SessionRole.user);
-      _cacheSession(current.uid, result);
-      return result;
+      if (_isDefinitiveSessionFailure(e)) {
+        developer.log(
+          'resolveSession forcing sign-out after definitive failure: $e',
+          name: 'AuthController',
+        );
+        await _safeSignOut();
+        return const SessionResult(role: SessionRole.guest);
+      }
+
+      final persisted = await _loadPersistedSession(current.uid);
+      if (persisted != null) {
+        _cacheSession(current.uid, persisted);
+        developer.log(
+          'resolveSession restored cached role after transient failure: $e',
+          name: 'AuthController',
+        );
+        return persisted;
+      }
+
+      developer.log(
+        'resolveSession transient failure with no cache, defaulting to guest: $e',
+        name: 'AuthController',
+      );
+      return const SessionResult(role: SessionRole.guest);
     }
   }
 
   // Sign out
   Future<void> signOut() async {
     try {
-      _invalidateAuthStreamCache();
-      _invalidateSessionCache();
-      await _firebaseAuth.signOut();
+      await _safeSignOut();
     } catch (e) {
       developer.log('Sign out error: $e', name: 'AuthController');
       throw Exception('Failed to sign out');
@@ -510,12 +718,15 @@ class AuthController {
   // Delete account
   Future<void> deleteAccount({required String uid}) async {
     try {
-      // Delete user data from Firestore
-      await _firestore.collection('users').doc(uid).delete();
-
       // Delete Firebase Auth user
       await _firebaseAuth.currentUser?.delete();
+
+      // Delete user data from Firestore only after auth deletion succeeds.
+      await _firestore.collection('users').doc(uid).delete();
     } on firebase_auth.FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        rethrow;
+      }
       throw _handleAuthException(e);
     } catch (e) {
       developer.log('Delete account error: $e', name: 'AuthController');

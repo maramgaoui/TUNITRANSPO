@@ -1,8 +1,12 @@
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../controllers/auth_controller.dart';
 import '../controllers/notification_controller.dart';
 import '../firebase_runtime_options.dart';
 
@@ -31,6 +35,7 @@ class NotificationService {
 
   final FirebaseMessaging _messaging = FirebaseMessaging.instance;
   bool _initialized = false;
+  StreamSubscription<String>? _tokenRefreshSubscription;
 
   bool get _isMessagingSupported {
     if (kIsWeb) return false;
@@ -52,6 +57,7 @@ class NotificationService {
 
     await _requestPermissions();
     await _initializeToken();
+    _registerTokenRefreshHandler();
     _registerForegroundHandler();
     _registerOpenedAppHandler();
     await _handleInitialMessage();
@@ -72,7 +78,10 @@ class NotificationService {
 
   Future<void> _initializeToken() async {
     try {
-      await _messaging.getToken();
+      final token = await _messaging.getToken();
+      if (token != null && token.isNotEmpty) {
+        await _saveTokenToCurrentUser(token);
+      }
       if (kDebugMode) {
         debugPrint('FCM token initialized.');
       }
@@ -83,6 +92,29 @@ class NotificationService {
       // Do not crash app startup if FCM token provisioning is temporarily
       // unavailable (for example after key restriction changes).
       debugPrint('FCM token initialization failed: $e');
+    }
+  }
+
+  void _registerTokenRefreshHandler() {
+    _tokenRefreshSubscription?.cancel();
+    _tokenRefreshSubscription = _messaging.onTokenRefresh.listen((token) async {
+      if (token.isEmpty) return;
+      await _saveTokenToCurrentUser(token);
+    });
+  }
+
+  Future<void> _saveTokenToCurrentUser(String token) async {
+    final uid = AuthController.instance.currentUser?.uid;
+    if (uid == null || uid.isEmpty) {
+      return;
+    }
+
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'fcmToken': token,
+      });
+    } catch (e) {
+      debugPrint('Failed to persist FCM token: $e');
     }
   }
 
@@ -106,5 +138,10 @@ class NotificationService {
 
     debugPrint('Initial notification open: ${initialMessage.messageId}');
     NotificationController.instance.addFromRemoteMessage(initialMessage);
+  }
+
+  Future<void> dispose() async {
+    await _tokenRefreshSubscription?.cancel();
+    _tokenRefreshSubscription = null;
   }
 }

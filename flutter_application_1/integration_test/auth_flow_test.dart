@@ -70,12 +70,18 @@ bool get _hasCredentials =>
 
 Future<void> _pumpApp(WidgetTester tester) async {
   app.main();
-  await tester.pumpAndSettle(const Duration(seconds: 3));
+  await _waitForOneOf(
+    tester,
+    find.byKey(authScreenKey),
+    find.byKey(homeScreenKey),
+    timeout: const Duration(seconds: 20),
+  );
+  await tester.pumpAndSettle();
 }
 
 Future<void> _ensureSignedOut(WidgetTester tester) async {
   await firebase_auth.FirebaseAuth.instance.signOut();
-  await tester.pumpAndSettle(const Duration(seconds: 3));
+  await _waitForFinder(tester, find.byKey(authScreenKey));
 }
 
 Future<void> _loginUser(
@@ -90,7 +96,11 @@ Future<void> _loginUser(
   tester.binding.focusManager.primaryFocus?.unfocus();
   await tester.pumpAndSettle();
   await _pressElevatedButtonByKey(tester, authLoginSubmitButtonKey);
-  await tester.pumpAndSettle(const Duration(seconds: 4));
+  await _waitForOneOf(
+    tester,
+    find.byKey(homeScreenKey),
+    find.byKey(authScreenKey),
+  );
 }
 
 Future<void> _tapByKey(WidgetTester tester, Key key) async {
@@ -116,7 +126,7 @@ Future<void> _logoutFromProfile(WidgetTester tester) async {
   await tester.pumpAndSettle();
   await _pressElevatedButtonByKey(tester, profileLogoutButtonKey);
   await _tapByKey(tester, profileLogoutConfirmButtonKey);
-  await tester.pumpAndSettle(const Duration(seconds: 3));
+  await _waitForFinder(tester, find.byKey(authScreenKey));
 }
 
 Future<void> _waitForFinder(
@@ -306,11 +316,9 @@ void main() {
         await tester.pumpAndSettle();
 
         await tester.tap(find.widgetWithIcon(ElevatedButton, Icons.search));
-        await tester.pumpAndSettle(const Duration(seconds: 2));
         await _waitForType<JourneyResultsScreen>(tester);
 
         await tester.tap(find.byType(JourneyCard).first);
-        await tester.pumpAndSettle(const Duration(seconds: 2));
         await _waitForType<JourneyDetailsScreen>(tester);
       },
       skip: !_enabled || !_hasCredentials,

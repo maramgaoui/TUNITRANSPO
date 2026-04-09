@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tuni_transport/admin/controllers/admin_auth_controller.dart';
+import 'package:tuni_transport/controllers/auth_controller.dart';
 import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/models/session_result.dart';
 import 'package:tuni_transport/services/settings_service.dart';
 import 'package:tuni_transport/theme/app_theme.dart';
 import 'package:tuni_transport/utils/validation_utils.dart';
@@ -32,6 +34,7 @@ class AdminProfileScreen extends StatefulWidget {
 class _AdminProfileScreenState extends State<AdminProfileScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final AdminAuthController _adminAuthController = AdminAuthController();
+  SessionResult? _session;
 
   bool _isLoading = true;
   bool _isSigningOut = false;
@@ -43,7 +46,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
 
   void _goToAdminDashboard() {
     if (!mounted) return;
-    final role = Uri.encodeComponent(_role ?? widget.role ?? '');
+    final role = Uri.encodeComponent(_session?.adminRole ?? _role ?? widget.role ?? '');
     final matricule = Uri.encodeComponent(_matricule ?? widget.matricule ?? '');
     final name = Uri.encodeComponent(_name ?? widget.adminName ?? '');
     context.go('/admin?role=$role&matricule=$matricule&name=$name');
@@ -52,7 +55,35 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   @override
   void initState() {
     super.initState();
-    _loadAdminData();
+    _initializeScreen();
+  }
+
+  Future<void> _initializeScreen() async {
+    final currentUser = AuthController.instance.currentUser;
+    if (currentUser == null) {
+      if (!mounted) return;
+      context.go('/admin/login');
+      return;
+    }
+
+    try {
+      final session = await AuthController.instance.resolveSession(currentUser);
+      if (!mounted) return;
+
+      if (session.isGuest) {
+        context.go('/admin/login');
+        return;
+      }
+
+      setState(() {
+        _session = session;
+      });
+
+      await _loadAdminData();
+    } catch (_) {
+      if (!mounted) return;
+      context.go('/admin/login');
+    }
   }
 
   Future<void> _loadAdminData() async {
@@ -83,7 +114,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
         setState(() {
           _name = widget.adminName;
           _matricule = widget.matricule;
-          _role = widget.role;
+          _role = _session?.adminRole ?? widget.role;
           _errorMessage = 'Admin profile not found in Firestore.';
           _isLoading = false;
         });
@@ -96,7 +127,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
             ? adminData['name'] as String
             : widget.adminName;
         _matricule = adminData['matricule']?.toString() ?? widget.matricule;
-        _role = (adminData['role'] as String?) ?? widget.role;
+        _role = _session?.adminRole ?? (adminData['role'] as String?) ?? widget.role;
         _isLoading = false;
       });
     } on FirebaseException catch (e) {
@@ -106,7 +137,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       setState(() {
         _name = widget.adminName;
         _matricule = widget.matricule;
-        _role = widget.role;
+        _role = _session?.adminRole ?? widget.role;
         _errorMessage = e.message ?? 'Failed to load admin profile.';
         _isLoading = false;
       });
@@ -117,7 +148,7 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
       setState(() {
         _name = widget.adminName;
         _matricule = widget.matricule;
-        _role = widget.role;
+        _role = _session?.adminRole ?? widget.role;
         _errorMessage = 'Unexpected error while loading admin profile.';
         _isLoading = false;
       });
@@ -367,6 +398,10 @@ class _AdminProfileScreenState extends State<AdminProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+
+    if (_session == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
     return PopScope(
       canPop: false,

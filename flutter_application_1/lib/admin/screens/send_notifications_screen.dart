@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:go_router/go_router.dart';
@@ -21,7 +23,31 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
   final titleCtrl = TextEditingController();
   final messageCtrl = TextEditingController();
   bool _isSending = false;
+  DateTime? _lastSentAt;
+  Timer? _cooldownTicker;
   String selectedTarget = 'all'; // all, app_users, drivers
+
+  int get _cooldownRemainingSeconds {
+    final last = _lastSentAt;
+    if (last == null) {
+      return 0;
+    }
+    final elapsed = DateTime.now().difference(last).inSeconds;
+    final remaining = 10 - elapsed;
+    return remaining > 0 ? remaining : 0;
+  }
+
+  void _startCooldownTicker() {
+    _cooldownTicker?.cancel();
+    _cooldownTicker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || _cooldownRemainingSeconds == 0) {
+        _cooldownTicker?.cancel();
+        _cooldownTicker = null;
+        return;
+      }
+      setState(() {});
+    });
+  }
 
   Future<int> _estimateRecipients(String target) async {
     AggregateQuery query;
@@ -36,6 +62,14 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
 
   Future<void> _sendNotification() async {
     final l10n = AppLocalizations.of(context)!;
+
+    if (_cooldownRemainingSeconds > 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please wait $_cooldownRemainingSeconds seconds before sending again.')),
+      );
+      return;
+    }
+
     if (titleCtrl.text.isEmpty || messageCtrl.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(l10n.fillAllFields)),
@@ -57,6 +91,8 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
       if (!mounted) return;
       titleCtrl.clear();
       messageCtrl.clear();
+      _lastSentAt = DateTime.now();
+      _startCooldownTicker();
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -192,7 +228,9 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                         ),
-                        onPressed: _isSending ? null : _sendNotification,
+                        onPressed: (_isSending || _cooldownRemainingSeconds > 0)
+                          ? null
+                          : _sendNotification,
                         icon: _isSending
                             ? const SizedBox(
                                 width: 16,
@@ -203,9 +241,26 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
                                 ),
                               )
                             : const Icon(Icons.send),
-                        label: Text(_isSending
-                            ? l10n.sendingInProgress
-                            : l10n.sendNotificationAction),
+                        label: Text(
+                          _isSending
+                              ? l10n.sendingInProgress
+                              : (_cooldownRemainingSeconds > 0
+                                  ? 'Resend in ${_cooldownRemainingSeconds}s'
+                                  : l10n.sendNotificationAction),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryTeal.withValues(alpha: 0.08),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: const Text(
+                        'Notification saved. A Cloud Function is required to deliver it via FCM.',
+                        style: TextStyle(fontSize: 12),
                       ),
                     ),
                   ],
@@ -328,6 +383,7 @@ class _SendNotificationsScreenState extends State<SendNotificationsScreen> {
 
   @override
   void dispose() {
+    _cooldownTicker?.cancel();
     titleCtrl.dispose();
     messageCtrl.dispose();
     super.dispose();
