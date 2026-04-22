@@ -1,0 +1,98 @@
+{
+  "metadata": {
+    "line_name": "Banlieue de Nabeul",
+    "validity_period": "Winter 2025 - 2026",
+    "valid_from": "2025-08-01",
+    "valid_to": "2026-06-30",
+    "notes": "Official SNCFT timetable for Banlieue de Nabeul line. Source: https://www.sncft.com.tn/grandes-lignes/horaires/"
+  },
+  "pricing": {
+    "is_distance_based": true,
+    "currency": "TND",
+    "fare_bands": [
+      { "maxStops": 2, "price": 1.500 },
+      { "maxStops": 4, "price": 2.500 },
+      { "maxStops": 6, "price": 4.000 },
+      { "maxStops": 9, "price": 5.500 }
+    ]
+  },
+  "operator": {
+    "id": "sncft_banlieue_nabeul",
+    "name": "SNCFT - Banlieue de Nabeul",
+    "phone": "+216 71 334 444",
+    "typeId": "train"
+  },
+  "stations": [
+    { "id": "bs_tunis_ville", "name": "Tunis Ville", "nameAr": "تونس", "cityId": "tunis", "order": 1, "shared": true, "lat": 36.7991, "lng": 10.1801 },
+    { "id": "bs_borj_cedria", "name": "Borj Cedria", "nameAr": "برج السدرية", "cityId": "ben_arous", "order": 2, "shared": true, "lat": 36.6742, "lng": 10.4044 },
+    { "id": "bn_foundouk_jedid", "name": "Foundouk Jedid", "nameAr": "فندق الجديد", "cityId": "nabeul", "order": 3, "shared": false, "lat": 36.6850, "lng": 10.3600 },
+    { "id": "bn_khanguet", "name": "Khanguet", "nameAr": "خنقة", "cityId": "nabeul", "order": 4, "shared": false, "lat": 36.6900, "lng": 10.3550 },
+    { "id": "sncft_grombalia", "name": "Grombalia", "nameAr": "قرمبالية", "cityId": "nabeul", "order": 5, "shared": true, "lat": 36.5994, "lng": 10.5020 },
+    { "id": "bn_turki", "name": "Turki", "nameAr": "تركي", "cityId": "nabeul", "order": 6, "shared": false, "lat": 36.6750, "lng": 10.4100 },
+    { "id": "bn_belli", "name": "Belli", "nameAr": "بلي", "cityId": "nabeul", "order": 7, "shared": false, "lat": 36.6650, "lng": 10.4250 },
+    { "id": "bn_bou_arkoub", "name": "Bou Arkoub", "nameAr": "بو عرقوب", "cityId": "nabeul", "order": 8, "shared": false, "lat": 36.6600, "lng": 10.4300 },
+    { "id": "sncft_bir_bou_regba", "name": "Bir Bou Regba", "nameAr": "بئر بو رقبة", "cityId": "nabeul", "order": 9, "shared": true, "lat": 36.3867, "lng": 10.5489 },
+    { "id": "bn_hammamet", "name": "Hammamet", "nameAr": "الحمامات", "cityId": "nabeul", "order": 10, "shared": false, "lat": 36.4020, "lng": 10.6140 },
+    { "id": "bn_omar_khayem", "name": "Omar Khayem", "nameAr": "عمر الخيام", "cityId": "nabeul", "order": 11, "shared": false, "lat": 36.4340, "lng": 10.7000 },
+    { "id": "bn_mrazga", "name": "M'Razga", "nameAr": "المرازيقة", "cityId": "nabeul", "order": 12, "shared": false, "lat": 36.4480, "lng": 10.7200 },
+    { "id": "bn_nabeul", "name": "Nabeul", "nameAr": "نابل", "cityId": "nabeul", "order": 13, "shared": false, "lat": 36.4561, "lng": 10.7358 }
+  ],
+  "routes": [
+    {
+      "id": "route_bn_forward",
+      "lineNumber": "BN",
+      "name": "Tunis → Nabeul",
+      "direction": "forward",
+      "originStationId": "bs_tunis_ville",
+      "destinationStationId": "bn_nabeul",
+      "trips": [
+        { "tripNumber": "805", "departureTime": "06:15", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "5-10/61", "departureTime": "11:45", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "813", "departureTime": "14:45", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "817", "departureTime": "17:30", "operatingDays": [1, 2, 3, 4, 5, 6] }
+      ]
+    },
+    {
+      "id": "route_bn_reverse",
+      "lineNumber": "BN",
+      "name": "Nabeul → Tunis",
+      "direction": "reverse",
+      "originStationId": "bn_nabeul",
+      "destinationStationId": "bs_tunis_ville",
+      "trips": [
+        { "tripNumber": "802", "departureTime": "05:05", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "10-5/56", "departureTime": "07:30", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "812", "departureTime": "13:30", "operatingDays": [1, 2, 3, 4, 5, 6] },
+        { "tripNumber": "816", "departureTime": "16:20", "operatingDays": [1, 2, 3, 4, 5, 6] }
+      ]
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_bn_forward", "stationId": "bs_tunis_ville", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_bn_forward", "stationId": "bs_borj_cedria", "stopOrder": 2, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_bn_forward", "stationId": "bn_foundouk_jedid", "stopOrder": 3, "estimatedArrivalTimeMinutes": 4 },
+    { "routeId": "route_bn_forward", "stationId": "bn_khanguet", "stopOrder": 4, "estimatedArrivalTimeMinutes": 8 },
+    { "routeId": "route_bn_forward", "stationId": "sncft_grombalia", "stopOrder": 5, "estimatedArrivalTimeMinutes": 14 },
+    { "routeId": "route_bn_forward", "stationId": "bn_turki", "stopOrder": 6, "estimatedArrivalTimeMinutes": 18 },
+    { "routeId": "route_bn_forward", "stationId": "bn_belli", "stopOrder": 7, "estimatedArrivalTimeMinutes": 21 },
+    { "routeId": "route_bn_forward", "stationId": "bn_bou_arkoub", "stopOrder": 8, "estimatedArrivalTimeMinutes": 24 },
+    { "routeId": "route_bn_forward", "stationId": "sncft_bir_bou_regba", "stopOrder": 9, "estimatedArrivalTimeMinutes": 33 },
+    { "routeId": "route_bn_forward", "stationId": "bn_hammamet", "stopOrder": 10, "estimatedArrivalTimeMinutes": 38 },
+    { "routeId": "route_bn_forward", "stationId": "bn_omar_khayem", "stopOrder": 11, "estimatedArrivalTimeMinutes": 47 },
+    { "routeId": "route_bn_forward", "stationId": "bn_mrazga", "stopOrder": 12, "estimatedArrivalTimeMinutes": 50 },
+    { "routeId": "route_bn_forward", "stationId": "bn_nabeul", "stopOrder": 13, "estimatedArrivalTimeMinutes": 59 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_nabeul", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_mrazga", "stopOrder": 2, "estimatedArrivalTimeMinutes": 9 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_omar_khayem", "stopOrder": 3, "estimatedArrivalTimeMinutes": 12 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_hammamet", "stopOrder": 4, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_bn_reverse", "stationId": "sncft_bir_bou_regba", "stopOrder": 5, "estimatedArrivalTimeMinutes": 28 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_bou_arkoub", "stopOrder": 6, "estimatedArrivalTimeMinutes": 38 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_belli", "stopOrder": 7, "estimatedArrivalTimeMinutes": 42 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_turki", "stopOrder": 8, "estimatedArrivalTimeMinutes": 45 },
+    { "routeId": "route_bn_reverse", "stationId": "sncft_grombalia", "stopOrder": 9, "estimatedArrivalTimeMinutes": 50 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_khanguet", "stopOrder": 10, "estimatedArrivalTimeMinutes": 56 },
+    { "routeId": "route_bn_reverse", "stationId": "bn_foundouk_jedid", "stopOrder": 11, "estimatedArrivalTimeMinutes": 61 },
+    { "routeId": "route_bn_reverse", "stationId": "bs_borj_cedria", "stopOrder": 12, "estimatedArrivalTimeMinutes": 63 },
+    { "routeId": "route_bn_reverse", "stationId": "bs_tunis_ville", "stopOrder": 13, "estimatedArrivalTimeMinutes": 63 }
+  ]
+}

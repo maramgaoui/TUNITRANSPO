@@ -1,0 +1,1399 @@
+{
+  "metadata": {
+    "line_name": "نقل تونس - بقية الخطوط (شبكة الحافلات)",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "مواعيد السفرات الأولى والأخيرة لبقية خطوط الحافلات - شتاء 2025-2026.",
+    "dataQuality": "high"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "شركة النقل بتونس",
+    "nameEn": "TRANSTU - Société de Transport de Tunis",
+    "typeId": "bus"
+  },
+  "routes": [
+    {
+      "id": "route_transtu_slimane_kahia_ligne116",
+      "lineNumber": "116",
+      "name": "Slimane Kahia → م ص منوبة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_slimane_kahia",
+      "destinationStationId": "transtu_dest_manouba_ms",
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "19:05",
+      "firstDepartureFromSuburb": "05:35",
+      "lastDepartureFromSuburb": "19:40",
+      "peakFrequencyMinutes": 35,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "116_1",
+          "departureTime": "05:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_manouba_ms"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_barcelone_ligne132",
+      "lineNumber": "132",
+      "name": "Barcelone → سيدي حسين",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_barcelone",
+      "destinationStationId": "transtu_dest_sidi_hussain",
+      "firstDepartureFromHub": "08:10",
+      "lastDepartureFromHub": null,
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": 80,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "132_1",
+          "departureTime": "08:10",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_sidi_hussain"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_barcelone_ligne36",
+      "lineNumber": "36ب",
+      "name": "Barcelone → وزارة الخارجية",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_barcelone",
+      "destinationStationId": "transtu_dest_ministere_affaires_etrangeres",
+      "firstDepartureFromHub": "08:00",
+      "lastDepartureFromHub": null,
+      "firstDepartureFromSuburb": "08:30",
+      "lastDepartureFromSuburb": "17:25",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "36ب_1",
+          "departureTime": "08:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_ministere_affaires_etrangeres"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_jardin_thameur_ligne37",
+      "lineNumber": "37",
+      "name": "Jardin Thameur → برج السدرية",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_jardin_thameur",
+      "destinationStationId": "transtu_dest_borj_cedria",
+      "firstDepartureFromHub": "06:30",
+      "lastDepartureFromHub": "17:20",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "16:20",
+      "peakFrequencyMinutes": 120,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "37_1",
+          "departureTime": "06:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_borj_cedria"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_jardin_thameur_ligne39",
+      "lineNumber": "39",
+      "name": "Jardin Thameur → رادس الغابة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_jardin_thameur",
+      "destinationStationId": "transtu_dest_rades_la_foret",
+      "firstDepartureFromHub": null,
+      "lastDepartureFromHub": null,
+      "firstDepartureFromSuburb": null,
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": null,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_carthage_ligne40_52",
+      "lineNumber": "40+52",
+      "name": "Carthage → معهد قرطاج",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_carthage",
+      "destinationStationId": "transtu_dest_institut_carthage",
+      "firstDepartureFromHub": "06:30",
+      "lastDepartureFromHub": "19:55",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "19:35",
+      "peakFrequencyMinutes": 20,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "40+52_1",
+          "departureTime": "06:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_institut_carthage"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_10_decembre_ligne43",
+      "lineNumber": "43",
+      "name": "10 Decembre → الرابطة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_rabta",
+      "firstDepartureFromHub": "06:50",
+      "lastDepartureFromHub": "14:20",
+      "firstDepartureFromSuburb": null,
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": 20,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "43_1",
+          "departureTime": "06:50",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_rabta"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_ariana_ligne47",
+      "lineNumber": "47ت",
+      "name": "Ariana → منجي سليم",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_ariana",
+      "destinationStationId": "transtu_dest_manji_salim",
+      "firstDepartureFromHub": "06:15",
+      "lastDepartureFromHub": "18:05",
+      "firstDepartureFromSuburb": "05:35",
+      "lastDepartureFromSuburb": "17:25",
+      "peakFrequencyMinutes": 80,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "47ت_1",
+          "departureTime": "06:15",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_manji_salim"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_tebourba_ligne49",
+      "lineNumber": "49",
+      "name": "Tebourba → مستشفى طبربة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_hopital_tebourba",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "13:05",
+      "firstDepartureFromSuburb": "06:40",
+      "lastDepartureFromSuburb": "13:25",
+      "peakFrequencyMinutes": 70,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "49_1",
+          "departureTime": "06:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_hopital_tebourba"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_carthage_ligne52",
+      "lineNumber": "52ب",
+      "name": "Carthage → قرطاج",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_carthage",
+      "destinationStationId": "transtu_dest_carthage",
+      "firstDepartureFromHub": "06:35",
+      "lastDepartureFromHub": "19:15",
+      "firstDepartureFromSuburb": "06:35",
+      "lastDepartureFromSuburb": "19:15",
+      "peakFrequencyMinutes": 40,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "52ب_1",
+          "departureTime": "06:35",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_carthage"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_carthage_ligne52",
+      "lineNumber": "52ت",
+      "name": "Carthage → معهد قرطاج",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_carthage",
+      "destinationStationId": "transtu_dest_institut_carthage",
+      "firstDepartureFromHub": "06:15",
+      "lastDepartureFromHub": "18:45",
+      "firstDepartureFromSuburb": "05:45",
+      "lastDepartureFromSuburb": "18:15",
+      "peakFrequencyMinutes": 120,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "52ت_1",
+          "departureTime": "06:15",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_institut_carthage"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_montazah_ligne54",
+      "lineNumber": "54",
+      "name": "Montazah → المروج 5",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_mrouj5",
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "16:30",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "18:00",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "54_1",
+          "departureTime": "05:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_mrouj5"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_montazah_ligne154",
+      "lineNumber": "154",
+      "name": "Montazah → حي السعادة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_cite_saada",
+      "firstDepartureFromHub": "04:50",
+      "lastDepartureFromHub": "16:15",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "17:45",
+      "peakFrequencyMinutes": 130,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "154_1",
+          "departureTime": "04:50",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_cite_saada"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_montazah_ligne154ctgb",
+      "lineNumber": "154CTGB",
+      "name": "Montazah → حي السعادة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_cite_saada",
+      "firstDepartureFromHub": "05:50",
+      "lastDepartureFromHub": "17:15",
+      "firstDepartureFromSuburb": "07:20",
+      "lastDepartureFromSuburb": "18:30",
+      "peakFrequencyMinutes": 180,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "154CTGB_1",
+          "departureTime": "05:50",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_cite_saada"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_10_decembre_ligne74",
+      "lineNumber": "74ب",
+      "name": "10 Decembre → باب سعدون",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_bab_saadoun",
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "17:30",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "18:30",
+      "peakFrequencyMinutes": 100,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "74ب_1",
+          "departureTime": "05:40",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_bab_saadoun"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_montazah_ligne181",
+      "lineNumber": "181",
+      "name": "Montazah → المروج 6+4",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_mrouj6_4",
+      "firstDepartureFromHub": "06:10",
+      "lastDepartureFromHub": "17:10",
+      "firstDepartureFromSuburb": "07:10",
+      "lastDepartureFromSuburb": "16:30",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "181_1",
+          "departureTime": "06:10",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_mrouj6_4"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_jardin_thameur_ligne81",
+      "lineNumber": "81",
+      "name": "Jardin Thameur → المروج 5",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_jardin_thameur",
+      "destinationStationId": "transtu_dest_mrouj5",
+      "firstDepartureFromHub": "04:30",
+      "lastDepartureFromHub": "23:50",
+      "firstDepartureFromSuburb": "04:10",
+      "lastDepartureFromSuburb": "23:30",
+      "peakFrequencyMinutes": 40,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "81_1",
+          "departureTime": "04:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_mrouj5"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_bellevue_ligne84",
+      "lineNumber": "84",
+      "name": "Bellevue → مغيرة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_bellevue",
+      "destinationStationId": "transtu_dest_elmoughira",
+      "firstDepartureFromHub": "05:20",
+      "lastDepartureFromHub": null,
+      "firstDepartureFromSuburb": null,
+      "lastDepartureFromSuburb": "17:20",
+      "peakFrequencyMinutes": 115,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "84_1",
+          "departureTime": "05:20",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_elmoughira"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_bellevue_ligne85",
+      "lineNumber": "85",
+      "name": "Bellevue → مغيرة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_bellevue",
+      "destinationStationId": "transtu_dest_elmoughira",
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "18:10",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "17:20",
+      "peakFrequencyMinutes": 80,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "85_1",
+          "departureTime": "05:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_elmoughira"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_bellevue_ligne86",
+      "lineNumber": "86",
+      "name": "Bellevue → المغيرة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_bellevue",
+      "destinationStationId": "transtu_dest_elmoughira",
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "22:35",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "23:00",
+      "peakFrequencyMinutes": 70,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "86_1",
+          "departureTime": "05:40",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_elmoughira"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_tunis_marine_ligne147",
+      "lineNumber": "147",
+      "name": "Tunis Marine → ميناء حلق الوادي",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_tunis_marine",
+      "destinationStationId": "transtu_dest_port_la_goulette",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "19:10",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "19:15",
+      "peakFrequencyMinutes": 50,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "147_1",
+          "departureTime": "06:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_port_la_goulette"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_tunis_marine_ligne247",
+      "lineNumber": "247",
+      "name": "Tunis Marine → رواد الشاطئ",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_tunis_marine",
+      "destinationStationId": "transtu_dest_raoued_plage",
+      "firstDepartureFromHub": "06:10",
+      "lastDepartureFromHub": "18:05",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "18:05",
+      "peakFrequencyMinutes": 65,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "247_1",
+          "departureTime": "06:10",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_raoued_plage"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_barcelone_ligne410",
+      "lineNumber": "410ب",
+      "name": "Barcelone → سليمان كاهية",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_barcelone",
+      "destinationStationId": "transtu_hub_slimane_kahia",
+      "firstDepartureFromHub": "04:10",
+      "lastDepartureFromHub": "18:40",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "17:40",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "410ب_1",
+          "departureTime": "04:10",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_hub_slimane_kahia"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_ariana_ligne527",
+      "lineNumber": "527",
+      "name": "Ariana → حي الغزالة",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_ariana",
+      "destinationStationId": "transtu_dest_cite_ghazala",
+      "firstDepartureFromHub": "05:45",
+      "lastDepartureFromHub": "19:50",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "527_1",
+          "departureTime": "05:45",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_cite_ghazala"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_slimane_kahia_ligne1527",
+      "lineNumber": "1527",
+      "name": "Slimane Kahia → قرية جعفر",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_slimane_kahia",
+      "destinationStationId": "transtu_dest_kalaa_jafar",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "18:45",
+      "firstDepartureFromSuburb": "05:45",
+      "lastDepartureFromSuburb": "19:45",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "1527_1",
+          "departureTime": "06:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_kalaa_jafar"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_slimane_kahia_ligne574",
+      "lineNumber": "574",
+      "name": "Slimane Kahia → الشرقية",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_slimane_kahia",
+      "destinationStationId": "transtu_dest_charguia",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "16:30",
+      "firstDepartureFromSuburb": "08:00",
+      "lastDepartureFromSuburb": "17:30",
+      "peakFrequencyMinutes": 120,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "574_1",
+          "departureTime": "06:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_charguia"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_montazah_ligne3710",
+      "lineNumber": "3710",
+      "name": "Montazah → برج سدرية",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_borj_cedria",
+      "firstDepartureFromHub": "04:30",
+      "lastDepartureFromHub": "21:30",
+      "firstDepartureFromSuburb": "04:30",
+      "lastDepartureFromSuburb": "22:30",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "3710_1",
+          "departureTime": "04:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_borj_cedria"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_tunis_marine_ligne3",
+      "lineNumber": "3",
+      "name": "Tunis Marine → حي النصر",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_tunis_marine",
+      "destinationStationId": "transtu_dest_cite_nasr",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "19:30",
+      "firstDepartureFromSuburb": "06:30",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "3_1",
+          "departureTime": "06:00",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_cite_nasr"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_slimane_kahia_ligne23a",
+      "lineNumber": "23أ",
+      "name": "Slimane Kahia → القريعات",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_slimane_kahia",
+      "destinationStationId": "transtu_dest_griyat",
+      "firstDepartureFromHub": "06:15",
+      "lastDepartureFromHub": null,
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "18:15",
+      "peakFrequencyMinutes": null,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "23أ_1",
+          "departureTime": "06:15",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_griyat"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_tebourba_ligne23",
+      "lineNumber": "23",
+      "name": "Tebourba → برج النور",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_borj_nour",
+      "firstDepartureFromHub": "08:15",
+      "lastDepartureFromHub": "16:15",
+      "firstDepartureFromSuburb": "07:15",
+      "lastDepartureFromSuburb": "17:15",
+      "peakFrequencyMinutes": 75,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "23_1",
+          "departureTime": "08:15",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_borj_nour"
+        }
+      ]
+    },
+    {
+      "id": "route_transtu_barcelone_ligne187",
+      "lineNumber": "187",
+      "name": "Barcelone → عمر المختار",
+      "direction": "forward",
+      "operatorId": "transtu",
+      "transportType": "bus",
+      "originStationId": "transtu_hub_barcelone",
+      "destinationStationId": "transtu_dest_omar_mokhtar",
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "18:30",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "19:00",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": [
+        {
+          "tripNumber": "187_1",
+          "departureTime": "05:30",
+          "operatingDays": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "terminatesAtStationId": "transtu_dest_omar_mokhtar"
+        }
+      ]
+    }
+  ],
+  "routeStops": [
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne116",
+      "stationId": "transtu_hub_slimane_kahia",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne116",
+      "stationId": "transtu_dest_manouba_ms",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne132",
+      "stationId": "transtu_hub_barcelone",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne132",
+      "stationId": "transtu_dest_sidi_hussain",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne36",
+      "stationId": "transtu_hub_barcelone",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne36",
+      "stationId": "transtu_dest_ministere_affaires_etrangeres",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne37",
+      "stationId": "transtu_hub_jardin_thameur",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne37",
+      "stationId": "transtu_dest_borj_cedria",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne39",
+      "stationId": "transtu_hub_jardin_thameur",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne39",
+      "stationId": "transtu_dest_rades_la_foret",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne40_52",
+      "stationId": "transtu_hub_carthage",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne40_52",
+      "stationId": "transtu_dest_institut_carthage",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_10_decembre_ligne43",
+      "stationId": "transtu_hub_10_decembre",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_10_decembre_ligne43",
+      "stationId": "transtu_dest_rabta",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_ariana_ligne47",
+      "stationId": "transtu_hub_ariana",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_ariana_ligne47",
+      "stationId": "transtu_dest_manji_salim",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne49",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne49",
+      "stationId": "transtu_dest_hopital_tebourba",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne52",
+      "stationId": "transtu_hub_carthage",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne52",
+      "stationId": "transtu_dest_carthage",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne52",
+      "stationId": "transtu_hub_carthage",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_carthage_ligne52",
+      "stationId": "transtu_dest_institut_carthage",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne54",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne54",
+      "stationId": "transtu_dest_mrouj5",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne154",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne154",
+      "stationId": "transtu_dest_cite_saada",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne154ctgb",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne154ctgb",
+      "stationId": "transtu_dest_cite_saada",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_10_decembre_ligne74",
+      "stationId": "transtu_hub_10_decembre",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_10_decembre_ligne74",
+      "stationId": "transtu_dest_bab_saadoun",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne181",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne181",
+      "stationId": "transtu_dest_mrouj6_4",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne81",
+      "stationId": "transtu_hub_jardin_thameur",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_jardin_thameur_ligne81",
+      "stationId": "transtu_dest_mrouj5",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne84",
+      "stationId": "transtu_hub_bellevue",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne84",
+      "stationId": "transtu_dest_elmoughira",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne85",
+      "stationId": "transtu_hub_bellevue",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne85",
+      "stationId": "transtu_dest_elmoughira",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne86",
+      "stationId": "transtu_hub_bellevue",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_bellevue_ligne86",
+      "stationId": "transtu_dest_elmoughira",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne147",
+      "stationId": "transtu_hub_tunis_marine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne147",
+      "stationId": "transtu_dest_port_la_goulette",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne247",
+      "stationId": "transtu_hub_tunis_marine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne247",
+      "stationId": "transtu_dest_raoued_plage",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne410",
+      "stationId": "transtu_hub_barcelone",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne410",
+      "stationId": "transtu_hub_slimane_kahia",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_ariana_ligne527",
+      "stationId": "transtu_hub_ariana",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_ariana_ligne527",
+      "stationId": "transtu_dest_cite_ghazala",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne1527",
+      "stationId": "transtu_hub_slimane_kahia",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne1527",
+      "stationId": "transtu_dest_kalaa_jafar",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne574",
+      "stationId": "transtu_hub_slimane_kahia",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne574",
+      "stationId": "transtu_dest_charguia",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne3710",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne3710",
+      "stationId": "transtu_dest_borj_cedria",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne3",
+      "stationId": "transtu_hub_tunis_marine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tunis_marine_ligne3",
+      "stationId": "transtu_dest_cite_nasr",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne23a",
+      "stationId": "transtu_hub_slimane_kahia",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_slimane_kahia_ligne23a",
+      "stationId": "transtu_dest_griyat",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne23",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne23",
+      "stationId": "transtu_dest_borj_nour",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne187",
+      "stationId": "transtu_hub_barcelone",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_barcelone_ligne187",
+      "stationId": "transtu_dest_omar_mokhtar",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": null
+    }
+  ]
+}

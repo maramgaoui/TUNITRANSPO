@@ -1,0 +1,365 @@
+{
+  "metadata": {
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "HORAIRES DES TRAINS GRANDES LIGNES. Du 01 septembre 2025 au 30 juin 2026 (sauf mois de Ramadan). Offsets calibrated from Train 7 (forward) and Train 8 (reverse) all-stops services for Annaba, and Train 1/19 (forward) and Train 1/4 (reverse) for Bizerte."
+  },
+  "operator": {
+    "id": "sncft",
+    "name": "Société Nationale des Chemins de Fer Tunisiens",
+    "phone": "+216 71 334 444",
+    "typeId": "train"
+  },
+  "schedule_logic": {
+    "GL_A_annaba": { "description": "Mon, Wed, Fri only", "days": [1, 3, 5] },
+    "GL_B_annaba": { "description": "Tue, Thu, Sun only", "days": [0, 2, 4] },
+    "GL_A_bizerte": { "description": "Daily except Sun & Holidays", "days": [1, 2, 3, 4, 5, 6] },
+    "GL_B_bizerte": { "description": "Sun & Holidays", "days": [0] },
+    "GL_C_bizerte": { "description": "Sat, Sun & Holidays", "days": [0, 6] },
+    "GL_D_bizerte": { "description": "Mon-Fri non-holidays", "days": [1, 2, 3, 4, 5] }
+  },
+  "stations": [
+    { "id": "bs_tunis_ville",        "name": "Tunis Ville", "nameAr": "تونس العاصمة",     "cityId": "tunis",       "order": 1,  "lat": 36.7991, "lng": 10.1801, "isMainHub": true,  "shared": true },
+    { "id": "sncft_manouba",         "name": "Manouba", "nameAr": "منوبة",         "cityId": "manouba",     "order": 2,  "lat": 36.8083, "lng": 10.0978, "isMainHub": false, "shared": true, "sharedLines": ["annaba", "bizerte"] },
+    { "id": "sncft_jedeida",         "name": "Jédeïda", "nameAr": "الجديدة",        "cityId": "manouba",     "order": 3,  "lat": 36.8439, "lng":  9.9178, "isMainHub": false, "shared": true, "sharedLines": ["annaba", "bizerte"] },
+
+    { "id": "sncft_tebourba",        "name": "Tébourba", "nameAr": "طبربة",       "cityId": "manouba",     "order": 4,  "lat": 36.8292, "lng":  9.8375, "isMainHub": false },
+    { "id": "sncft_borj_toum",       "name": "Borj Toum", "nameAr": "برج التوم",       "cityId": "manouba",     "order": 5,  "lat": 36.7925, "lng":  9.7653, "isMainHub": false },
+    { "id": "sncft_mejez_el_bab",    "name": "Medjez El Bab", "nameAr": "مجاز الباب",   "cityId": "beja",        "order": 6,  "lat": 36.6489, "lng":  9.6108, "isMainHub": false },
+    { "id": "sncft_oued_zarga",      "name": "Oued Zarga", "nameAr": "وادي الزرقاء",      "cityId": "beja",        "order": 7,  "lat": 36.5800, "lng":  9.4600, "isMainHub": false },
+    { "id": "sncft_sidi_mhimech",    "name": "Sidi M'Himech", "nameAr": "سيدي امحيمش",   "cityId": "beja",        "order": 8,  "lat": 36.4900, "lng":  9.3500, "isMainHub": false },
+    { "id": "sncft_beja",            "name": "Béja", "nameAr": "باجة",            "cityId": "beja",        "order": 9,  "lat": 36.7256, "lng":  9.1847, "isMainHub": true  },
+    { "id": "sncft_mastouta",        "name": "Mastouta", "nameAr": "مستوطة",        "cityId": "beja",        "order": 10, "lat": 36.6300, "lng":  9.0400, "isMainHub": false },
+    { "id": "sncft_sidi_smail",      "name": "Sidi S'Maïl", "nameAr": "سيدي إسماعيل",    "cityId": "beja",        "order": 11, "lat": 36.5500, "lng":  8.9600, "isMainHub": false },
+    { "id": "sncft_bou_salem",       "name": "Bou Salem", "nameAr": "بوسالم",       "cityId": "jendouba",    "order": 12, "lat": 36.6194, "lng":  8.9717, "isMainHub": false },
+    { "id": "sncft_ben_bechir",      "name": "Ben Béchir", "nameAr": "بن بشير",     "cityId": "jendouba",    "order": 13, "lat": 36.5300, "lng":  8.8000, "isMainHub": false },
+    { "id": "sncft_jendouba",        "name": "Jendouba", "nameAr": "جندوبة",        "cityId": "jendouba",    "order": 14, "lat": 36.5014, "lng":  8.7803, "isMainHub": true  },
+    { "id": "sncft_oued_meliz",      "name": "Oued Méliz", "nameAr": "وادي مليز",     "cityId": "jendouba",    "order": 15, "lat": 36.4700, "lng":  8.6800, "isMainHub": false },
+    { "id": "sncft_ghardimaou",      "name": "Ghardimaou", "nameAr": "غار الدماء",      "cityId": "jendouba",    "order": 16, "lat": 36.4500, "lng":  8.4389, "isMainHub": false, "notes": "Border station — Formalités frontalières et douanières" },
+    { "id": "sncft_souk_ahras",      "name": "Souk Ahras", "nameAr": "سوق أهراس",      "cityId": "souk_ahras",  "order": 17, "lat": 36.2867, "lng":  7.9511, "isMainHub": false, "notes": "Algeria — Formalités frontalières et douanières" },
+    { "id": "sncft_annaba",          "name": "Annaba", "nameAr": "عنابة",           "cityId": "annaba",      "order": 18, "lat": 36.9000, "lng":  7.7500, "isMainHub": true,  "notes": "Algeria" },
+
+    { "id": "sncft_chaouat",         "name": "Chaouat", "nameAr": "شواط",         "cityId": "manouba",     "order": 19, "lat": 36.8800, "lng":  9.8600, "isMainHub": false },
+    { "id": "sncft_sidi_othman",     "name": "Sidi Othman", "nameAr": "سيدي عثمان",     "cityId": "ariana",      "order": 20, "lat": 36.9200, "lng":  9.7800, "isMainHub": false },
+    { "id": "sncft_ain_ghelal",      "name": "Aïn Ghélal", "nameAr": "عين غلال",    "cityId": "beja",        "order": 21, "lat": 36.9600, "lng":  9.7000, "isMainHub": false },
+    { "id": "sncft_mateur",          "name": "Mateur", "nameAr": "ماطر",           "cityId": "bizerte",     "order": 22, "lat": 37.0406, "lng":  9.6653, "isMainHub": false },
+    { "id": "sncft_tinja",           "name": "Tinja", "nameAr": "تينجة",            "cityId": "bizerte",     "order": 23, "lat": 37.1500, "lng":  9.7500, "isMainHub": false },
+    { "id": "sncft_la_pecherie",     "name": "La Pêcherie", "nameAr": "لا بيشري",    "cityId": "bizerte",     "order": 24, "lat": 37.2600, "lng":  9.8600, "isMainHub": false },
+    { "id": "sncft_bizerte",         "name": "Bizerte", "nameAr": "بنزرت",          "cityId": "bizerte",     "order": 25, "lat": 37.2744, "lng":  9.8736, "isMainHub": true  }
+  ],
+  "routes": [
+    {
+      "id": "route_sncft_gl_annaba_forward",
+      "lineNumber": "GL-A",
+      "name": "Tunis Ville → Annaba",
+      "direction": "forward",
+      "originStationId": "bs_tunis_ville",
+      "destinationStationId": "sncft_annaba",
+      "trips": [
+        {
+          "tripNumber": "7",
+          "departureTime": "06:35",
+          "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+          "terminatesAtStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, terminates at Ghardimaou"
+        },
+        {
+          "tripNumber": "TM1(A)",
+          "departureTime": "08:25",
+          "operatingDays": [1, 3, 5],
+          "terminatesAtStationId": "sncft_annaba",
+          "notes": "(A) Lundis, Mercredis, Vendredis. Express international Tunis→Annaba via Ghardimaou, Souk Ahras. Formalités frontalières et douanières.",
+          "stationTimeOverrides": {
+            "bs_tunis_ville":    "08:25",
+            "sncft_beja":        "10:43",
+            "sncft_jendouba":    "11:38",
+            "sncft_ghardimaou":  "12:03",
+            "sncft_souk_ahras":  "14:47",
+            "sncft_annaba":      "18:20"
+          }
+        },
+        {
+          "tripNumber": "13",
+          "departureTime": "13:05",
+          "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+          "terminatesAtStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, terminates at Ghardimaou",
+          "stationTimeOverrides": {
+            "bs_tunis_ville":      "13:05",
+            "sncft_manouba":       "13:24",
+            "sncft_jedeida":       "13:46",
+            "sncft_tebourba":      "13:58",
+            "sncft_borj_toum":     "14:20",
+            "sncft_mejez_el_bab":  "14:36",
+            "sncft_oued_zarga":    "14:55",
+            "sncft_sidi_mhimech":  "15:15",
+            "sncft_beja":          "15:31",
+            "sncft_mastouta":      "15:44",
+            "sncft_sidi_smail":    "15:56",
+            "sncft_bou_salem":     "16:12",
+            "sncft_ben_bechir":    "16:25",
+            "sncft_jendouba":      "16:38",
+            "sncft_oued_meliz":    "16:58",
+            "sncft_ghardimaou":    "17:06"
+          }
+        },
+        {
+          "tripNumber": "17",
+          "departureTime": "17:15",
+          "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+          "terminatesAtStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, terminates at Ghardimaou",
+          "stationTimeOverrides": {
+            "bs_tunis_ville":      "17:15",
+            "sncft_manouba":       "17:36",
+            "sncft_jedeida":       "17:59",
+            "sncft_tebourba":      "18:11",
+            "sncft_borj_toum":     "18:33",
+            "sncft_mejez_el_bab":  "18:49",
+            "sncft_oued_zarga":    "19:08",
+            "sncft_sidi_mhimech":  "19:28",
+            "sncft_beja":          "19:44",
+            "sncft_mastouta":      "19:57",
+            "sncft_sidi_smail":    "20:06",
+            "sncft_bou_salem":     "20:22",
+            "sncft_ben_bechir":    "20:35",
+            "sncft_jendouba":      "20:48",
+            "sncft_oued_meliz":    "21:08",
+            "sncft_ghardimaou":    "21:16"
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_sncft_gl_annaba_reverse",
+      "lineNumber": "GL-A",
+      "name": "Annaba → Tunis Ville",
+      "direction": "reverse",
+      "originStationId": "sncft_annaba",
+      "destinationStationId": "bs_tunis_ville",
+      "trips": [
+        {
+          "tripNumber": "8",
+          "departureTime": "04:25",
+          "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+          "originStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, originates at Ghardimaou",
+          "stationTimeOverrides": {
+            "sncft_ghardimaou":    "04:25",
+            "sncft_oued_meliz":    "04:34",
+            "sncft_jendouba":      "04:55",
+            "sncft_ben_bechir":    "05:07",
+            "sncft_bou_salem":     "05:21",
+            "sncft_sidi_smail":    "05:36",
+            "sncft_mastouta":      "05:45",
+            "sncft_beja":          "05:59",
+            "sncft_sidi_mhimech":  "06:15",
+            "sncft_oued_zarga":    "06:34",
+            "sncft_mejez_el_bab":  "06:52",
+            "sncft_borj_toum":     "07:08",
+            "sncft_tebourba":      "07:30",
+            "sncft_jedeida":       "07:41",
+            "sncft_manouba":       "08:02",
+            "bs_tunis_ville":      "08:19"
+          }
+        },
+        {
+          "tripNumber": "12",
+          "departureTime": "08:45",
+          "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+          "originStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, originates at Ghardimaou",
+          "stationTimeOverrides": {
+            "sncft_ghardimaou":    "08:45",
+            "sncft_oued_meliz":    "08:54",
+            "sncft_jendouba":      "09:14",
+            "sncft_ben_bechir":    "09:26",
+            "sncft_bou_salem":     "09:41",
+            "sncft_sidi_smail":    "09:55",
+            "sncft_mastouta":      "10:03",
+            "sncft_beja":          "10:15",
+            "sncft_sidi_mhimech":  "10:30",
+            "sncft_oued_zarga":    "10:49",
+            "sncft_mejez_el_bab":  "11:07",
+            "sncft_borj_toum":     "11:23",
+            "sncft_tebourba":      "11:45",
+            "sncft_jedeida":       "11:59",
+            "sncft_manouba":       "12:20",
+            "bs_tunis_ville":      "12:40"
+          }
+        },
+        {
+          "tripNumber": "14",
+          "departureTime": "13:25",
+          "operatingDays": [1, 2, 3, 4, 5, 6],
+          "originStationId": "sncft_ghardimaou",
+          "notes": "Domestic all-stops, originates at Ghardimaou. Skips Borj Toum.",
+          "stationTimeOverrides": {
+            "sncft_ghardimaou":    "13:25",
+            "sncft_oued_meliz":    "13:34",
+            "sncft_jendouba":      "13:54",
+            "sncft_ben_bechir":    "14:06",
+            "sncft_bou_salem":     "14:20",
+            "sncft_sidi_smail":    "14:35",
+            "sncft_mastouta":      "14:44",
+            "sncft_beja":          "14:58",
+            "sncft_sidi_mhimech":  "15:16",
+            "sncft_oued_zarga":    "15:35",
+            "sncft_mejez_el_bab":  "15:53",
+            "sncft_tebourba":      "16:29",
+            "sncft_jedeida":       "16:41",
+            "sncft_manouba":       "17:01",
+            "bs_tunis_ville":      "17:20"
+          }
+        },
+        {
+          "tripNumber": "TM2(B)",
+          "departureTime": "09:00",
+          "operatingDays": [0, 2, 4],
+          "notes": "(B) Mardis, Jeudis, Dimanches. Express international Annaba→Tunis via Souk Ahras, Ghardimaou. Formalités frontalières et douanières.",
+          "stationTimeOverrides": {
+            "sncft_annaba":      "09:00",
+            "sncft_souk_ahras":  "12:10",
+            "sncft_ghardimaou":  "14:50",
+            "sncft_jendouba":    "15:19",
+            "sncft_beja":        "16:17",
+            "bs_tunis_ville":    "18:38"
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_sncft_gl_bizerte_forward",
+      "lineNumber": "GL-B",
+      "name": "Tunis Ville → Bizerte",
+      "direction": "forward",
+      "originStationId": "bs_tunis_ville",
+      "destinationStationId": "sncft_bizerte",
+      "trips": [
+        {
+          "tripNumber": "1/19(C)",
+          "departureTime": "16:45",
+          "operatingDays": [0, 6],
+          "notes": "(C) Samedis, Dimanches et Fêtes"
+        },
+        {
+          "tripNumber": "1/25(D)",
+          "departureTime": "18:05",
+          "operatingDays": [1, 2, 3, 4, 5],
+          "notes": "(D) Lundi au Vendredi non Fériés",
+          "stationTimeOverrides": {
+            "bs_tunis_ville":      "18:05",
+            "sncft_manouba":       "18:27",
+            "sncft_jedeida":       "18:51",
+            "sncft_chaouat":       "19:00",
+            "sncft_sidi_othman":   "19:12",
+            "sncft_ain_ghelal":    "19:31",
+            "sncft_mateur":        "19:54",
+            "sncft_tinja":         "20:19",
+            "sncft_la_pecherie":   "20:44",
+            "sncft_bizerte":       "20:52"
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_sncft_gl_bizerte_reverse",
+      "lineNumber": "GL-B",
+      "name": "Bizerte → Tunis Ville",
+      "direction": "reverse",
+      "originStationId": "sncft_bizerte",
+      "destinationStationId": "bs_tunis_ville",
+      "trips": [
+        {
+          "tripNumber": "1/4(A)",
+          "departureTime": "05:00",
+          "operatingDays": [1, 2, 3, 4, 5, 6],
+          "notes": "(A) Tous les jours sauf Dimanches et Fêtes"
+        },
+        {
+          "tripNumber": "1/10(B)",
+          "departureTime": "07:30",
+          "operatingDays": [0],
+          "notes": "(B) Dimanches et Fêtes"
+        }
+      ]
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "bs_tunis_ville",     "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_manouba",      "stopOrder": 2,  "estimatedArrivalTimeMinutes": 20  },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_jedeida",      "stopOrder": 3,  "estimatedArrivalTimeMinutes": 42  },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_tebourba",     "stopOrder": 4,  "estimatedArrivalTimeMinutes": 56  },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_borj_toum",    "stopOrder": 5,  "estimatedArrivalTimeMinutes": 78  },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_mejez_el_bab", "stopOrder": 6,  "estimatedArrivalTimeMinutes": 94  },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_oued_zarga",   "stopOrder": 7,  "estimatedArrivalTimeMinutes": 113 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_sidi_mhimech", "stopOrder": 8,  "estimatedArrivalTimeMinutes": 133 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_beja",         "stopOrder": 9,  "estimatedArrivalTimeMinutes": 149 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_mastouta",     "stopOrder": 10, "estimatedArrivalTimeMinutes": 162 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_sidi_smail",   "stopOrder": 11, "estimatedArrivalTimeMinutes": 171 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_bou_salem",    "stopOrder": 12, "estimatedArrivalTimeMinutes": 187 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_ben_bechir",   "stopOrder": 13, "estimatedArrivalTimeMinutes": 200 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_jendouba",     "stopOrder": 14, "estimatedArrivalTimeMinutes": 213 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_oued_meliz",   "stopOrder": 15, "estimatedArrivalTimeMinutes": 233 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_ghardimaou",   "stopOrder": 16, "estimatedArrivalTimeMinutes": 241 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_souk_ahras",   "stopOrder": 17, "estimatedArrivalTimeMinutes": 382 },
+    { "routeId": "route_sncft_gl_annaba_forward", "stationId": "sncft_annaba",       "stopOrder": 18, "estimatedArrivalTimeMinutes": 595 },
+
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_annaba",       "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_souk_ahras",   "stopOrder": 2,  "estimatedArrivalTimeMinutes": 190 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_ghardimaou",   "stopOrder": 3,  "estimatedArrivalTimeMinutes": 350 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_oued_meliz",   "stopOrder": 4,  "estimatedArrivalTimeMinutes": 359 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_jendouba",     "stopOrder": 5,  "estimatedArrivalTimeMinutes": 380 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_ben_bechir",   "stopOrder": 6,  "estimatedArrivalTimeMinutes": 392 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_bou_salem",    "stopOrder": 7,  "estimatedArrivalTimeMinutes": 406 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_sidi_smail",   "stopOrder": 8,  "estimatedArrivalTimeMinutes": 421 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_mastouta",     "stopOrder": 9,  "estimatedArrivalTimeMinutes": 430 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_beja",         "stopOrder": 10, "estimatedArrivalTimeMinutes": 444 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_sidi_mhimech", "stopOrder": 11, "estimatedArrivalTimeMinutes": 460 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_oued_zarga",   "stopOrder": 12, "estimatedArrivalTimeMinutes": 479 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_mejez_el_bab", "stopOrder": 13, "estimatedArrivalTimeMinutes": 497 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_borj_toum",    "stopOrder": 14, "estimatedArrivalTimeMinutes": 513 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_tebourba",     "stopOrder": 15, "estimatedArrivalTimeMinutes": 535 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_jedeida",      "stopOrder": 16, "estimatedArrivalTimeMinutes": 546 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "sncft_manouba",      "stopOrder": 17, "estimatedArrivalTimeMinutes": 567 },
+    { "routeId": "route_sncft_gl_annaba_reverse", "stationId": "bs_tunis_ville",     "stopOrder": 18, "estimatedArrivalTimeMinutes": 584 },
+
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "bs_tunis_ville",     "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_manouba",      "stopOrder": 2,  "estimatedArrivalTimeMinutes": 20  },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_jedeida",      "stopOrder": 3,  "estimatedArrivalTimeMinutes": 42  },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_chaouat",      "stopOrder": 4,  "estimatedArrivalTimeMinutes": 51  },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_sidi_othman",  "stopOrder": 5,  "estimatedArrivalTimeMinutes": 63  },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_ain_ghelal",   "stopOrder": 6,  "estimatedArrivalTimeMinutes": 82  },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_mateur",       "stopOrder": 7,  "estimatedArrivalTimeMinutes": 105 },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_tinja",        "stopOrder": 8,  "estimatedArrivalTimeMinutes": 130 },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_la_pecherie",  "stopOrder": 9,  "estimatedArrivalTimeMinutes": 155 },
+    { "routeId": "route_sncft_gl_bizerte_forward", "stationId": "sncft_bizerte",      "stopOrder": 10, "estimatedArrivalTimeMinutes": 163 },
+
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_bizerte",      "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_la_pecherie",  "stopOrder": 2,  "estimatedArrivalTimeMinutes": 9   },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_tinja",        "stopOrder": 3,  "estimatedArrivalTimeMinutes": 35  },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_mateur",       "stopOrder": 4,  "estimatedArrivalTimeMinutes": 63  },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_ain_ghelal",   "stopOrder": 5,  "estimatedArrivalTimeMinutes": 90  },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_sidi_othman",  "stopOrder": 6,  "estimatedArrivalTimeMinutes": 111 },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_chaouat",      "stopOrder": 7,  "estimatedArrivalTimeMinutes": 125 },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_jedeida",      "stopOrder": 8,  "estimatedArrivalTimeMinutes": 136 },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "sncft_manouba",      "stopOrder": 9,  "estimatedArrivalTimeMinutes": 156 },
+    { "routeId": "route_sncft_gl_bizerte_reverse", "stationId": "bs_tunis_ville",     "stopOrder": 10, "estimatedArrivalTimeMinutes": 173 }
+  ],
+  "pricing": {
+    "currency": "TND",
+    "notes": "2nd class one-way fares used for app estimation. International Tunis <-> Annaba official table: one-way 38.000 TND (2nd), 44.000 TND (1st); round-trip 71.000 TND (2nd), 81.000 TND (1st).",
+    "estimatedFares": [
+      { "from": "bs_tunis_ville", "to": "sncft_beja",        "price2ndClass": 5.600  },
+      { "from": "bs_tunis_ville", "to": "sncft_jendouba",    "price2ndClass": 8.200  },
+      { "from": "bs_tunis_ville", "to": "sncft_ghardimaou",  "price2ndClass": 9.800  },
+      { "from": "bs_tunis_ville", "to": "sncft_souk_ahras",  "price2ndClass": 15.000 },
+      { "from": "bs_tunis_ville", "to": "sncft_annaba",      "price2ndClass": 38.000 },
+      { "from": "bs_tunis_ville", "to": "sncft_mateur",      "price2ndClass": 4.500  },
+      { "from": "bs_tunis_ville", "to": "sncft_bizerte",     "price2ndClass": 6.800  },
+      { "from": "sncft_beja",     "to": "sncft_jendouba",    "price2ndClass": 3.500  },
+      { "from": "sncft_beja",     "to": "sncft_ghardimaou",  "price2ndClass": 5.000  },
+      { "from": "sncft_jendouba", "to": "sncft_ghardimaou",  "price2ndClass": 2.500  }
+    ]
+  }
+}

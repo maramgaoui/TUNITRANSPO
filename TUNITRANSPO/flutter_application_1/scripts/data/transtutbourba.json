@@ -1,0 +1,331 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Tebourba Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Tebourba hub. Winter 2025-2026 schedule.",
+    "dataQuality": "high",
+    "hubId": "transtu_hub_tebourba",
+    "hubName": "Tebourba",
+    "hubNameAr": "طبربة"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "شركة النقل بتونس",
+    "nameEn": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "pricing": {
+    "currency": "TND",
+    "zone": "urbaine",
+    "baseFare": 0.5,
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Tebourba hub."
+  },
+  "stations": [
+    {
+      "id": "transtu_hub_tebourba",
+      "name": "Tebourba",
+      "nameAr": "طبربة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": true,
+      "order": 1,
+      "lat": 36.8292,
+      "lng": 9.8375,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_hub_khaireddine",
+      "name": "Khaireddine",
+      "nameAr": "خير الدين",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": true,
+      "order": 2,
+      "lat": 36.8083,
+      "lng": 10.0978,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_hub_kabaa",
+      "name": "Kabaa",
+      "nameAr": "القباعة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": true,
+      "order": 3,
+      "lat": 36.7700,
+      "lng": 10.1400,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_zone_industrielle",
+      "name": "Zone Industrielle Manouba",
+      "nameAr": "المنطقة الصناعية منوبة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 4,
+      "lat": 36.8100,
+      "lng": 10.0900,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_borj_toumi",
+      "name": "Borj Toumi",
+      "nameAr": "برج التومي",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 5,
+      "lat": 36.7925,
+      "lng": 9.7653,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_edkhila",
+      "name": "Edkhila",
+      "nameAr": "الدخيلة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 6,
+      "lat": 36.8200,
+      "lng": 9.8500,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_charguia",
+      "name": "Charguia",
+      "nameAr": "الشرقية",
+      "cityId": "tunis",
+      "cityName": "Tunis",
+      "isMainHub": false,
+      "order": 7,
+      "lat": 36.8300,
+      "lng": 10.2000,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_tebourba_ligne16b",
+      "lineNumber": "16ب",
+      "name": "Tebourba → Khaireddine",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_hub_khaireddine",
+      "firstDepartureFromHub": "05:55",
+      "lastDepartureFromHub": "19:30",
+      "firstDepartureFromSuburb": "05:10",
+      "lastDepartureFromSuburb": "18:50",
+      "peakFrequencyMinutes": 30,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne42t",
+      "lineNumber": "42ت",
+      "name": "Tebourba → Zone Industrielle Manouba",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_zone_industrielle",
+      "firstDepartureFromHub": "07:20",
+      "lastDepartureFromHub": "18:45",
+      "firstDepartureFromSuburb": "06:30",
+      "lastDepartureFromSuburb": "18:05",
+      "peakFrequencyMinutes": 25,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne46",
+      "lineNumber": "46",
+      "name": "Tebourba → Borj Toumi",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_borj_toumi",
+      "firstDepartureFromHub": "04:40",
+      "lastDepartureFromHub": "20:00",
+      "firstDepartureFromSuburb": "05:15",
+      "lastDepartureFromSuburb": "20:35",
+      "peakFrequencyMinutes": 40,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne66",
+      "lineNumber": "66",
+      "name": "Tebourba → Edkhila",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_edkhila",
+      "firstDepartureFromHub": "04:40",
+      "lastDepartureFromHub": "20:35",
+      "firstDepartureFromSuburb": "05:25",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 70,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne116",
+      "lineNumber": "116",
+      "name": "Tebourba → Kabaa",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_hub_kabaa",
+      "firstDepartureFromHub": "04:55",
+      "lastDepartureFromHub": "21:05",
+      "firstDepartureFromSuburb": "04:10",
+      "lastDepartureFromSuburb": "19:50",
+      "peakFrequencyMinutes": 60,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne42",
+      "lineNumber": "42",
+      "name": "Tebourba → Kabaa (via 42)",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_hub_kabaa",
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "19:30",
+      "firstDepartureFromSuburb": "04:50",
+      "lastDepartureFromSuburb": "18:30",
+      "peakFrequencyMinutes": 60,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_tebourba_ligne542",
+      "lineNumber": "542",
+      "name": "Tebourba → Charguia",
+      "direction": "forward",
+      "originStationId": "transtu_hub_tebourba",
+      "destinationStationId": "transtu_dest_charguia",
+      "firstDepartureFromHub": "07:00",
+      "lastDepartureFromHub": "19:40",
+      "firstDepartureFromSuburb": "05:20",
+      "lastDepartureFromSuburb": "18:10",
+      "peakFrequencyMinutes": 30,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    }
+  ],
+  "routeStops": [
+    {
+      "routeId": "route_transtu_tebourba_ligne16b",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne16b",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 25
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne42t",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne42t",
+      "stationId": "transtu_dest_zone_industrielle",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 30
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne46",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne46",
+      "stationId": "transtu_dest_borj_toumi",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 35
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne66",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne66",
+      "stationId": "transtu_dest_edkhila",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 30
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne116",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne116",
+      "stationId": "transtu_hub_kabaa",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 40
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne42",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne42",
+      "stationId": "transtu_hub_kabaa",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 40
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne542",
+      "stationId": "transtu_hub_tebourba",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_tebourba_ligne542",
+      "stationId": "transtu_dest_charguia",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 45
+    }
+  ],
+  "summary": {
+    "total_routes": 7,
+    "hub_location": "Tebourba, Manouba Governorate",
+    "sloganAr": "أينما كنتم، نقل تونس ترافقكم",
+    "sloganFr": "Partout, TRANSTU vous accompagne"
+  }
+}

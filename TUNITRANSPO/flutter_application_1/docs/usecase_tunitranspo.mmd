@@ -1,0 +1,78 @@
+flowchart LR
+  SA[Super Admin]
+  ADM[Administrateur]
+  U[Utilisateur]
+  AI[Agent IA]
+
+  subgraph SYS[Systeme TUNITRANSPO]
+    AUTH((S'authentifier))
+
+    SA1([Superviser le systeme])
+    SA2([Gerer les administrateurs])
+
+    A1([Gerer les donnees de transport])
+    A2([Gerer les utilisateurs])
+    A3([Gerer les notifications])
+    A4([Espace communaute chat])
+    A5([Se deconnecter admin])
+
+    U1([Modifier le profil])
+    U2([Rechercher un trajet])
+    U3([Consulter les donnees des trajets])
+    U4([Voir les notifications])
+    U5([Espace communaute chat])
+    U6([Consulter recommandations intelligentes])
+    U7([Se deconnecter utilisateur])
+
+    I1([Analyser les donnees utilisateur])
+    I2([Generer recommandations intelligentes])
+  end
+
+  SA --> SA1
+  SA --> SA2
+
+  ADM --> AUTH
+  ADM --> A1
+  ADM --> A2
+  ADM --> A3
+  ADM --> A4
+  ADM --> A5
+
+  U --> AUTH
+  U --> U1
+  U --> U2
+  U --> U3
+  U --> U4
+  U --> U5
+  U --> U6
+  U --> U7
+
+  AI --> I1
+  AI --> I2
+
+  A1 -. "<<include>>" .-> AUTH
+  A2 -. "<<include>>" .-> AUTH
+  A3 -. "<<include>>" .-> AUTH
+  A4 -. "<<include>>" .-> AUTH
+  A5 -. "<<include>>" .-> AUTH
+
+  U1 -. "<<include>>" .-> AUTH
+  U2 -. "<<include>>" .-> AUTH
+  U3 -. "<<include>>" .-> AUTH
+  U4 -. "<<include>>" .-> AUTH
+  U5 -. "<<include>>" .-> AUTH
+  U6 -. "<<include>>" .-> AUTH
+  U7 -. "<<include>>" .-> AUTH
+
+  U6 -. "<<include>>" .-> I2
+  I2 -. "<<include>>" .-> I1
+
+  classDef actor fill:#ffffff,stroke:#333,stroke-width:1px;
+  classDef auth fill:#fde9b4,stroke:#c58b00,stroke-width:1.5px;
+  classDef usecase fill:#fdecec,stroke:#c0392b,stroke-width:1px;
+  classDef ai fill:#d9f2d9,stroke:#2e7d32,stroke-width:1px;
+
+  class SA,ADM,U,AI actor;
+  class AUTH auth;
+  class SA1,SA2,A1,A2,A3,A4,A5,U1,U2,U3,U4,U5,U6,U7 usecase;
+  class I1,I2 ai;

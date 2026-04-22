@@ -1,0 +1,108 @@
+{
+  "operator": {
+    "id": "sncft",
+    "name": "Société Nationale des Chemins de Fer Tunisiens",
+    "phone": "+216 71 334 444",
+    "typeId": "train"
+  },
+  "stations": [
+    { "id": "bs_tunis_ville", "name": "Tunis Ville", "nameAr": "تونس العاصمة", "city": "Tunis", "order": 1 },
+    { "id": "rd_saida_manoubia", "name": "Saida Manoubia", "nameAr": "السيدة المنوبية", "city": "Tunis", "order": 2 },
+    { "id": "rd_mellassine", "name": "Mellassine", "nameAr": "الملاسين", "city": "Tunis", "order": 3 },
+    { "id": "rd_erraoudha", "name": "Erraoudha", "nameAr": "الروضة", "city": "Tunis", "order": 4 },
+    { "id": "rd_le_bardo", "name": "Le Bardo", "nameAr": "باردو", "city": "Le Bardo", "order": 5 },
+    { "id": "rd_elbortal", "name": "Elbortal", "nameAr": "البورتال", "city": "Le Bardo", "order": 6 },
+    { "id": "rd_manouba", "name": "Manouba", "nameAr": "منوبة", "city": "Manouba", "order": 7 },
+    { "id": "rd_les_orangers", "name": "Les Orangers", "nameAr": "حي البرتقال", "city": "Manouba", "order": 8 },
+    { "id": "rd_gobaa", "name": "Gobaa", "nameAr": "القبعة", "city": "Manouba", "order": 9 },
+    { "id": "rd_gobaa_ville", "name": "Gobaa Ville", "nameAr": "القبعة المدينة", "city": "Manouba", "order": 10 }
+  ],
+  "routes": [
+    {
+      "id": "route_rd_line_d_forward",
+      "lineNumber": "D",
+      "name": "Tunis Ville → Gobaa Ville",
+      "direction": "forward",
+      "originStationId": "bs_tunis_ville",
+      "destinationStationId": "rd_gobaa_ville",
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "trips": [
+        { "tripNumber": "601", "departureTime": "04:10" },
+        { "tripNumber": "603", "departureTime": "04:35" },
+        { "tripNumber": "605", "departureTime": "05:22" },
+        { "tripNumber": "609", "departureTime": "06:45" },
+        { "tripNumber": "613", "departureTime": "08:35" },
+        { "tripNumber": "615", "departureTime": "09:15" },
+        { "tripNumber": "617", "departureTime": "10:10" },
+        { "tripNumber": "619", "departureTime": "10:50" },
+        { "tripNumber": "621", "departureTime": "11:30" },
+        { "tripNumber": "623", "departureTime": "12:10" },
+        { "tripNumber": "627", "departureTime": "13:10" },
+        { "tripNumber": "629", "departureTime": "14:10" },
+        { "tripNumber": "631", "departureTime": "14:50" },
+        { "tripNumber": "633", "departureTime": "15:30" },
+        { "tripNumber": "637", "departureTime": "16:35" },
+        { "tripNumber": "639", "departureTime": "17:25" },
+        { "tripNumber": "641", "departureTime": "18:10" },
+        { "tripNumber": "643", "departureTime": "18:55" },
+        { "tripNumber": "645", "departureTime": "19:40" },
+        { "tripNumber": "647", "departureTime": "20:25" },
+        { "tripNumber": "649", "departureTime": "21:15" }
+      ]
+    },
+    {
+      "id": "route_rd_line_d_reverse",
+      "lineNumber": "D",
+      "name": "Gobaa Ville → Tunis Ville",
+      "direction": "reverse",
+      "originStationId": "rd_gobaa_ville",
+      "destinationStationId": "bs_tunis_ville",
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "trips": [
+        { "tripNumber": "602", "departureTime": "04:45" },
+        { "tripNumber": "604", "departureTime": "05:35" },
+        { "tripNumber": "606", "departureTime": "06:00" },
+        { "tripNumber": "608", "departureTime": "06:50" },
+        { "tripNumber": "610", "departureTime": "07:25" },
+        { "tripNumber": "612", "departureTime": "07:50" },
+        { "tripNumber": "616", "departureTime": "09:20" },
+        { "tripNumber": "618", "departureTime": "10:15" },
+        { "tripNumber": "620", "departureTime": "10:55" },
+        { "tripNumber": "622", "departureTime": "11:35" },
+        { "tripNumber": "624", "departureTime": "12:15" },
+        { "tripNumber": "628", "departureTime": "13:20" },
+        { "tripNumber": "630", "departureTime": "14:15" },
+        { "tripNumber": "632", "departureTime": "14:55" },
+        { "tripNumber": "634", "departureTime": "15:35" },
+        { "tripNumber": "638", "departureTime": "16:40" },
+        { "tripNumber": "640", "departureTime": "17:30" },
+        { "tripNumber": "642", "departureTime": "18:15" },
+        { "tripNumber": "644", "departureTime": "19:00" },
+        { "tripNumber": "646", "departureTime": "19:45" },
+        { "tripNumber": "648", "departureTime": "20:35" },
+        { "tripNumber": "650", "departureTime": "21:50" }
+      ]
+    }
+  ],
+  "routeStops": [
+    { "stationId": "bs_tunis_ville", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "stationId": "rd_saida_manoubia", "stopOrder": 2, "estimatedArrivalTimeMinutes": 4 },
+    { "stationId": "rd_mellassine", "stopOrder": 3, "estimatedArrivalTimeMinutes": 7 },
+    { "stationId": "rd_erraoudha", "stopOrder": 4, "estimatedArrivalTimeMinutes": 9 },
+    { "stationId": "rd_le_bardo", "stopOrder": 5, "estimatedArrivalTimeMinutes": 15 },
+    { "stationId": "rd_elbortal", "stopOrder": 6, "estimatedArrivalTimeMinutes": 19 },
+    { "stationId": "rd_manouba", "stopOrder": 7, "estimatedArrivalTimeMinutes": 22 },
+    { "stationId": "rd_les_orangers", "stopOrder": 8, "estimatedArrivalTimeMinutes": 24 },
+    { "stationId": "rd_gobaa", "stopOrder": 9, "estimatedArrivalTimeMinutes": 27 },
+    { "stationId": "rd_gobaa_ville", "stopOrder": 10, "estimatedArrivalTimeMinutes": 31 }
+  ],
+  "pricing": {
+    "is_unified": true,
+    "base_fare": 0.700,
+    "children_4_9_fare": 0.525,
+    "children_0_3_fare": 0.0,
+    "fare_standard_tnd": 0.700,
+    "currency": "TND",
+    "note": "RFR unified flat fare applies to all stops on Line D (Tunis - Gobaa)."
+  }
+}

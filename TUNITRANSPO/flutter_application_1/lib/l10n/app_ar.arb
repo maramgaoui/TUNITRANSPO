@@ -1,0 +1,317 @@
+{
+  "appTitle": "توني ترانسبورت",
+  "splashSubtitle": "مساعدك الذكي للنقل",
+  "login": "تسجيل الدخول",
+  "register": "إنشاء حساب",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "favorites": "المفضلة",
+  "logout": "تسجيل الخروج",
+  "journeys": "الرحلات",
+  "notifications": "الإشعارات",
+  "home": "الرئيسية",
+  "messages": "الرسائل",
+  "profile": "الملف الشخصي",
+  "loginAsAdmin": "تسجيل الدخول كمسؤول",
+  "adminLogin": "دخول المسؤول",
+  "adminDashboard": "لوحة تحكم المسؤول",
+  "administratorAccess": "وصول المسؤول",
+  "matricule": "الرقم الوظيفي",
+  "role": "الدور",
+  "backToUserLogin": "العودة لتسجيل دخول المستخدم",
+  "manageUsers": "إدارة المستخدمين",
+  "manageJourneys": "إدارة الرحلات",
+  "manageStations": "إدارة المحطات",
+  "sendNotifications": "إرسال الإشعارات",
+  "connectedRole": "الدور المتصل: {role}",
+  "@connectedRole": {
+    "placeholders": {
+      "role": {}
+    }
+  },
+  "invalidAdminCredentials": "الرقم الوظيفي أو كلمة المرور غير صحيحة.",
+  "requiredField": "هذا الحقل مطلوب.",
+  "settings": "الإعدادات",
+  "save": "حفظ",
+  "cancel": "إلغاء",
+  "themeMode": "وضع السمة",
+  "lightMode": "الوضع الفاتح",
+  "darkMode": "الوضع الداكن",
+  "systemDefault": "افتراضي النظام",
+  "language": "اللغة",
+  "english": "English",
+  "french": "Français",
+  "arabic": "العربية",
+  "savedJourneys": "رحلاتك المحفوظة",
+  "planJourney": "خطط لرحلتك",
+  "findBestOptions": "اعثر على أفضل الخيارات",
+  "departurePoint": "نقطة الانطلاق",
+  "arrivalPoint": "نقطة الوصول",
+  "currentLocation": "الموقع الحالي",
+  "useMyGpsPosition": "استخدم موقعي عبر GPS",
+  "fetchingLocation": "جارٍ تحديد موقعك...",
+  "locationServiceDisabled": "خدمة الموقع متوقفة.",
+  "locationPermissionDenied": "تم رفض إذن الموقع.",
+  "unableGetGps": "تعذر الحصول على موقعك عبر GPS.",
+  "fillAllFields": "يرجى ملء كل الحقول",
+  "searchJourney": "ابحث عن رحلة",
+  "recentJourneys": "الرحلات الأخيرة",
+  "community": "المجتمع",
+  "publicDiscussion": "نقاش عام",
+  "writeMessageHint": "اكتب رسالة...",
+  "signInToParticipate": "سجل الدخول للمشاركة",
+  "unableSendMessage": "تعذر إرسال الرسالة.",
+  "send": "إرسال",
+  "messagesLoadError": "خطأ أثناء تحميل الرسائل",
+  "beFirstToWrite": "كن أول من يكتب!",
+  "replyToUser": "رد على {username}",
+  "@replyToUser": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+  "cancelReply": "إلغاء الرد",
+  "username": "اسم المستخدم",
+  "firstName": "الاسم",
+  "lastName": "اللقب",
+  "city": "المدينة",
+  "addCity": "إضافة مدينة",
+  "changePassword": "تغيير كلمة المرور",
+  "currentPassword": "كلمة المرور الحالية",
+  "newPassword": "كلمة المرور الجديدة",
+  "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+  "enterCurrentPassword": "يرجى إدخال كلمة المرور الحالية",
+  "enterNewPassword": "يرجى إدخال كلمة المرور الجديدة",
+  "confirmNewPasswordPrompt": "يرجى تأكيد كلمة المرور الجديدة",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "passwordMinLength": "يجب أن تحتوي كلمة المرور على 6 أحرف على الأقل",
+  "passwordChangedSuccessfully": "تم تغيير كلمة المرور بنجاح",
+  "chooseAvatar": "اختر صورة رمزية",
+  "avatarUpdated": "تم تحديث الصورة الرمزية",
+  "avatarUpdateFailed": "فشل تحديث الصورة الرمزية",
+  "confirmSignOut": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "notSet": "غير محدد",
+  "profileUpdatedSuccessfully": "تم تحديث الملف الشخصي بنجاح",
+  "profileUpdateFailed": "فشل تحديث الملف الشخصي",
+  "noFavoriteJourneysYet": "لا توجد رحلات مفضلة حتى الآن",
+  "noNotificationsYet": "لا توجد إشعارات",
+  "markAllAsRead": "تحديد الكل كمقروء",
+  "unreadCountLabel": "{count} غير مقروءة",
+  "@unreadCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newNotificationTitle": "إشعار جديد",
+  "receivedNotificationBody": "لقد استلمت إشعارا",
+  "newMessageNotification": "رسالة جديدة",
+  "newJourneyNotification": "تم إنشاء رحلة جديدة",
+  "systemAnnouncementTitle": "إعلان النظام",
+  "systemWelcomeBody": "مرحبا بك في توني ترانسبورت. رحلة سعيدة!",
+  "featureReadyToBeConnected": "ميزة {feature} جاهزة للربط.",
+  "@featureReadyToBeConnected": {
+    "placeholders": {
+      "feature": {}
+    }
+  },
+  "authHeaderSubtitle": "تسجيل الدخول وإنشاء حساب",
+  "welcomeTitle": "مرحبا!",
+  "signInToContinue": "سجل الدخول للمتابعة",
+  "createAccountTitle": "إنشاء حساب",
+  "joinTuniTranspo": "انضم إلى توني ترانسبورت",
+  "forgotPasswordShort": "نسيت؟",
+  "orLabel": "أو",
+  "resetPasswordTitle": "إعادة تعيين كلمة المرور",
+  "resetPasswordPrompt": "أدخل بريدك الإلكتروني لاستلام رابط إعادة التعيين",
+  "sendingResetLink": "جارٍ إرسال رابط إعادة التعيين...",
+  "resetLinkSent": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة التعيين",
+  "errorPrefix": "خطأ: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "fixFormErrors": "يرجى تصحيح أخطاء النموذج",
+  "fillAllFieldsCorrectly": "يرجى ملء جميع الحقول بشكل صحيح",
+  "loginSuccess": "تم تسجيل الدخول بنجاح!",
+  "signupSuccess": "تم إنشاء الحساب بنجاح!",
+  "loginFailed": "فشل تسجيل الدخول",
+  "signupFailed": "فشل إنشاء الحساب",
+  "googleSignInSuccess": "تم تسجيل الدخول عبر Google!",
+  "googleSignInFailed": "فشل تسجيل الدخول عبر Google",
+  "signInWithGoogle": "تسجيل الدخول عبر Google",
+  "signUpWithGoogle": "إنشاء حساب عبر Google",
+  "favoriteUpdateFailed": "فشل تحديث المفضلة.",
+  "searchByNameOrEmail": "البحث بالاسم أو البريد الإلكتروني…",
+  "filterAll": "الكل",
+  "filterActive": "نشط",
+  "filterBanned": "محظور مؤقت",
+  "filterBlocked": "محظور دائم",
+  "noUsersFound": "لا يوجد مستخدمون.",
+  "noUsersMatchFilter": "لا يوجد مستخدمون يطابقون الفلتر الحالي.",
+  "statusActive": "الحالة: نشط",
+  "statusBlocked": "الحالة: محظور دائم",
+  "statusBannedUntil": "الحالة: محظور حتى {date}",
+  "@statusBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "statusBanned": "الحالة: محظور مؤقت",
+  "adminActions": "إجراءات الإدارة",
+  "adminActionsPrompt": "اختر إجراءً لهذا المستخدم.",
+  "banFor3Days": "حظر 3 أيام",
+  "banFor7Days": "حظر 7 أيام",
+  "blockPermanently": "حظر دائم",
+  "unblockUser": "رفع الحظر",
+  "userBannedDays": "تم حظر المستخدم لمدة {days} أيام.",
+  "@userBannedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "userBlockedPermanently": "تم الحظر الدائم للمستخدم.",
+  "userUnblocked": "تم رفع الحظر بنجاح.",
+  "accountBlockedTitle": "تم حظر الحساب",
+  "accountBlockedBody": "تم حظر حسابك نهائيا بواسطة المسؤول.",
+  "accountBannedTitle": "تم حظر الحساب مؤقتا",
+  "accountBannedUntil": "حسابك محظور حتى {date}.",
+  "@accountBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "accountBannedBody": "تم حظر حسابك بواسطة المسؤول.",
+  "firestoreUpdateError": "تعذر تحديث المستخدم. تحقق من أذونات Firestore.",
+  "journeyDetails": "تفاصيل الرحلة",
+  "journeySteps": "مراحل الرحلة",
+  "totalDuration": "المدة الإجمالية",
+  "fare": "السعر",
+  "journeyType": "نوع الرحلة",
+  "transfers": "المحطات التحويلية",
+  "direct": "مباشر",
+  "interactiveMap": "خريطة تفاعلية",
+  "settingsSaved": "تم حفظ الإعدادات",
+  "mode": "الوضع",
+  "minimum6Characters": "6 أحرف على الأقل",
+  "uppercaseLetter": "حرف كبير (A-Z)",
+  "lowercaseLetter": "حرف صغير (a-z)",
+  "digit": "رقم (0-9)",
+  "specialCharacter": "رمز خاص (!@#...)",
+  "passwordTooWeak": "كلمة المرور ضعيفة جدًا",
+  "passwordIsRequired": "كلمة المرور مطلوبة",
+  "emailIsRequired": "البريد الإلكتروني مطلوب",
+  "invalidEmailFormat": "صيغة البريد الإلكتروني غير صالحة",
+  "fieldIsRequired": "الحقل {fieldName} مطلوب",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "fieldMinLength": "يجب أن يحتوي {fieldName} على {length} أحرف على الأقل",
+  "@fieldMinLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldMaxLength": "يجب ألا يتجاوز {fieldName} {length} حرفًا",
+  "@fieldMaxLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldCanOnlyContainLetters": "يمكن أن يحتوي {fieldName} على أحرف فقط",
+  "@fieldCanOnlyContainLetters": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "usernameIsRequired": "اسم المستخدم مطلوب",
+  "usernameMinLength": "يجب أن يحتوي اسم المستخدم على 3 أحرف على الأقل",
+  "usernameMaxLength": "يجب ألا يتجاوز اسم المستخدم 20 حرفًا",
+  "edit": "تعديل",
+  "add": "إضافة",
+  "editJourneyTitle": "تعديل الرحلة",
+  "addJourneyTitle": "إضافة رحلة",
+  "journeyTypeField": "النوع (حافلة، مترو، قطار)",
+  "departureTime": "وقت الانطلاق",
+  "journeyUpdatedSuccess": "تم تعديل الرحلة بنجاح",
+  "journeyAddedSuccess": "تمت إضافة الرحلة بنجاح",
+  "journeysLoadError": "تعذر تحميل الرحلات",
+  "noJourneysFound": "لا توجد رحلات",
+  "editStationTitle": "تعديل المحطة",
+  "addStationTitle": "إضافة محطة",
+  "stationName": "اسم المحطة",
+  "stationType": "النوع (مترو، حافلة، قطار)",
+  "stationUpdatedSuccess": "تم تعديل المحطة بنجاح",
+  "stationAddedSuccess": "تمت إضافة المحطة بنجاح",
+  "stationsLoadError": "تعذر تحميل المحطات",
+  "noStationsFound": "لا توجد محطات",
+  "composeNotification": "إنشاء إشعار",
+  "title": "العنوان",
+  "content": "المحتوى",
+  "recipients": "المستلمون",
+  "allUsers": "كل المستخدمين",
+  "appUsers": "مستخدمو التطبيق",
+  "drivers": "السائقون",
+  "sendingInProgress": "جار الإرسال...",
+  "sendNotificationAction": "إرسال الإشعار",
+  "notificationsHistory": "سجل الإشعارات",
+  "notificationsLoadError": "تعذر تحميل الإشعارات",
+  "noNotificationSentYet": "لم يتم إرسال أي إشعار بعد",
+  "notificationSavedForRecipients": "تم حفظ الإشعار لـ {count} مستلم",
+  "@notificationSavedForRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipientsCount": "{count} مستلم",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorWeakPassword": "كلمة المرور ضعيفة جدًا. يرجى استخدام كلمة مرور أقوى.",
+  "authErrorEmailAlreadyInUse": "هذا البريد الإلكتروني مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بريد إلكتروني آخر.",
+  "authErrorInvalidEmail": "عنوان البريد الإلكتروني غير صالح. يرجى التحقق والمحاولة مرة أخرى.",
+  "authErrorUserDisabled": "تم تعطيل حساب المستخدم هذا.",
+  "authErrorUserNotFound": "لم يتم العثور على حساب بهذا البريد الإلكتروني.",
+  "authErrorWrongPassword": "كلمة المرور غير صحيحة. يرجى المحاولة مرة أخرى.",
+  "authErrorTooManyRequests": "محاولات تسجيل دخول كثيرة جدًا. يرجى المحاولة لاحقًا.",
+  "authErrorGeneric": "حدث خطأ في المصادقة. يرجى المحاولة مرة أخرى.",
+  "authErrorAccountCreationFailed": "تعذر إنشاء حساب المستخدم.",
+  "authErrorPasswordResetFailed": "تعذر إرسال البريد الإلكتروني. يرجى التحقق من عنوان بريدك الإلكتروني.",
+  "useCurrentLocationButton": "استخدم موقعي الحالي",
+  "disableCurrentLocation": "تعطيل الموقع الحالي",
+  "journeySearchResolutionFailed": "تعذر إتمام البحث. يرجى التحقق من المحطات المدخلة.",
+  "unableResolveCurrentLocation": "تعذر تحديد موقعك الحالي.",
+  "noNearbyStationFromLocation": "لم يتم العثور على محطة قريبة من موقعك الحالي.",
+  "stationNotFound": "لم يتم العثور على محطة لـ '{query}'.",
+  "@stationNotFound": {
+    "placeholders": {
+      "query": {}
+    }
+  },
+  "stationNotFoundWithSuggestions": "لم يتم العثور على محطة لـ '{query}'. أقرب المحطات هي: {suggestions}",
+  "@stationNotFoundWithSuggestions": {
+    "placeholders": {
+      "query": {},
+      "suggestions": {}
+    }
+  },
+  "results": "النتائج"
+}

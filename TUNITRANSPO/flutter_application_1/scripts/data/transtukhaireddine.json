@@ -1,0 +1,266 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Khaireddine Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Khaireddine hub (Manouba). Winter 2025-2026 schedule.",
+    "dataQuality": "high",
+    "hubId": "transtu_hub_khaireddine",
+    "hubName": "Khaireddine",
+    "hubNameAr": "خير الدين"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "شركة النقل بتونس",
+    "nameEn": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "pricing": {
+    "currency": "TND",
+    "zone": "urbaine",
+    "baseFare": 0.5,
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Khaireddine hub."
+  },
+  "stations": [
+    {
+      "id": "transtu_hub_khaireddine",
+      "name": "Khaireddine",
+      "nameAr": "خير الدين",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": true,
+      "order": 1,
+      "lat": 36.8083,
+      "lng": 10.0978,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_cite_el_warda",
+      "name": "Cité El Warda",
+      "nameAr": "حي الوردة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 2,
+      "lat": 36.8150,
+      "lng": 10.1000,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_sanhaja",
+      "name": "Sanhaja",
+      "nameAr": "صنهاجة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 3,
+      "lat": 36.8200,
+      "lng": 10.1050,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_el_kabaa",
+      "name": "El Kabaa",
+      "nameAr": "القباعة",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 4,
+      "lat": 36.7700,
+      "lng": 10.1400,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_cite_en_nassim",
+      "name": "Cité En Nassim",
+      "nameAr": "حي النسيم",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 5,
+      "lat": 36.8100,
+      "lng": 10.0900,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_jellou",
+      "name": "Jellou",
+      "nameAr": "جلو",
+      "cityId": "manouba",
+      "cityName": "Manouba",
+      "isMainHub": false,
+      "order": 6,
+      "lat": 36.8050,
+      "lng": 10.0950,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_khaireddine_ligne58",
+      "lineNumber": "58",
+      "name": "Khaireddine → Cité El Warda",
+      "direction": "forward",
+      "originStationId": "transtu_hub_khaireddine",
+      "destinationStationId": "transtu_dest_cite_el_warda",
+      "firstDepartureFromHub": "05:15",
+      "lastDepartureFromHub": "20:00",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": 20,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_khaireddine_ligne93",
+      "lineNumber": "93",
+      "name": "Khaireddine → Sanhaja",
+      "direction": "forward",
+      "originStationId": "transtu_hub_khaireddine",
+      "destinationStationId": "transtu_dest_sanhaja",
+      "firstDepartureFromHub": "04:35",
+      "lastDepartureFromHub": "19:40",
+      "firstDepartureFromSuburb": "04:50",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": null,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Frequency not specified in source",
+      "trips": []
+    },
+    {
+      "id": "route_transtu_khaireddine_ligne96",
+      "lineNumber": "96",
+      "name": "Khaireddine → El Kabaa",
+      "direction": "forward",
+      "originStationId": "transtu_hub_khaireddine",
+      "destinationStationId": "transtu_dest_el_kabaa",
+      "firstDepartureFromHub": "04:35",
+      "lastDepartureFromHub": "10:50",
+      "firstDepartureFromSuburb": "04:50",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": null,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Limited service - last departure at 10:50 only. Frequency not specified.",
+      "trips": []
+    },
+    {
+      "id": "route_transtu_khaireddine_ligne97",
+      "lineNumber": "97",
+      "name": "Khaireddine → Cité En Nassim",
+      "direction": "forward",
+      "originStationId": "transtu_hub_khaireddine",
+      "destinationStationId": "transtu_dest_cite_en_nassim",
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "18:00",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": null,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Frequency not specified in source",
+      "trips": []
+    },
+    {
+      "id": "route_transtu_khaireddine_ligne98",
+      "lineNumber": "98",
+      "name": "Khaireddine → Jellou",
+      "direction": "forward",
+      "originStationId": "transtu_hub_khaireddine",
+      "destinationStationId": "transtu_dest_jellou",
+      "firstDepartureFromHub": "05:20",
+      "lastDepartureFromHub": "18:00",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": null,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Frequency not specified in source",
+      "trips": []
+    }
+  ],
+  "routeStops": [
+    {
+      "routeId": "route_transtu_khaireddine_ligne58",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne58",
+      "stationId": "transtu_dest_cite_el_warda",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 15
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne93",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne93",
+      "stationId": "transtu_dest_sanhaja",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 25
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne96",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne96",
+      "stationId": "transtu_dest_el_kabaa",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 35
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne97",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne97",
+      "stationId": "transtu_dest_cite_en_nassim",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 20
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne98",
+      "stationId": "transtu_hub_khaireddine",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_khaireddine_ligne98",
+      "stationId": "transtu_dest_jellou",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 20
+    }
+  ],
+  "summary": {
+    "total_routes": 5,
+    "total_stations": 6,
+    "hub_location": "Khaireddine, Manouba Governorate",
+    "data_completeness": "Route 58 has complete schedule. Routes 93, 96, 97, 98 have missing frequency data and suburb last departure times.",
+    "sloganAr": "أينما كنتم، نقل تونس ترافقكم",
+    "sloganFr": "Partout, TRANSTU vous accompagne"
+  }
+}

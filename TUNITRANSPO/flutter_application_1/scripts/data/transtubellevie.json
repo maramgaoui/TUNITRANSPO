@@ -1,0 +1,90 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Bellevie Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Bellevie hub. Winter 2025-2026 schedule. Data is incomplete from the source image - many times are missing.",
+    "dataQuality": "poor"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "stations": [
+    { "id": "transtu_hub_bellevie", "name": "Bellevie", "nameAr": "بلغي", "cityId": "tunis", "order": 1, "lat": 36.8000, "lng": 10.1800, "isMainHub": true },
+    { "id": "transtu_dest_circular_rue5", "name": "Circulaire via Rue 5", "nameAr": "دائري وسط العاصمة عبر جيد 5", "cityId": "tunis", "order": 2, "lat": 36.8100, "lng": 10.1850, "isMainHub": false },
+    { "id": "transtu_dest_circular_rue9", "name": "Circulaire via Rue 9 Avril", "nameAr": "دائري وسط العاصمة عبر 9 أفريل", "cityId": "tunis", "order": 3, "lat": 36.8150, "lng": 10.1900, "isMainHub": false },
+    { "id": "transtu_dest_salammbo", "name": "Salammbô", "nameAr": "صلامبو", "cityId": "carthage", "order": 4, "lat": 36.8400, "lng": 10.3300, "isMainHub": false }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_bellevie_ligne28_circular_rue5",
+      "lineNumber": "28",
+      "name": "Bellevie → Circulaire via Rue 5",
+      "direction": "circular",
+      "originStationId": "transtu_hub_bellevie",
+      "destinationStationId": "transtu_dest_circular_rue5",
+      "trips": [{ "tripNumber": "28_1", "departureTime": "06:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_circular_rue5" }],
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "19:00",
+      "firstDepartureFromSuburb": null,
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Last departure and frequency not available in source image"
+    },
+    {
+      "id": "route_transtu_bellevie_ligne28_circular_rue9",
+      "lineNumber": "28",
+      "name": "Bellevie → Circulaire via Rue 9 Avril",
+      "direction": "circular",
+      "originStationId": "transtu_hub_bellevie",
+      "destinationStationId": "transtu_dest_circular_rue9",
+      "trips": [{ "tripNumber": "28_2", "departureTime": "05:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_circular_rue9" }],
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "17:30",
+      "firstDepartureFromSuburb": null,
+      "lastDepartureFromSuburb": null,
+      "peakFrequencyMinutes": 50,
+      "zone": "urbaine",
+      "price": 0.5,
+      "notes": "Last departure and frequency not available in source image"
+    },
+    {
+      "id": "route_transtu_bellevie_ligne28_salammbo",
+      "lineNumber": "28",
+      "name": "Bellevie → Salammbô",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bellevie",
+      "destinationStationId": "transtu_dest_salammbo",
+      "trips": [{ "tripNumber": "28_3", "departureTime": "05:30", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_salammbo" }],
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "21:00",
+      "firstDepartureFromSuburb": "06:30",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 20,
+      "zone": "urbaine",
+      "price": 0.5
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_transtu_bellevie_ligne28_circular_rue5", "stationId": "transtu_hub_bellevie", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_bellevie_ligne28_circular_rue5", "stationId": "transtu_dest_circular_rue5", "stopOrder": 2, "estimatedArrivalTimeMinutes": 45 },
+    { "routeId": "route_transtu_bellevie_ligne28_circular_rue9", "stationId": "transtu_hub_bellevie", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_bellevie_ligne28_circular_rue9", "stationId": "transtu_dest_circular_rue9", "stopOrder": 2, "estimatedArrivalTimeMinutes": 45 },
+    { "routeId": "route_transtu_bellevie_ligne28_salammbo", "stationId": "transtu_hub_bellevie", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_bellevie_ligne28_salammbo", "stationId": "transtu_dest_salammbo", "stopOrder": 2, "estimatedArrivalTimeMinutes": 35 }
+  ],
+  "pricing": {
+    "currency": "TND",
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Bellevie hub.",
+    "estimatedFares": [
+      { "from": "transtu_hub_bellevie", "to": "transtu_dest_circular_rue5", "price": 0.5 },
+      { "from": "transtu_hub_bellevie", "to": "transtu_dest_circular_rue9", "price": 0.5 },
+      { "from": "transtu_hub_bellevie", "to": "transtu_dest_salammbo", "price": 0.5 }
+    ]
+  }
+}

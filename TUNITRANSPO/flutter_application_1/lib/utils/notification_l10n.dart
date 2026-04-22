@@ -1,0 +1,84 @@
+import 'package:tuni_transport/l10n/app_localizations.dart';
+import 'package:tuni_transport/models/notification_model.dart';
+
+class NotificationL10n {
+  NotificationL10n._();
+
+  static const String prefix = 'l10n:';
+  static final RegExp _legacyControlChars = RegExp(r'[\u0000-\u001F\u007F]');
+
+  static String _sanitizeLegacyText(String value) {
+    return value.replaceAll(_legacyControlChars, '').trim();
+  }
+
+  static String resolveToken(AppLocalizations l10n, String value) {
+    final sanitizedValue = _sanitizeLegacyText(value);
+    if (!sanitizedValue.startsWith(prefix)) {
+      return sanitizedValue;
+    }
+
+    final key = sanitizedValue.substring(prefix.length);
+    switch (key) {
+      case 'newNotificationTitle':
+        return l10n.newNotificationTitle;
+      case 'receivedNotificationBody':
+        return l10n.receivedNotificationBody;
+      case 'newMessageNotification':
+        return l10n.newMessageNotification;
+      case 'newJourneyNotification':
+        return l10n.newJourneyNotification;
+      case 'systemAnnouncementTitle':
+        return l10n.systemAnnouncementTitle;
+      case 'systemWelcomeBody':
+        return l10n.systemWelcomeBody;
+      default:
+        return sanitizedValue;
+    }
+  }
+
+  static String localizedTitle(AppLocalizations l10n, NotificationModel item) {
+    final sanitizedTitle = _sanitizeLegacyText(item.title);
+    final tokenResolved = resolveToken(l10n, sanitizedTitle);
+    if (tokenResolved != sanitizedTitle) {
+      return tokenResolved;
+    }
+
+    switch (sanitizedTitle) {
+      case 'Nouveau message':
+      case 'New message':
+        return l10n.newMessageNotification;
+      case 'Nouveau trajet cree':
+      case 'New journey created':
+        return l10n.newJourneyNotification;
+      case 'Annonce systeme':
+      case 'Annonce système':
+      case 'System announcement':
+        return l10n.systemAnnouncementTitle;
+      case 'Nouvelle notification':
+      case 'New notification':
+        return l10n.newNotificationTitle;
+      default:
+        return sanitizedTitle;
+    }
+  }
+
+  static String localizedBody(AppLocalizations l10n, NotificationModel item) {
+    final sanitizedBody = _sanitizeLegacyText(item.body);
+    final tokenResolved = resolveToken(l10n, sanitizedBody);
+    if (tokenResolved != sanitizedBody) {
+      return tokenResolved;
+    }
+
+    switch (sanitizedBody) {
+      case 'Vous avez recu une notification':
+      case 'Vous avez reçu une notification':
+      case 'You received a notification':
+        return l10n.receivedNotificationBody;
+      case 'Bienvenue sur TuniTranspo. Bonne navigation!':
+      case 'Welcome to TuniTranspo. Enjoy your trip!':
+        return l10n.systemWelcomeBody;
+      default:
+        return sanitizedBody;
+    }
+  }
+}

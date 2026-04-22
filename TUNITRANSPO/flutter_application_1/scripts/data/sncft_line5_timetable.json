@@ -1,0 +1,229 @@
+{
+  "metadata": {
+    "validFrom": "2025-08-01",
+    "validTo": "2026-06-30",
+    "journeyDurationMinutes": 627,
+    "notes": "Offsets calibrated from train 13-5/72 actual times. Virtual departures stored for partial-origin reverse trips."
+  },
+  "operator": {
+    "id": "sncft",
+    "name": "Société Nationale des Chemins de Fer Tunisiens",
+    "phone": "+216 71 334 444",
+    "typeId": "train"
+  },
+  "stations": [
+    { "id": "bs_tunis_ville",        "name": "Tunis Ville", "nameAr": "تونس العاصمة",           "cityId": "tunis",        "order": 1,  "lat": 36.7991, "lng": 10.1801, "isMainHub": true  },
+    { "id": "bs_hammam_lif",         "name": "Hammam Lif", "nameAr": "حمام الأنف",            "cityId": "tunis",        "order": 2,  "lat": 36.7195, "lng": 10.3394, "isMainHub": false },
+    { "id": "bs_borj_cedria",        "name": "Borj Cedria", "nameAr": "برج السدرية",           "cityId": "ben_arous",    "order": 3,  "lat": 36.6742, "lng": 10.4044, "isMainHub": false },
+    { "id": "sncft_grombalia",       "name": "Grombalia", "nameAr": "قرمبالية",             "cityId": "nabeul",       "order": 4,  "lat": 36.5994, "lng": 10.5020, "isMainHub": false },
+    { "id": "sncft_bou_argoub",      "name": "Bou Argoub", "nameAr": "بوعرقوب",            "cityId": "nabeul",       "order": 5,  "lat": 36.5511, "lng": 10.5545, "isMainHub": false },
+    { "id": "sncft_bir_bou_regba",   "name": "Bir Bou Regba", "nameAr": "بئر بورقبة",         "cityId": "nabeul",       "order": 6,  "lat": 36.3867, "lng": 10.5489, "isMainHub": false },
+    { "id": "sncft_bouficha",        "name": "Bouficha", "nameAr": "بوفيشة",              "cityId": "sousse",       "order": 7,  "lat": 36.0320, "lng": 10.2200, "isMainHub": false },
+    { "id": "sncft_enfidha",         "name": "Enfidha", "nameAr": "النفيضة",               "cityId": "sousse",       "order": 8,  "lat": 36.1447, "lng": 10.3717, "isMainHub": false },
+    { "id": "sncft_kalaa_kebira",    "name": "Kalaâ Kébira", "nameAr": "القلعة الكبرى",          "cityId": "sousse",       "order": 9,  "lat": 35.9163, "lng": 10.5119, "isMainHub": false },
+    { "id": "sncft_kalaa_seghira",   "name": "Kalaâ Séghira", "nameAr": "القلعة الصغرى",         "cityId": "sousse",       "order": 10, "lat": 35.8600, "lng": 10.5560, "isMainHub": false },
+    { "id": "sncft_sousse_voyageurs","name": "Sousse Voyageurs", "nameAr": "سوسة المسافرين",       "cityId": "sousse",       "order": 11, "lat": 35.8256, "lng": 10.6361, "isMainHub": true  },
+    { "id": "sncft_messaadine",      "name": "Messaadine", "nameAr": "المسعدين",            "cityId": "sousse",       "order": 12, "lat": 35.5700, "lng": 10.6000, "isMainHub": false },
+    { "id": "sncft_kerker",          "name": "Kerker", "nameAr": "كركر",                "cityId": "mahdia",       "order": 13, "lat": 35.1800, "lng": 10.6900, "isMainHub": false },
+    { "id": "sncft_el_jem",          "name": "El Jem", "nameAr": "الجم",                "cityId": "mahdia",       "order": 14, "lat": 35.2958, "lng": 10.7137, "isMainHub": false },
+    { "id": "sncft_la_hencha",       "name": "La Hencha", "nameAr": "الحنشة",             "cityId": "sfax",         "order": 15, "lat": 34.8700, "lng": 10.5500, "isMainHub": false },
+    { "id": "sncft_dokhane",         "name": "Dokhane", "nameAr": "الدخان",               "cityId": "sfax",         "order": 16, "lat": 34.6000, "lng": 10.2500, "isMainHub": false },
+    { "id": "sncft_sakiet_ezzit",    "name": "Sakiet Ezzit", "nameAr": "ساقية الزيت",          "cityId": "sfax",         "order": 17, "lat": 34.8800, "lng": 10.7400, "isMainHub": false },
+    { "id": "sncft_sfax",            "name": "Sfax", "nameAr": "صفاقس",                  "cityId": "sfax",         "order": 18, "lat": 34.7381, "lng": 10.7603, "isMainHub": true  },
+    { "id": "sncft_mahares",         "name": "Maharès", "nameAr": "المحرس",               "cityId": "sfax",         "order": 19, "lat": 34.5338, "lng": 10.5040, "isMainHub": false },
+    { "id": "sncft_ghraiba",         "name": "Ghraïba", "nameAr": "الغريبة",               "cityId": "sfax",         "order": 20, "lat": 34.2986, "lng": 10.2433, "isMainHub": false },
+    { "id": "sncft_gabes",           "name": "Gabès", "nameAr": "قابس",                 "cityId": "gabes",        "order": 21, "lat": 33.8828, "lng": 9.8985,  "isMainHub": true  },
+    { "id": "sncft_maknassy",        "name": "Maknassy", "nameAr": "المكناسي",              "cityId": "sidi_bouzid",  "order": 22, "lat": 34.5975, "lng": 9.6047,  "isMainHub": false },
+    { "id": "sncft_sened",           "name": "Sened", "nameAr": "السند",                 "cityId": "gafsa",        "order": 23, "lat": 34.4267, "lng": 9.3644,  "isMainHub": false },
+    { "id": "sncft_gafsa",           "name": "Gafsa", "nameAr": "قفصة",                 "cityId": "gafsa",        "order": 24, "lat": 34.4250, "lng": 8.7842,  "isMainHub": true  },
+    { "id": "sncft_metlaoui",        "name": "Metlaoui", "nameAr": "المتلوي",              "cityId": "gafsa",        "order": 25, "lat": 34.3310, "lng": 8.4040,  "isMainHub": false },
+    { "id": "sncft_el_ouediane",     "name": "El Ouediane", "nameAr": "الوديان",           "cityId": "tozeur",       "order": 26, "lat": 33.9556, "lng": 8.2517,  "isMainHub": false },
+    { "id": "sncft_tozeur",          "name": "Tozeur", "nameAr": "توزر",                "cityId": "tozeur",       "order": 27, "lat": 33.9197, "lng": 8.1340,  "isMainHub": true  },
+    { "id": "sncft_magroun",         "name": "Magroun", "nameAr": "المقرون",               "cityId": "gafsa",        "order": 28, "lat": 34.3400, "lng": 8.2800,  "isMainHub": false },
+    { "id": "sncft_selja",           "name": "Selja", "nameAr": "السلجة",                 "cityId": "gafsa",        "order": 29, "lat": 34.0600, "lng": 8.3200,  "isMainHub": false },
+    { "id": "sncft_elayoun",         "name": "Elayoun", "nameAr": "العيون",               "cityId": "gafsa",        "order": 30, "lat": 34.0300, "lng": 8.3200,  "isMainHub": false },
+    { "id": "sncft_tabeddit_1",      "name": "Tabeddit (1er arrêt)", "nameAr": "تبديت (توقف 1)",  "cityId": "gafsa",        "order": 31, "lat": 34.4400, "lng": 8.2900,  "isMainHub": false },
+    { "id": "sncft_tabeddit_2",      "name": "Tabeddit (2ème arrêt)", "nameAr": "تبديت (توقف 2)", "cityId": "gafsa",        "order": 32, "lat": 34.4450, "lng": 8.2850,  "isMainHub": false },
+    { "id": "sncft_moulares",        "name": "Moulares", "nameAr": "أم العرائس",              "cityId": "gafsa",        "order": 33, "lat": 34.4800, "lng": 8.3100,  "isMainHub": false },
+    { "id": "sncft_redeyef",         "name": "Redeyef", "nameAr": "الرديف",               "cityId": "gafsa",        "order": 34, "lat": 34.3800, "lng": 8.2100,  "isMainHub": false }
+  ],
+  "routes": [
+    {
+      "id": "route_sncft_l5_forward",
+      "lineNumber": "5",
+      "name": "Tunis Ville → Tozeur",
+      "direction": "forward",
+      "originStationId": "bs_tunis_ville",
+      "destinationStationId": "sncft_tozeur",
+      "trips": [
+        { "tripNumber": "5-13/57", "departureTime": "07:35", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_tozeur" },
+        { "tripNumber": "5/73",    "departureTime": "13:05", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_gabes" },
+        { "tripNumber": "5-12/79", "departureTime": "15:45", "operatingDays": [1,2,3,4,5],   "terminatesAtStationId": "sncft_sousse_voyageurs" },
+        { "tripNumber": "5/87",    "departureTime": "17:20", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_sfax" },
+        { "tripNumber": "5/97",    "departureTime": "21:15", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_gabes" }
+      ]
+    },
+    {
+      "id": "route_sncft_l5_reverse",
+      "lineNumber": "5",
+      "name": "Tozeur → Tunis Ville",
+      "direction": "reverse",
+      "originStationId": "sncft_tozeur",
+      "destinationStationId": "bs_tunis_ville",
+      "trips": [
+        {
+          "tripNumber": "5/90",    "departureTime": "00:05", "operatingDays": [0,1,2,3,4,5,6],
+          "terminatesAtStationId": "bs_tunis_ville", "originStationId": "sncft_gabes",
+          "notes": "Originates Gabès 00:05.",
+          "stationTimeOverrides": {
+            "sncft_gabes": "00:05",
+            "bs_tunis_ville": "07:19"
+          }
+        },
+        {
+          "tripNumber": "12-5/52", "departureTime": "21:10", "operatingDays": [1,2,3,4,5,6],
+          "terminatesAtStationId": "bs_tunis_ville", "originStationId": "sncft_sousse_voyageurs",
+          "notes": "Sauf Dimanches et Fêtes. Originates Sousse 05:10."
+        },
+        {
+          "tripNumber": "5/58",    "departureTime": "04:50", "operatingDays": [1,2,3,4,5,6],
+          "terminatesAtStationId": "bs_tunis_ville", "originStationId": "sncft_sfax",
+          "notes": "Sauf Dimanches et Fêtes. Originates Sfax 04:50.",
+          "stationTimeOverrides": {
+            "sncft_sfax": "04:50",
+            "bs_tunis_ville": "09:47"
+          }
+        },
+        {
+          "tripNumber": "5/64",    "departureTime": "08:40", "operatingDays": [0],
+          "terminatesAtStationId": "bs_tunis_ville", "originStationId": "sncft_sfax",
+          "notes": "Dimanches et Fêtes uniquement. Originates Sfax 08:40.",
+          "stationTimeOverrides": {
+            "sncft_sfax": "08:40",
+            "bs_tunis_ville": "13:25"
+          }
+        },
+        {
+          "tripNumber": "13-5/72", "departureTime": "06:00", "operatingDays": [0,1,2,3,4,5,6],
+          "terminatesAtStationId": "bs_tunis_ville"
+        },
+        {
+          "tripNumber": "5/76",    "departureTime": "10:50", "operatingDays": [0,1,2,3,4,5,6],
+          "terminatesAtStationId": "bs_tunis_ville", "originStationId": "sncft_gabes",
+          "notes": "Originates Gabès 10:50.",
+          "stationTimeOverrides": {
+            "sncft_gabes": "10:50",
+            "bs_tunis_ville": "18:17"
+          }
+        }
+      ]
+    },
+    {
+      "id": "route_sncft_redeyef_forward",
+      "lineNumber": "RD",
+      "name": "Métlaoui → Redeyef",
+      "direction": "forward",
+      "originStationId": "sncft_metlaoui",
+      "destinationStationId": "sncft_redeyef",
+      "trips": [
+        { "tripNumber": "15/77", "departureTime": "17:10", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_redeyef" }
+      ]
+    },
+    {
+      "id": "route_sncft_redeyef_reverse",
+      "lineNumber": "RD",
+      "name": "Redeyef → Métlaoui",
+      "direction": "reverse",
+      "originStationId": "sncft_redeyef",
+      "destinationStationId": "sncft_metlaoui",
+      "trips": [
+        { "tripNumber": "16/70", "departureTime": "04:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "sncft_metlaoui" }
+      ]
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_sncft_l5_forward", "stationId": "bs_tunis_ville",        "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_l5_forward", "stationId": "bs_hammam_lif",         "stopOrder": 2,  "estimatedArrivalTimeMinutes": 26  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "bs_borj_cedria",        "stopOrder": 3,  "estimatedArrivalTimeMinutes": 35  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_grombalia",       "stopOrder": 4,  "estimatedArrivalTimeMinutes": 50  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_bou_argoub",      "stopOrder": 5,  "estimatedArrivalTimeMinutes": 62  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_bir_bou_regba",   "stopOrder": 6,  "estimatedArrivalTimeMinutes": 70  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_bouficha",        "stopOrder": 7,  "estimatedArrivalTimeMinutes": 78  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_enfidha",         "stopOrder": 8,  "estimatedArrivalTimeMinutes": 98  },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_kalaa_kebira",    "stopOrder": 9,  "estimatedArrivalTimeMinutes": 126 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_kalaa_seghira",   "stopOrder": 10, "estimatedArrivalTimeMinutes": 136 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_sousse_voyageurs","stopOrder": 11, "estimatedArrivalTimeMinutes": 147 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_messaadine",      "stopOrder": 12, "estimatedArrivalTimeMinutes": 182 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_kerker",          "stopOrder": 13, "estimatedArrivalTimeMinutes": 209 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_el_jem",          "stopOrder": 14, "estimatedArrivalTimeMinutes": 231 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_la_hencha",       "stopOrder": 15, "estimatedArrivalTimeMinutes": 244 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_dokhane",         "stopOrder": 16, "estimatedArrivalTimeMinutes": 258 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_sakiet_ezzit",    "stopOrder": 17, "estimatedArrivalTimeMinutes": 272 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_sfax",            "stopOrder": 18, "estimatedArrivalTimeMinutes": 297 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_mahares",         "stopOrder": 19, "estimatedArrivalTimeMinutes": 355 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_ghraiba",         "stopOrder": 20, "estimatedArrivalTimeMinutes": 375 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_gabes",           "stopOrder": 21, "estimatedArrivalTimeMinutes": 385 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_maknassy",        "stopOrder": 22, "estimatedArrivalTimeMinutes": 427 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_sened",           "stopOrder": 23, "estimatedArrivalTimeMinutes": 460 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_gafsa",           "stopOrder": 24, "estimatedArrivalTimeMinutes": 507 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_metlaoui",        "stopOrder": 25, "estimatedArrivalTimeMinutes": 547 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_el_ouediane",     "stopOrder": 26, "estimatedArrivalTimeMinutes": 615 },
+    { "routeId": "route_sncft_l5_forward", "stationId": "sncft_tozeur",          "stopOrder": 27, "estimatedArrivalTimeMinutes": 627 },
+
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_tozeur",          "stopOrder": 1,  "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_el_ouediane",     "stopOrder": 2,  "estimatedArrivalTimeMinutes": 12  },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_metlaoui",        "stopOrder": 3,  "estimatedArrivalTimeMinutes": 80  },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_gafsa",           "stopOrder": 4,  "estimatedArrivalTimeMinutes": 120 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_sened",           "stopOrder": 5,  "estimatedArrivalTimeMinutes": 167 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_maknassy",        "stopOrder": 6,  "estimatedArrivalTimeMinutes": 200 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_gabes",           "stopOrder": 7,  "estimatedArrivalTimeMinutes": 242 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_ghraiba",         "stopOrder": 8,  "estimatedArrivalTimeMinutes": 252 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_mahares",         "stopOrder": 9,  "estimatedArrivalTimeMinutes": 272 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_sfax",            "stopOrder": 10, "estimatedArrivalTimeMinutes": 330 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_sakiet_ezzit",    "stopOrder": 11, "estimatedArrivalTimeMinutes": 355 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_dokhane",         "stopOrder": 12, "estimatedArrivalTimeMinutes": 369 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_la_hencha",       "stopOrder": 13, "estimatedArrivalTimeMinutes": 383 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_el_jem",          "stopOrder": 14, "estimatedArrivalTimeMinutes": 396 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_kerker",          "stopOrder": 15, "estimatedArrivalTimeMinutes": 418 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_messaadine",      "stopOrder": 16, "estimatedArrivalTimeMinutes": 445 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_sousse_voyageurs","stopOrder": 17, "estimatedArrivalTimeMinutes": 480 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_kalaa_seghira",   "stopOrder": 18, "estimatedArrivalTimeMinutes": 491 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_kalaa_kebira",    "stopOrder": 19, "estimatedArrivalTimeMinutes": 501 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_enfidha",         "stopOrder": 20, "estimatedArrivalTimeMinutes": 529 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_bouficha",        "stopOrder": 21, "estimatedArrivalTimeMinutes": 549 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_bir_bou_regba",   "stopOrder": 22, "estimatedArrivalTimeMinutes": 557 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_bou_argoub",      "stopOrder": 23, "estimatedArrivalTimeMinutes": 565 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "sncft_grombalia",       "stopOrder": 24, "estimatedArrivalTimeMinutes": 577 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "bs_borj_cedria",        "stopOrder": 25, "estimatedArrivalTimeMinutes": 592 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "bs_hammam_lif",         "stopOrder": 26, "estimatedArrivalTimeMinutes": 601 },
+    { "routeId": "route_sncft_l5_reverse", "stationId": "bs_tunis_ville",        "stopOrder": 27, "estimatedArrivalTimeMinutes": 627 },
+
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_metlaoui",   "stopOrder": 1, "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_magroun",    "stopOrder": 2, "estimatedArrivalTimeMinutes": 10  },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_selja",      "stopOrder": 3, "estimatedArrivalTimeMinutes": 51  },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_elayoun",    "stopOrder": 4, "estimatedArrivalTimeMinutes": 56  },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_tabeddit_1", "stopOrder": 5, "estimatedArrivalTimeMinutes": 64  },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_moulares",   "stopOrder": 6, "estimatedArrivalTimeMinutes": 85  },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_tabeddit_2", "stopOrder": 7, "estimatedArrivalTimeMinutes": 110 },
+    { "routeId": "route_sncft_redeyef_forward", "stationId": "sncft_redeyef",    "stopOrder": 8, "estimatedArrivalTimeMinutes": 137 },
+
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_redeyef",    "stopOrder": 1, "estimatedArrivalTimeMinutes": 0   },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_tabeddit_1", "stopOrder": 2, "estimatedArrivalTimeMinutes": 35  },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_moulares",   "stopOrder": 3, "estimatedArrivalTimeMinutes": 60  },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_tabeddit_2", "stopOrder": 4, "estimatedArrivalTimeMinutes": 75  },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_elayoun",    "stopOrder": 5, "estimatedArrivalTimeMinutes": 83  },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_selja",      "stopOrder": 6, "estimatedArrivalTimeMinutes": 88  },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_magroun",    "stopOrder": 7, "estimatedArrivalTimeMinutes": 130 },
+    { "routeId": "route_sncft_redeyef_reverse", "stationId": "sncft_metlaoui",   "stopOrder": 8, "estimatedArrivalTimeMinutes": 140 }
+  ],
+  "pricing": {
+    "currency": "TND",
+    "notes": "Fares approximate. (A) Tous jours sauf Dim et Fêtes. (B) Dim et Fêtes uniquement.",
+    "estimatedFares": [
+      { "from": "bs_tunis_ville", "to": "sncft_sfax",   "price2ndClass": 20.000 },
+      { "from": "bs_tunis_ville", "to": "sncft_gabes",  "price2ndClass": 22.000 },
+      { "from": "bs_tunis_ville", "to": "sncft_gafsa",  "price2ndClass": 10.000 },
+      { "from": "bs_tunis_ville", "to": "sncft_tozeur", "price2ndClass": 25.000 }
+    ]
+  }
+}

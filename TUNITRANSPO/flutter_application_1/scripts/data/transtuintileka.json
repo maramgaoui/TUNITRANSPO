@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Intilaka Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Intilaka hub. Winter 2025-2026 schedule. Data extracted from official TRANSTU image."
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "stations": [
+    { "id": "transtu_hub_intilaka", "name": "Intilaka", "nameAr": "الانطالقة", "cityId": "tunis", "order": 1, "lat": 36.8200, "lng": 10.1700, "isMainHub": true },
+    { "id": "transtu_dest_kalaat_alandalous", "name": "Kalaat El Andalous", "nameAr": "قلعة الأندلس", "cityId": "ariana", "order": 2, "lat": 36.9200, "lng": 10.1200, "isMainHub": false },
+    { "id": "transtu_dest_cite_manji_salim", "name": "Cité Manji Salim", "nameAr": "حي منجي سليم", "cityId": "ariana", "order": 3, "lat": 36.8700, "lng": 10.1900, "isMainHub": false },
+    { "id": "transtu_dest_jebbas", "name": "Jebbas", "nameAr": "الجباس", "cityId": "tunis", "order": 4, "lat": 36.8400, "lng": 10.1400, "isMainHub": false },
+    { "id": "transtu_dest_douar_hicher", "name": "Douar Hicher", "nameAr": "دوار هيشر", "cityId": "tunis", "order": 5, "lat": 36.8300, "lng": 10.1200, "isMainHub": false },
+    { "id": "transtu_dest_commercial_center_nahli", "name": "Centre Commercial Ennahli", "nameAr": "المركب التجاري بالنحلي", "cityId": "tunis", "order": 6, "lat": 36.8500, "lng": 10.1300, "isMainHub": false }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_intilaka_ligne44_kalaat",
+      "lineNumber": "44",
+      "name": "Intilaka → Kalaat El Andalous",
+      "direction": "forward",
+      "originStationId": "transtu_hub_intilaka",
+      "destinationStationId": "transtu_dest_kalaat_alandalous",
+      "trips": [{ "tripNumber": "44_1", "departureTime": "05:30", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_kalaat_alandalous" }],
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "23:30",
+      "firstDepartureFromSuburb": "04:30",
+      "lastDepartureFromSuburb": "22:30",
+      "peakFrequencyMinutes": 40,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_intilaka_ligne44_manji",
+      "lineNumber": "44",
+      "name": "Intilaka → Cité Manji Salim",
+      "direction": "forward",
+      "originStationId": "transtu_hub_intilaka",
+      "destinationStationId": "transtu_dest_cite_manji_salim",
+      "trips": [{ "tripNumber": "44_2", "departureTime": "05:15", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_manji_salim" }],
+      "firstDepartureFromHub": "05:15",
+      "lastDepartureFromHub": "20:40",
+      "firstDepartureFromSuburb": "04:40",
+      "lastDepartureFromSuburb": "19:50",
+      "peakFrequencyMinutes": 50,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_intilaka_ligne44_jebbas",
+      "lineNumber": "44",
+      "name": "Intilaka → Jebbas",
+      "direction": "forward",
+      "originStationId": "transtu_hub_intilaka",
+      "destinationStationId": "transtu_dest_jebbas",
+      "trips": [{ "tripNumber": "44_3", "departureTime": "05:20", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_jebbas" }],
+      "firstDepartureFromHub": "05:20",
+      "lastDepartureFromHub": "20:35",
+      "firstDepartureFromSuburb": "04:50",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 120,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_intilaka_ligne48",
+      "lineNumber": "48",
+      "name": "Intilaka → Douar Hicher",
+      "direction": "forward",
+      "originStationId": "transtu_hub_intilaka",
+      "destinationStationId": "transtu_dest_douar_hicher",
+      "trips": [{ "tripNumber": "48_1", "departureTime": "05:30", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_douar_hicher" }],
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "17:10",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "16:40",
+      "peakFrequencyMinutes": 75,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_intilaka_ligne57",
+      "lineNumber": "57",
+      "name": "Intilaka → Centre Commercial Ennahli",
+      "direction": "forward",
+      "originStationId": "transtu_hub_intilaka",
+      "destinationStationId": "transtu_dest_commercial_center_nahli",
+      "trips": [{ "tripNumber": "57_1", "departureTime": "06:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_commercial_center_nahli" }],
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "20:30",
+      "firstDepartureFromSuburb": "07:10",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_transtu_intilaka_ligne44_kalaat", "stationId": "transtu_hub_intilaka", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_intilaka_ligne44_kalaat", "stationId": "transtu_dest_kalaat_alandalous", "stopOrder": 2, "estimatedArrivalTimeMinutes": 45 },
+    { "routeId": "route_transtu_intilaka_ligne44_manji", "stationId": "transtu_hub_intilaka", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_intilaka_ligne44_manji", "stationId": "transtu_dest_cite_manji_salim", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_intilaka_ligne44_jebbas", "stationId": "transtu_hub_intilaka", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_intilaka_ligne44_jebbas", "stationId": "transtu_dest_jebbas", "stopOrder": 2, "estimatedArrivalTimeMinutes": 35 },
+    { "routeId": "route_transtu_intilaka_ligne48", "stationId": "transtu_hub_intilaka", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_intilaka_ligne48", "stationId": "transtu_dest_douar_hicher", "stopOrder": 2, "estimatedArrivalTimeMinutes": 40 },
+    { "routeId": "route_transtu_intilaka_ligne57", "stationId": "transtu_hub_intilaka", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_intilaka_ligne57", "stationId": "transtu_dest_commercial_center_nahli", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 }
+  ],
+  "pricing": {
+    "currency": "TND",
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Intilaka hub.",
+    "estimatedFares": [
+      { "from": "transtu_hub_intilaka", "to": "transtu_dest_kalaat_alandalous", "price": 0.5 },
+      { "from": "transtu_hub_intilaka", "to": "transtu_dest_cite_manji_salim", "price": 0.5 },
+      { "from": "transtu_hub_intilaka", "to": "transtu_dest_jebbas", "price": 0.5 },
+      { "from": "transtu_hub_intilaka", "to": "transtu_dest_douar_hicher", "price": 0.5 },
+      { "from": "transtu_hub_intilaka", "to": "transtu_dest_commercial_center_nahli", "price": 0.5 }
+    ]
+  }
+}

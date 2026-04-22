@@ -1,0 +1,177 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Mornag Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Mornag hub. Winter 2025-2026 schedule.",
+    "dataQuality": "high",
+    "hubId": "transtu_hub_morneg",
+    "hubName": "Mornag",
+    "hubNameAr": "مرناق"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "شركة النقل بتونس",
+    "nameEn": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "pricing": {
+    "currency": "TND",
+    "zone": "urbaine",
+    "baseFare": 0.5,
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Mornag hub."
+  },
+  "stations": [
+    {
+      "id": "transtu_hub_morneg",
+      "name": "Mornag",
+      "nameAr": "مرناق",
+      "cityId": "ben_arous",
+      "cityName": "Ben Arous",
+      "isMainHub": true,
+      "order": 1,
+      "lat": 36.7500,
+      "lng": 10.2300,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_bir_ferech_annabi",
+      "name": "Bir Ferch Annabi",
+      "nameAr": "بئر فرش عنابي",
+      "cityId": "mornag",
+      "cityName": "Mornag",
+      "isMainHub": false,
+      "order": 2,
+      "lat": 36.7400,
+      "lng": 10.2400,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_jebel_ressas",
+      "name": "Jebel Ressas",
+      "nameAr": "جبل الرصاص",
+      "cityId": "mornag",
+      "cityName": "Mornag",
+      "isMainHub": false,
+      "order": 3,
+      "lat": 36.7200,
+      "lng": 10.2500,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_tarhouna_qdima",
+      "name": "Tarhouna El Kdima",
+      "nameAr": "طرهونة القديمة",
+      "cityId": "mornag",
+      "cityName": "Mornag",
+      "isMainHub": false,
+      "order": 4,
+      "lat": 36.7300,
+      "lng": 10.2200,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_mornag_ligne21",
+      "lineNumber": "21",
+      "name": "Mornag → Bir Ferch Annabi",
+      "direction": "forward",
+      "originStationId": "transtu_hub_morneg",
+      "destinationStationId": "transtu_dest_bir_ferech_annabi",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "18:00",
+      "firstDepartureFromSuburb": "06:30",
+      "lastDepartureFromSuburb": "17:10",
+      "peakFrequencyMinutes": 40,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_mornag_ligne21a",
+      "lineNumber": "21أ",
+      "name": "Mornag → Jebel Ressas",
+      "direction": "forward",
+      "originStationId": "transtu_hub_morneg",
+      "destinationStationId": "transtu_dest_jebel_ressas",
+      "firstDepartureFromHub": "06:30",
+      "lastDepartureFromHub": "18:45",
+      "firstDepartureFromSuburb": "07:00",
+      "lastDepartureFromSuburb": "18:15",
+      "peakFrequencyMinutes": 70,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_mornag_ligne21b",
+      "lineNumber": "21ب",
+      "name": "Mornag → Tarhouna El Kdima",
+      "direction": "forward",
+      "originStationId": "transtu_hub_morneg",
+      "destinationStationId": "transtu_dest_tarhouna_qdima",
+      "firstDepartureFromHub": "04:50",
+      "lastDepartureFromHub": "18:15",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "18:45",
+      "peakFrequencyMinutes": 60,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    }
+  ],
+  "routeStops": [
+    {
+      "routeId": "route_transtu_mornag_ligne21",
+      "stationId": "transtu_hub_morneg",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_mornag_ligne21",
+      "stationId": "transtu_dest_bir_ferech_annabi",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 25
+    },
+    {
+      "routeId": "route_transtu_mornag_ligne21a",
+      "stationId": "transtu_hub_morneg",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_mornag_ligne21a",
+      "stationId": "transtu_dest_jebel_ressas",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 30
+    },
+    {
+      "routeId": "route_transtu_mornag_ligne21b",
+      "stationId": "transtu_hub_morneg",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_mornag_ligne21b",
+      "stationId": "transtu_dest_tarhouna_qdima",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 35
+    }
+  ],
+  "summary": {
+    "total_routes": 3,
+    "total_stations": 4,
+    "hub_location": "Mornag, Ben Arous Governorate",
+    "sloganAr": "أينما كنتم، نقل تونس ترافقكم",
+    "sloganFr": "Partout, TRANSTU vous accompagne"
+  }
+}

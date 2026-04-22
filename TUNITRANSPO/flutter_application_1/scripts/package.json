@@ -1,0 +1,31 @@
+{
+  "name": "tuni-transport-scripts",
+  "version": "1.0.0",
+  "description": "Utility scripts for TuniTranspo Firebase setup",
+  "scripts": {
+    "create-admins": "node create_admin_accounts.js",
+    "seed-integration": "node seed_integration_test_data.js",
+    "seed-banlieue-sud": "node seed_banlieue_sud.js",
+    "seed-line-e": "node seed_line_e.js",
+    "seed-line-d": "node seed_line_d.js",
+    "seed-sncft-line5": "node seed_sncft_line5.js",
+    "seed-banlieue-nabeul": "node seed_banlieue_nabeul.js",
+    "migrate-stations-namear": "node migrate_station_name_ar.js",
+    "test-line-e": "node test_line_e.js",
+    "test-banlieue-sud": "node test_banlieue_sud.js",
+    "it-phone-data-flow": "cd .. && flutter test integration_test/journey_data_flow_test.dart -d f125817f --dart-define=INTEGRATION_TEST_MODE=true --dart-define=IT_RUN_DATA_FLOW=true --dart-define=IT_USER_EMAIL=it.data.check@example.com --dart-define=IT_USER_PASSWORD=Test123!A --dart-define=TEST_FIREBASE_API_KEY=AIzaSyDWSsnc82ohqjjWkygMDPB_7zbOOzLzvuc --dart-define=TEST_FIREBASE_APP_ID=1:102410511518:android:fbf375f49efdc1f8e5078f --dart-define=TEST_FIREBASE_MESSAGING_SENDER_ID=102410511518 --dart-define=TEST_FIREBASE_PROJECT_ID=tuni-transport-20eaf --dart-define=TEST_FIREBASE_STORAGE_BUCKET=tuni-transport-20eaf.firebasestorage.app",
+    "cleanup-transtu": "node cleanup_transtu_all.js",
+    "seed-transtu": "node seed_transtu_all.js",
+    "reseed-transtu": "npm run cleanup-transtu && npm run seed-transtu"
+  },
+  "keywords": [
+    "firebase",
+    "admin",
+    "batch"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-admin": "^11.11.1"
+  }
+}

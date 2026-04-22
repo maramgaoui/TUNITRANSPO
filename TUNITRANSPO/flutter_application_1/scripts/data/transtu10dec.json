@@ -1,0 +1,304 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - 10 Décembre Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from 10 Décembre hub. Winter 2025-2026 schedule. All times are departure times from the hub (اتجاه الضواحي). Suburb to hub times are also provided."
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "stations": [
+    { "id": "transtu_hub_10_decembre", "name": "10 Décembre", "nameAr": "10 ديسمبر", "cityId": "tunis", "order": 1, "lat": 36.8130, "lng": 10.1690, "isMainHub": true },
+    { "id": "transtu_dest_sidi_sofiane", "name": "Sidi Sofiane", "nameAr": "سيدي سفيان", "cityId": "tunis", "order": 2, "lat": 36.7825, "lng": 10.1812, "isMainHub": false },
+    { "id": "transtu_dest_cite_mellaha", "name": "Cité Mellaha", "nameAr": "حي الملاحة", "cityId": "tunis", "order": 3, "lat": 36.8150, "lng": 10.1650, "isMainHub": false },
+    { "id": "transtu_dest_carthage", "name": "Carthage", "nameAr": "قرطاج", "cityId": "carthage", "order": 4, "lat": 36.8525, "lng": 10.3311, "isMainHub": false },
+    { "id": "transtu_dest_raoued_plage", "name": "Raoued Plage", "nameAr": "رواد الشاطئ", "cityId": "ariana", "order": 5, "lat": 36.8900, "lng": 10.2100, "isMainHub": false },
+    { "id": "transtu_dest_cite_ghazala", "name": "Cité Ghazala", "nameAr": "حي الغزالة", "cityId": "tunis", "order": 6, "lat": 36.8500, "lng": 10.2200, "isMainHub": false },
+    { "id": "transtu_dest_sidi_omar", "name": "Sidi Omar", "nameAr": "سيدي عمر", "cityId": "tunis", "order": 7, "lat": 36.7900, "lng": 10.1500, "isMainHub": false },
+    { "id": "transtu_dest_el_brarjia", "name": "El Brarjia", "nameAr": "البراجمة", "cityId": "ariana", "order": 8, "lat": 36.7700, "lng": 10.1400, "isMainHub": false },
+    { "id": "transtu_dest_kalaat_alandalous", "name": "Kalaat El Andalous", "nameAr": "قلعة الأندلس", "cityId": "ariana", "order": 9, "lat": 36.9200, "lng": 10.1200, "isMainHub": false },
+    { "id": "transtu_dest_ariana_el_brarjia", "name": "Ariana El Brarjia", "nameAr": "أريانة البراجمة", "cityId": "ariana", "order": 10, "lat": 36.8600, "lng": 10.1950, "isMainHub": false },
+    { "id": "transtu_dest_la_goulette", "name": "La Goulette", "nameAr": "حلق الوادي", "cityId": "tunis", "order": 11, "lat": 36.8175, "lng": 10.3050, "isMainHub": false },
+    { "id": "transtu_dest_cite_bakri", "name": "Cité Bakri", "nameAr": "حي البكري", "cityId": "tunis", "order": 12, "lat": 36.8300, "lng": 10.1700, "isMainHub": false },
+    { "id": "transtu_dest_nour_jafar", "name": "Nour Jafar", "nameAr": "نور جعفر", "cityId": "tunis", "order": 13, "lat": 36.8000, "lng": 10.1900, "isMainHub": false }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_10dec_ligne6",
+      "lineNumber": "6",
+      "name": "10 Décembre → Sidi Sofiane",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_sidi_sofiane",
+      "trips": [
+        { "tripNumber": "6_1", "departureTime": "05:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_sidi_sofiane" }
+      ],
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "20:00",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "19:25",
+      "peakFrequencyMinutes": 40,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne6b",
+      "lineNumber": "6ب",
+      "name": "10 Décembre → Cité Mellaha",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_cite_mellaha",
+      "trips": [
+        { "tripNumber": "6b_1", "departureTime": "06:05", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_mellaha" }
+      ],
+      "firstDepartureFromHub": "06:05",
+      "lastDepartureFromHub": "20:45",
+      "firstDepartureFromSuburb": "05:35",
+      "lastDepartureFromSuburb": "20:25",
+      "peakFrequencyMinutes": 30,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne18t",
+      "lineNumber": "18ت",
+      "name": "10 Décembre → Carthage",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_carthage",
+      "trips": [
+        { "tripNumber": "18t_1", "departureTime": "05:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_carthage" }
+      ],
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "21:10",
+      "firstDepartureFromSuburb": "05:40",
+      "lastDepartureFromSuburb": "20:50",
+      "peakFrequencyMinutes": 35,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne27",
+      "lineNumber": "27",
+      "name": "10 Décembre → Raoued Plage",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_raoued_plage",
+      "trips": [
+        { "tripNumber": "27_1", "departureTime": "05:10", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_raoued_plage" }
+      ],
+      "firstDepartureFromHub": "05:10",
+      "lastDepartureFromHub": "20:50",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "21:20",
+      "peakFrequencyMinutes": 25,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne27a",
+      "lineNumber": "27أ",
+      "name": "10 Décembre → Cité Ghazala",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_cite_ghazala",
+      "trips": [
+        { "tripNumber": "27a_1", "departureTime": "05:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_ghazala" }
+      ],
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "20:40",
+      "firstDepartureFromSuburb": "04:30",
+      "lastDepartureFromSuburb": "21:00",
+      "peakFrequencyMinutes": 20,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne27t",
+      "lineNumber": "27ت",
+      "name": "10 Décembre → Sidi Omar",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_sidi_omar",
+      "trips": [
+        { "tripNumber": "27t_1", "departureTime": "07:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_sidi_omar" }
+      ],
+      "firstDepartureFromHub": "07:00",
+      "lastDepartureFromHub": "20:00",
+      "firstDepartureFromSuburb": "04:40",
+      "lastDepartureFromSuburb": "21:00",
+      "peakFrequencyMinutes": 90,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne27E",
+      "lineNumber": "27E",
+      "name": "10 Décembre → El Brarjia",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_el_brarjia",
+      "trips": [
+        { "tripNumber": "27E_1", "departureTime": "06:35", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_el_brarjia" }
+      ],
+      "firstDepartureFromHub": "06:35",
+      "lastDepartureFromHub": "19:20",
+      "firstDepartureFromSuburb": "05:50",
+      "lastDepartureFromSuburb": "20:05",
+      "peakFrequencyMinutes": 45,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne44j",
+      "lineNumber": "44ج",
+      "name": "10 Décembre → Kalaat El Andalous",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_kalaat_alandalous",
+      "trips": [
+        { "tripNumber": "44j_1", "departureTime": "06:30", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_kalaat_alandalous" }
+      ],
+      "firstDepartureFromHub": "06:30",
+      "lastDepartureFromHub": "18:30",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "17:30",
+      "peakFrequencyMinutes": 120,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne27j",
+      "lineNumber": "27ج",
+      "name": "10 Décembre → Ariana El Brarjia",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_ariana_el_brarjia",
+      "trips": [
+        { "tripNumber": "27j_1", "departureTime": "06:35", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_ariana_el_brarjia" }
+      ],
+      "firstDepartureFromHub": "06:35",
+      "lastDepartureFromHub": "19:20",
+      "firstDepartureFromSuburb": "05:50",
+      "lastDepartureFromSuburb": "20:05",
+      "peakFrequencyMinutes": 45,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne47",
+      "lineNumber": "47",
+      "name": "10 Décembre → La Goulette",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_la_goulette",
+      "trips": [
+        { "tripNumber": "47_1", "departureTime": "05:20", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_la_goulette" }
+      ],
+      "firstDepartureFromHub": "05:20",
+      "lastDepartureFromHub": "19:55",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "20:55",
+      "peakFrequencyMinutes": 35,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne62",
+      "lineNumber": "62",
+      "name": "10 Décembre → Cité Bakri",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_cite_bakri",
+      "trips": [
+        { "tripNumber": "62_1", "departureTime": "05:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_bakri" }
+      ],
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "20:20",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "20:20",
+      "peakFrequencyMinutes": 40,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne62a",
+      "lineNumber": "62أ",
+      "name": "10 Décembre → Sidi Omar (via 62)",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_sidi_omar",
+      "trips": [
+        { "tripNumber": "62a_1", "departureTime": "05:55", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_sidi_omar" }
+      ],
+      "firstDepartureFromHub": "05:55",
+      "lastDepartureFromHub": "21:00",
+      "firstDepartureFromSuburb": "04:55",
+      "lastDepartureFromSuburb": "17:55",
+      "peakFrequencyMinutes": 60,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_10dec_ligne35t",
+      "lineNumber": "35ت",
+      "name": "10 Décembre → Nour Jafar",
+      "direction": "forward",
+      "originStationId": "transtu_hub_10_decembre",
+      "destinationStationId": "transtu_dest_nour_jafar",
+      "trips": [
+        { "tripNumber": "35t_1", "departureTime": "05:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_nour_jafar" }
+      ],
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "18:30",
+      "firstDepartureFromSuburb": "05:45",
+      "lastDepartureFromSuburb": "19:15",
+      "peakFrequencyMinutes": 90,
+      "zone": "urbaine",
+      "price": 0.5
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_transtu_10dec_ligne6", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne6", "stationId": "transtu_dest_sidi_sofiane", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 },
+    { "routeId": "route_transtu_10dec_ligne6b", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne6b", "stationId": "transtu_dest_cite_mellaha", "stopOrder": 2, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_transtu_10dec_ligne18t", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne18t", "stationId": "transtu_dest_carthage", "stopOrder": 2, "estimatedArrivalTimeMinutes": 35 },
+    { "routeId": "route_transtu_10dec_ligne27", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne27", "stationId": "transtu_dest_raoued_plage", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_10dec_ligne27a", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne27a", "stationId": "transtu_dest_cite_ghazala", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 },
+    { "routeId": "route_transtu_10dec_ligne27t", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne27t", "stationId": "transtu_dest_sidi_omar", "stopOrder": 2, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_transtu_10dec_ligne27E", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne27E", "stationId": "transtu_dest_el_brarjia", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_10dec_ligne44j", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne44j", "stationId": "transtu_dest_kalaat_alandalous", "stopOrder": 2, "estimatedArrivalTimeMinutes": 45 },
+    { "routeId": "route_transtu_10dec_ligne27j", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne27j", "stationId": "transtu_dest_ariana_el_brarjia", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_10dec_ligne47", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne47", "stationId": "transtu_dest_la_goulette", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_10dec_ligne62", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne62", "stationId": "transtu_dest_cite_bakri", "stopOrder": 2, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_transtu_10dec_ligne62a", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne62a", "stationId": "transtu_dest_sidi_omar", "stopOrder": 2, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_transtu_10dec_ligne35t", "stationId": "transtu_hub_10_decembre", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_10dec_ligne35t", "stationId": "transtu_dest_nour_jafar", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 }
+  ],
+  "pricing": {
+    "currency": "0.500TND",
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from 10 Décembre hub.",
+    "estimatedFares": [
+      { "from": "transtu_hub_10_decembre", "to": "transtu_dest_sidi_sofiane", "price": 0.5 },
+      { "from": "transtu_hub_10_decembre", "to": "transtu_dest_cite_mellaha", "price": 0.5 },
+      { "from": "transtu_hub_10_decembre", "to": "transtu_dest_carthage", "price": 0.5 },
+      { "from": "transtu_hub_10_decembre", "to": "transtu_dest_raoued_plage", "price": 0.5 },
+      { "from": "transtu_hub_10_decembre", "to": "transtu_dest_cite_ghazala", "price": 0.5 }
+    ]
+  }
+}

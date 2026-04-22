@@ -1,0 +1,17 @@
+# Firebase service account key - DO NOT COMMIT
+firebase-key.json
+firebase-*.json
+
+# Node modules
+node_modules/
+package-lock.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

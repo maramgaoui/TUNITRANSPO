@@ -1,0 +1,317 @@
+{
+  "appTitle": "TuniTransport",
+  "splashSubtitle": "Your smart transport assistant",
+  "login": "Login",
+  "register": "Register",
+  "email": "Email",
+  "password": "Password",
+  "favorites": "Favorites",
+  "logout": "Logout",
+  "journeys": "Journeys",
+  "notifications": "Notifications",
+  "home": "Home",
+  "messages": "Messages",
+  "profile": "Profile",
+  "loginAsAdmin": "Login as Admin",
+  "adminLogin": "Admin Login",
+  "adminDashboard": "Admin Dashboard",
+  "administratorAccess": "Administrator Access",
+  "matricule": "Matricule",
+  "role": "Role",
+  "backToUserLogin": "Back to User Login",
+  "manageUsers": "Manage Users",
+  "manageJourneys": "Manage Journeys",
+  "manageStations": "Manage Stations",
+  "sendNotifications": "Send Notifications",
+  "connectedRole": "Connected role: {role}",
+  "@connectedRole": {
+    "placeholders": {
+      "role": {}
+    }
+  },
+  "invalidAdminCredentials": "Invalid matricule or password.",
+  "requiredField": "This field is required.",
+  "settings": "Settings",
+  "save": "Save",
+  "cancel": "Cancel",
+  "themeMode": "Theme mode",
+  "lightMode": "Light mode",
+  "darkMode": "Dark mode",
+  "systemDefault": "System default",
+  "language": "Language",
+  "english": "English",
+  "french": "Français",
+  "arabic": "العربية",
+  "savedJourneys": "Your saved journeys",
+  "planJourney": "Plan your journey",
+  "findBestOptions": "Find the best options",
+  "departurePoint": "Departure point",
+  "arrivalPoint": "Arrival point",
+  "currentLocation": "Current location",
+  "useMyGpsPosition": "Use my GPS position",
+  "fetchingLocation": "Getting your location...",
+  "locationServiceDisabled": "Location service is disabled.",
+  "locationPermissionDenied": "Location permission denied.",
+  "unableGetGps": "Unable to get your GPS position.",
+  "fillAllFields": "Please fill in all fields",
+  "searchJourney": "Search journey",
+  "recentJourneys": "Recent journeys",
+  "community": "Community",
+  "publicDiscussion": "Public discussion",
+  "writeMessageHint": "Write a message...",
+  "signInToParticipate": "Sign in to participate",
+  "unableSendMessage": "Unable to send message.",
+  "send": "Send",
+  "messagesLoadError": "Error loading messages",
+  "beFirstToWrite": "Be the first to write!",
+  "replyToUser": "Reply to {username}",
+  "@replyToUser": {
+    "placeholders": {
+      "username": {}
+    }
+  },
+  "cancelReply": "Cancel reply",
+  "username": "Username",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "city": "City",
+  "addCity": "Add a city",
+  "changePassword": "Change password",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "confirmNewPassword": "Confirm new password",
+  "enterCurrentPassword": "Please enter your current password",
+  "enterNewPassword": "Please enter the new password",
+  "confirmNewPasswordPrompt": "Please confirm the new password",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordMinLength": "Password must contain at least 6 characters",
+  "passwordChangedSuccessfully": "Password changed successfully",
+  "chooseAvatar": "Choose an avatar",
+  "avatarUpdated": "Avatar updated",
+  "avatarUpdateFailed": "Failed to update avatar",
+  "confirmSignOut": "Are you sure you want to sign out?",
+  "notSet": "Not set",
+  "profileUpdatedSuccessfully": "Profile updated successfully",
+  "profileUpdateFailed": "Failed to update profile",
+  "noFavoriteJourneysYet": "No favorite journeys yet",
+  "noNotificationsYet": "No notifications yet",
+  "markAllAsRead": "Mark all as read",
+  "unreadCountLabel": "{count} unread",
+  "@unreadCountLabel": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "newNotificationTitle": "New notification",
+  "receivedNotificationBody": "You received a notification",
+  "newMessageNotification": "New message",
+  "newJourneyNotification": "New journey created",
+  "systemAnnouncementTitle": "System announcement",
+  "systemWelcomeBody": "Welcome to TuniTranspo. Enjoy your trip!",
+  "featureReadyToBeConnected": "{feature} feature is ready to be connected.",
+  "@featureReadyToBeConnected": {
+    "placeholders": {
+      "feature": {}
+    }
+  },
+  "authHeaderSubtitle": "Login & Register",
+  "welcomeTitle": "Welcome!",
+  "signInToContinue": "Sign in to continue",
+  "createAccountTitle": "Create an account",
+  "joinTuniTranspo": "Join TuniTranspo",
+  "forgotPasswordShort": "Forgot?",
+  "orLabel": "or",
+  "resetPasswordTitle": "Reset password",
+  "resetPasswordPrompt": "Enter your email address to receive a reset link",
+  "sendingResetLink": "Sending reset link...",
+  "resetLinkSent": "Check your email for the reset link",
+  "errorPrefix": "Error: {message}",
+  "@errorPrefix": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "fixFormErrors": "Please fix the form errors",
+  "fillAllFieldsCorrectly": "Please fill all fields correctly",
+  "loginSuccess": "Login successful!",
+  "signupSuccess": "Account created successfully!",
+  "loginFailed": "Login failed",
+  "signupFailed": "Sign up failed",
+  "googleSignInSuccess": "Signed in with Google!",
+  "googleSignInFailed": "Google sign in failed",
+  "signInWithGoogle": "Sign in with Google",
+  "signUpWithGoogle": "Sign up with Google",
+  "favoriteUpdateFailed": "Failed to update favorites.",
+  "searchByNameOrEmail": "Search by name or email…",
+  "filterAll": "All",
+  "filterActive": "Active",
+  "filterBanned": "Banned",
+  "filterBlocked": "Blocked",
+  "noUsersFound": "No users found.",
+  "noUsersMatchFilter": "No users match the current filter.",
+  "statusActive": "Status: Active",
+  "statusBlocked": "Status: Blocked",
+  "statusBannedUntil": "Status: Banned until {date}",
+  "@statusBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "statusBanned": "Status: Banned",
+  "adminActions": "Admin Actions",
+  "adminActionsPrompt": "Select an action for this user.",
+  "banFor3Days": "Ban for 3 days",
+  "banFor7Days": "Ban for 7 days",
+  "blockPermanently": "Block permanently",
+  "unblockUser": "Unblock user",
+  "userBannedDays": "User banned for {days} days.",
+  "@userBannedDays": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "userBlockedPermanently": "User blocked permanently.",
+  "userUnblocked": "User unblocked successfully.",
+  "accountBlockedTitle": "Account Blocked",
+  "accountBlockedBody": "Your account has been permanently blocked by an administrator.",
+  "accountBannedTitle": "Account Banned",
+  "accountBannedUntil": "Your account has been banned until {date}.",
+  "@accountBannedUntil": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "accountBannedBody": "Your account has been banned by an administrator.",
+  "firestoreUpdateError": "Unable to update user. Check Firestore permissions.",
+  "journeyDetails": "Journey details",
+  "journeySteps": "Journey steps",
+  "totalDuration": "Total duration",
+  "fare": "Fare",
+  "journeyType": "Journey type",
+  "transfers": "Transfers",
+  "direct": "Direct",
+  "interactiveMap": "Interactive map",
+  "settingsSaved": "Settings saved",
+  "mode": "Mode",
+  "minimum6Characters": "At least 6 characters",
+  "uppercaseLetter": "Uppercase letter (A-Z)",
+  "lowercaseLetter": "Lowercase letter (a-z)",
+  "digit": "Digit (0-9)",
+  "specialCharacter": "Special character (!@#...)",
+  "passwordTooWeak": "Password is too weak",
+  "passwordIsRequired": "Password is required",
+  "emailIsRequired": "Email is required",
+  "invalidEmailFormat": "Invalid email format",
+  "fieldIsRequired": "{fieldName} is required",
+  "@fieldIsRequired": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "fieldMinLength": "{fieldName} must be at least {length} characters",
+  "@fieldMinLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldMaxLength": "{fieldName} must be at most {length} characters",
+  "@fieldMaxLength": {
+    "placeholders": {
+      "fieldName": {},
+      "length": {
+        "type": "int"
+      }
+    }
+  },
+  "fieldCanOnlyContainLetters": "{fieldName} can only contain letters",
+  "@fieldCanOnlyContainLetters": {
+    "placeholders": {
+      "fieldName": {}
+    }
+  },
+  "usernameIsRequired": "Username is required",
+  "usernameMinLength": "Username must be at least 3 characters",
+  "usernameMaxLength": "Username must be at most 20 characters",
+  "edit": "Edit",
+  "add": "Add",
+  "editJourneyTitle": "Edit journey",
+  "addJourneyTitle": "Add journey",
+  "journeyTypeField": "Type (Bus, Metro, Train)",
+  "departureTime": "Departure time",
+  "journeyUpdatedSuccess": "Journey updated successfully",
+  "journeyAddedSuccess": "Journey added successfully",
+  "journeysLoadError": "Unable to load journeys",
+  "noJourneysFound": "No journeys found",
+  "editStationTitle": "Edit station",
+  "addStationTitle": "Add station",
+  "stationName": "Station name",
+  "stationType": "Type (Metro, Bus, Train)",
+  "stationUpdatedSuccess": "Station updated successfully",
+  "stationAddedSuccess": "Station added successfully",
+  "stationsLoadError": "Unable to load stations",
+  "noStationsFound": "No stations found",
+  "composeNotification": "Compose a notification",
+  "title": "Title",
+  "content": "Content",
+  "recipients": "Recipients",
+  "allUsers": "All users",
+  "appUsers": "App users",
+  "drivers": "Drivers",
+  "sendingInProgress": "Sending...",
+  "sendNotificationAction": "Send notification",
+  "notificationsHistory": "Notifications history",
+  "notificationsLoadError": "Unable to load notifications",
+  "noNotificationSentYet": "No notifications sent yet",
+  "notificationSavedForRecipients": "Notification saved for {count} recipients",
+  "@notificationSavedForRecipients": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "recipientsCount": "{count} recipients",
+  "@recipientsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "authErrorWeakPassword": "The password provided is too weak. Please use a stronger password.",
+  "authErrorEmailAlreadyInUse": "This email is already registered. Please sign in or use a different email.",
+  "authErrorInvalidEmail": "The email address is invalid. Please check and try again.",
+  "authErrorUserDisabled": "This user account has been disabled.",
+  "authErrorUserNotFound": "No account found with this email address.",
+  "authErrorWrongPassword": "The password is incorrect. Please try again.",
+  "authErrorTooManyRequests": "Too many login attempts. Please try again later.",
+  "authErrorGeneric": "An authentication error occurred. Please try again.",
+  "authErrorAccountCreationFailed": "Unable to create user account.",
+  "authErrorPasswordResetFailed": "Unable to send email. Please check your email address.",
+  "useCurrentLocationButton": "Use my current location",
+  "disableCurrentLocation": "Disable current location",
+  "journeySearchResolutionFailed": "Search failed. Please check the stations you entered.",
+  "unableResolveCurrentLocation": "Unable to resolve your current location.",
+  "noNearbyStationFromLocation": "No nearby station found from your current location.",
+  "stationNotFound": "No station found for '{query}'.",
+  "@stationNotFound": {
+    "placeholders": {
+      "query": {}
+    }
+  },
+  "stationNotFoundWithSuggestions": "No station found for '{query}'. Here are the closest matches: {suggestions}",
+  "@stationNotFoundWithSuggestions": {
+    "placeholders": {
+      "query": {},
+      "suggestions": {}
+    }
+  },
+  "results": "Results"
+}

@@ -1,0 +1,148 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Admin check for rule evaluation.
+    // Admin documents must be keyed by Firebase uid.
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function canUseCommunityChat() {
+      return isSignedIn()
+        && (
+          isAdmin()
+          || (
+            exists(/databases/$(database)/documents/users/$(request.auth.uid))
+            && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.status == 'active'
+          )
+        );
+    }
+
+    match /users/{userId} {
+      allow read: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+
+      // Admins can write any field (ban, block, unblock, etc.).
+      allow write: if isAdmin();
+
+      // Regular users may only create or update their own document and
+      // must NEVER touch the security-sensitive status / banUntil fields.
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && (!('status' in request.resource.data) || request.resource.data.status == 'active')
+        && !('banUntil' in request.resource.data);
+
+      allow update: if isSignedIn()
+        && request.auth.uid == userId
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['status', 'banUntil']));
+    }
+
+    match /users/{userId}/favorites/{journeyId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Transport data collections
+    match /journeys/{journeyId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /stations/{stationId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /routes/{routeId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /route_stops/{docId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /trips/{tripId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /tariffs/{tariffId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /transport_types/{typeId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /operators/{operatorId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /bus_services/{serviceId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /notifications/{notifId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /community_messages/{messageId} {
+      allow read: if canUseCommunityChat();
+
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.keys().hasOnly([
+          'uid',
+          'username',
+          'avatarId',
+          'text',
+          'timestamp',
+          'replyTo'
+        ])
+        && request.resource.data.username is string
+        && request.resource.data.username.size() > 0
+        && request.resource.data.username.size() <= 64
+        && request.resource.data.avatarId is string
+        && request.resource.data.avatarId.size() > 0
+        && request.resource.data.avatarId.size() <= 64
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 1000
+        && request.resource.data.timestamp is timestamp
+        && (
+          !('replyTo' in request.resource.data)
+          || (
+            request.resource.data.replyTo is map
+            && request.resource.data.replyTo.keys().hasOnly(['messageId', 'text', 'username'])
+            && request.resource.data.replyTo.messageId is string
+            && request.resource.data.replyTo.messageId.size() > 0
+            && request.resource.data.replyTo.text is string
+            && request.resource.data.replyTo.text.size() <= 120
+            && request.resource.data.replyTo.username is string
+            && request.resource.data.replyTo.username.size() > 0
+            && request.resource.data.replyTo.username.size() <= 64
+          )
+        );
+
+      allow update, delete: if isSignedIn()
+        && (resource.data.uid == request.auth.uid || isAdmin());
+    }
+
+    // Admin profiles are sensitive but must be readable during session resolution.
+    // Write access is permanently disabled to prevent unauthorized admin creation.
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if false;
+    }
+  }
+}

@@ -1,0 +1,345 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Montazah Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Montazah hub (Fouchana / Mrouj). Winter 2025-2026 schedule.",
+    "dataQuality": "high",
+    "hubId": "transtu_hub_montazah",
+    "hubName": "Montazah",
+    "hubNameAr": "المنتزه"
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "شركة النقل بتونس",
+    "nameEn": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "pricing": {
+    "currency": "TND",
+    "zone": "urbaine",
+    "baseFare": 0.5,
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Montazah hub."
+  },
+  "stations": [
+    {
+      "id": "transtu_hub_montazah",
+      "name": "Montazah",
+      "nameAr": "المنتزه",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": true,
+      "order": 1,
+      "lat": 36.7000,
+      "lng": 10.2000,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_cite_saada",
+      "name": "Cité Saada",
+      "nameAr": "حي السعادة",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": false,
+      "order": 2,
+      "lat": 36.7100,
+      "lng": 10.2050,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_cite_elmi",
+      "name": "Cité Elmi",
+      "nameAr": "حي العلمي",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": false,
+      "order": 3,
+      "lat": 36.7050,
+      "lng": 10.2100,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_oudna",
+      "name": "Oudna",
+      "nameAr": "أوذنة",
+      "cityId": "mornag",
+      "cityName": "Mornag",
+      "isMainHub": false,
+      "order": 4,
+      "lat": 36.5600,
+      "lng": 9.9300,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_chebda",
+      "name": "Chebda",
+      "nameAr": "شبدة",
+      "cityId": "naassen",
+      "cityName": "Naassen",
+      "isMainHub": false,
+      "order": 5,
+      "lat": 36.6500,
+      "lng": 10.0400,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_sidi_ferej",
+      "name": "Sidi Ferej",
+      "nameAr": "سيدي فرج",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": false,
+      "order": 6,
+      "lat": 36.6950,
+      "lng": 10.2150,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_hached",
+      "name": "Hached",
+      "nameAr": "حشاد",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": false,
+      "order": 7,
+      "lat": 36.6900,
+      "lng": 10.2200,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    },
+    {
+      "id": "transtu_dest_cite_amel",
+      "name": "Cité El Amel",
+      "nameAr": "حي الأمل",
+      "cityId": "fouchana",
+      "cityName": "Fouchana",
+      "isMainHub": false,
+      "order": 8,
+      "lat": 36.7150,
+      "lng": 10.2000,
+      "transportTypes": ["bus"],
+      "operatorsHere": ["transtu"]
+    }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_montazah_ligne24_saada",
+      "lineNumber": "24",
+      "name": "Montazah → Cité Saada",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_cite_saada",
+      "firstDepartureFromHub": "04:20",
+      "lastDepartureFromHub": "23:10",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "23:30",
+      "peakFrequencyMinutes": 20,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24_elmi",
+      "lineNumber": "24/24",
+      "name": "Montazah → Cité Elmi",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_cite_elmi",
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "15:00",
+      "firstDepartureFromSuburb": "06:40",
+      "lastDepartureFromSuburb": "16:00",
+      "peakFrequencyMinutes": 90,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24a",
+      "lineNumber": "24أ",
+      "name": "Montazah → Oudna",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_oudna",
+      "firstDepartureFromHub": "05:20",
+      "lastDepartureFromHub": "18:20",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "17:30",
+      "peakFrequencyMinutes": 50,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24th",
+      "lineNumber": "24ث",
+      "name": "Montazah → Chebda",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_chebda",
+      "firstDepartureFromHub": "05:00",
+      "lastDepartureFromHub": "19:10",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "18:40",
+      "peakFrequencyMinutes": 60,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24j",
+      "lineNumber": "24ج",
+      "name": "Montazah → Sidi Ferej",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_sidi_ferej",
+      "firstDepartureFromHub": "07:10",
+      "lastDepartureFromHub": "18:30",
+      "firstDepartureFromSuburb": "06:30",
+      "lastDepartureFromSuburb": "17:50",
+      "peakFrequencyMinutes": 80,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24h",
+      "lineNumber": "24ح",
+      "name": "Montazah → Hached",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_hached",
+      "firstDepartureFromHub": "07:00",
+      "lastDepartureFromHub": "16:30",
+      "firstDepartureFromSuburb": "06:10",
+      "lastDepartureFromSuburb": "17:10",
+      "peakFrequencyMinutes": 80,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    },
+    {
+      "id": "route_transtu_montazah_ligne24kh",
+      "lineNumber": "24خ",
+      "name": "Montazah → Cité El Amel",
+      "direction": "forward",
+      "originStationId": "transtu_hub_montazah",
+      "destinationStationId": "transtu_dest_cite_amel",
+      "firstDepartureFromHub": "05:30",
+      "lastDepartureFromHub": "19:30",
+      "firstDepartureFromSuburb": "06:00",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 60,
+      "operatingDays": [0, 1, 2, 3, 4, 5, 6],
+      "zone": "urbaine",
+      "price": 0.5,
+      "trips": []
+    }
+  ],
+  "routeStops": [
+    {
+      "routeId": "route_transtu_montazah_ligne24_saada",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24_saada",
+      "stationId": "transtu_dest_cite_saada",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 15
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24_elmi",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24_elmi",
+      "stationId": "transtu_dest_cite_elmi",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 20
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24a",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24a",
+      "stationId": "transtu_dest_oudna",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 45
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24th",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24th",
+      "stationId": "transtu_dest_chebda",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 35
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24j",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24j",
+      "stationId": "transtu_dest_sidi_ferej",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 25
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24h",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24h",
+      "stationId": "transtu_dest_hached",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 30
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24kh",
+      "stationId": "transtu_hub_montazah",
+      "stopOrder": 1,
+      "estimatedArrivalTimeMinutes": 0
+    },
+    {
+      "routeId": "route_transtu_montazah_ligne24kh",
+      "stationId": "transtu_dest_cite_amel",
+      "stopOrder": 2,
+      "estimatedArrivalTimeMinutes": 20
+    }
+  ],
+  "summary": {
+    "total_routes": 7,
+    "total_stations": 8,
+    "hub_location": "Fouchana / Mnihla vicinity (Connecting to Metro 1)",
+    "sloganAr": "أينما كنتم، نقل تونس ترافقكم",
+    "sloganFr": "Partout, TRANSTU vous accompagne"
+  }
+}

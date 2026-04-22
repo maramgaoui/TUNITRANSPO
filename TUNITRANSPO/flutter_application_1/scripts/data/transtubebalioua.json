@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "line_name": "TRANSTU - Bab Alioua Hub",
+    "validFrom": "2025-09-01",
+    "validTo": "2026-06-30",
+    "notes": "TRANSTU bus services from Bab Alioua hub. Winter 2025-2026 schedule. All times are departure times from the hub (اتجاه الضواحي). Suburb to hub times are also provided."
+  },
+  "operator": {
+    "id": "transtu",
+    "name": "TRANSTU - Société de Transport de Tunis",
+    "phone": "+216 71 102 000",
+    "typeId": "bus"
+  },
+  "stations": [
+    { "id": "transtu_hub_bab_alioua", "name": "Bab Alioua", "nameAr": "باب عليوة", "cityId": "tunis", "order": 1, "lat": 36.7986, "lng": 10.1811, "isMainHub": true },
+    { "id": "transtu_dest_sidi_hussain", "name": "Sidi Hussain", "nameAr": "سيدي حسين", "cityId": "tunis", "order": 2, "lat": 36.8150, "lng": 10.1650, "isMainHub": false },
+    { "id": "transtu_dest_charguia", "name": "Charguia", "nameAr": "الشرقية", "cityId": "tunis", "order": 3, "lat": 36.8300, "lng": 10.2000, "isMainHub": false },
+    { "id": "transtu_dest_cite_zouhour5", "name": "Cité Zouhour 5", "nameAr": "حي الزهور 5", "cityId": "tunis", "order": 4, "lat": 36.7800, "lng": 10.1900, "isMainHub": false },
+    { "id": "transtu_dest_cite_machtoul", "name": "Cité Machtoul", "nameAr": "حي المشتل", "cityId": "tunis", "order": 5, "lat": 36.7900, "lng": 10.1750, "isMainHub": false },
+    { "id": "transtu_dest_tabria", "name": "Tabria", "nameAr": "طبرية", "cityId": "tunis", "order": 6, "lat": 36.8000, "lng": 10.1600, "isMainHub": false }
+  ],
+  "routes": [
+    {
+      "id": "route_transtu_babalioua_ligne32",
+      "lineNumber": "32",
+      "name": "Bab Alioua → Sidi Hussain",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bab_alioua",
+      "destinationStationId": "transtu_dest_sidi_hussain",
+      "trips": [
+        { "tripNumber": "32_1", "departureTime": "08:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_sidi_hussain" }
+      ],
+      "firstDepartureFromHub": "08:40",
+      "lastDepartureFromHub": "20:00",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "19:15",
+      "peakFrequencyMinutes": 50,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_babalioua_ligne50",
+      "lineNumber": "50",
+      "name": "Bab Alioua → Charguia",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bab_alioua",
+      "destinationStationId": "transtu_dest_charguia",
+      "trips": [
+        { "tripNumber": "50_1", "departureTime": "06:00", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_charguia" }
+      ],
+      "firstDepartureFromHub": "06:00",
+      "lastDepartureFromHub": "19:40",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "18:00",
+      "peakFrequencyMinutes": 72,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_babalioua_ligne65",
+      "lineNumber": "65",
+      "name": "Bab Alioua → Cité Zouhour 5",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bab_alioua",
+      "destinationStationId": "transtu_dest_cite_zouhour5",
+      "trips": [
+        { "tripNumber": "65_1", "departureTime": "05:40", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_zouhour5" }
+      ],
+      "firstDepartureFromHub": "05:40",
+      "lastDepartureFromHub": "19:00",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "20:00",
+      "peakFrequencyMinutes": 78,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_babalioua_ligne79",
+      "lineNumber": "79",
+      "name": "Bab Alioua → Cité Machtoul",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bab_alioua",
+      "destinationStationId": "transtu_dest_cite_machtoul",
+      "trips": [
+        { "tripNumber": "79_1", "departureTime": "06:20", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_cite_machtoul" }
+      ],
+      "firstDepartureFromHub": "06:20",
+      "lastDepartureFromHub": "19:20",
+      "firstDepartureFromSuburb": "05:30",
+      "lastDepartureFromSuburb": "18:20",
+      "peakFrequencyMinutes": 79,
+      "zone": "urbaine",
+      "price": 0.5
+    },
+    {
+      "id": "route_transtu_babalioua_ligne116",
+      "lineNumber": "116",
+      "name": "Bab Alioua → Tabria",
+      "direction": "forward",
+      "originStationId": "transtu_hub_bab_alioua",
+      "destinationStationId": "transtu_dest_tabria",
+      "trips": [
+        { "tripNumber": "116_1", "departureTime": "05:15", "operatingDays": [0,1,2,3,4,5,6], "terminatesAtStationId": "transtu_dest_tabria" }
+      ],
+      "firstDepartureFromHub": "05:15",
+      "lastDepartureFromHub": "20:30",
+      "firstDepartureFromSuburb": "05:00",
+      "lastDepartureFromSuburb": "19:10",
+      "peakFrequencyMinutes": 116,
+      "zone": "urbaine",
+      "price": 0.5
+    }
+  ],
+  "routeStops": [
+    { "routeId": "route_transtu_babalioua_ligne32", "stationId": "transtu_hub_bab_alioua", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_babalioua_ligne32", "stationId": "transtu_dest_sidi_hussain", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 },
+    { "routeId": "route_transtu_babalioua_ligne50", "stationId": "transtu_hub_bab_alioua", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_babalioua_ligne50", "stationId": "transtu_dest_charguia", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 },
+    { "routeId": "route_transtu_babalioua_ligne65", "stationId": "transtu_hub_bab_alioua", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_babalioua_ligne65", "stationId": "transtu_dest_cite_zouhour5", "stopOrder": 2, "estimatedArrivalTimeMinutes": 25 },
+    { "routeId": "route_transtu_babalioua_ligne79", "stationId": "transtu_hub_bab_alioua", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_babalioua_ligne79", "stationId": "transtu_dest_cite_machtoul", "stopOrder": 2, "estimatedArrivalTimeMinutes": 20 },
+    { "routeId": "route_transtu_babalioua_ligne116", "stationId": "transtu_hub_bab_alioua", "stopOrder": 1, "estimatedArrivalTimeMinutes": 0 },
+    { "routeId": "route_transtu_babalioua_ligne116", "stationId": "transtu_dest_tabria", "stopOrder": 2, "estimatedArrivalTimeMinutes": 30 }
+  ],
+  "pricing": {
+    "currency": "TND",
+    "notes": "TRANSTU urban fare: 0.500 DT for all routes from Bab Alioua hub.",
+    "estimatedFares": [
+      { "from": "transtu_hub_bab_alioua", "to": "transtu_dest_sidi_hussain", "price": 0.5 },
+      { "from": "transtu_hub_bab_alioua", "to": "transtu_dest_charguia", "price": 0.5 },
+      { "from": "transtu_hub_bab_alioua", "to": "transtu_dest_cite_zouhour5", "price": 0.5 },
+      { "from": "transtu_hub_bab_alioua", "to": "transtu_dest_cite_machtoul", "price": 0.5 },
+      { "from": "transtu_hub_bab_alioua", "to": "transtu_dest_tabria", "price": 0.5 }
+    ]
+  }
+}
